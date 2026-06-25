@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Analise Financeira - Matias Valente</title>
+<title>Análise Financeira — Matias Valente</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -96,7 +96,7 @@ function render(){
   var i=S.etapa;
   if(i===0){
     progBar(5);
-    tela.innerHTML='<div class="card"><div class="step-label">Análise gratuita</div><div class="step-title">Olá! Sou o assistente do Matias Valente.</div><div class="step-sub" style="margin-top:14px">Vou fazer uma análise gratuita da sua situacao financeira com o que ha de mais moderno em tecnologia, cruzando seus dados com padrões de comportamento identificados em milhares de situações reais.<br><br>Você não precisa se identificar em nenhum momento. Nenhum dado é vinculado ao seu nome real.<br><br>Isso é entre você e a análise. Leva menos de 2 minutos.</div><button class="btn btn-primary" onclick="av()">SIM, QUERO MINHA ANÁLISE</button></div><p class="rodape">Seus dados não são armazenados e sua identidade é preservada.</p>';
+    tela.innerHTML='<div class="card"><div class="step-label">Análise gratuita</div><div class="step-title">Olá! Sou o assistente do Matias Valente.</div><div class="step-sub" style="margin-top:14px">Vou fazer uma análise gratuita da sua situação financeira com o que há de mais moderno em tecnologia, cruzando seus dados com padrões de comportamento identificados em milhares de situações reais.<br><br>Você não precisa se identificar em nenhum momento. Nenhum dado é vinculado ao seu nome real.<br><br>Isso é entre você e a análise. Leva menos de 2 minutos.</div><button class="btn btn-primary" onclick="av()">SIM, QUERO MINHA ANÁLISE</button></div><p class="rodape">Seus dados não são armazenados e sua identidade é preservada.</p>';
     return;
   }
   var p=perguntas[i-1];
@@ -159,8 +159,8 @@ async function gerar(){
   var tipos=Array.isArray(S.tipos)?S.tipos.join(', '):S.tipos;
   var emocional=Array.isArray(S.emocional)?S.emocional.join(', '):S.emocional;
   var preocupacao=Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.preocupacao;
-  var regras='REGRAS: Use apenas paragrafos simples separados por linha em branco. Linguagem simples direta e humana em portugues correto com acentuacao. Tom empatico encorajador e profissional. Nunca use linguagem agressiva. Nunca use metaforas informais. Nunca use a palavra simples. Nunca faca perguntas ao leitor pois a tela e estatica use sempre afirmacoes. Nunca termine com pergunta. Nunca afirme dividas gerando juros se nao foi confirmado atraso. Nunca diga trabalha duro use com sua renda mensal. Nunca afirme inadimplencia se nao informada. SEMPRE use numeros ao mencionar valores ex R$3.000 nao escreva por extenso. Calcule media da faixa: R$2.000-R$4.000=R$3.000 R$4.000-R$7.000=R$5.500 R$7.000-R$10.000=R$8.500 R$10.000-R$15.000=R$12.500. Quando renda for Abaixo de R$2.000 use por volta de R$2.000. Nunca mencione prazos. Nunca numere niveis. Mencione suavemente gastos extras e imprevistos. Use gatilhos emocionais sutis identificacao pertencimento esperanca curiosidade. Transicoes sempre suaves. Sempre transmita que existe saida.';
-  var estrutura='ESTRUTURA em paragrafos corridos sem titulos: PARTE1 ACOLHIMENTO 2-3 frases empaticas. PARTE2 PERFIL comece com Seu perfil financeiro e o de (escolha: Trabalhador Exausto, Apagador de Incendios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador) explique em 2 frases. PARTE3 ANALISE maximo 3 frases calcule quanto sobra apos percentual comprometido. PARTE4 PROXIMO PASSO concreto sem palavra simples sem prazo. PARTE5 REVELACAO padrao especifico com nome nao revele qual maximo 3 linhas use afirmacao. PARTE6 FECHAMENTO esperanca real sem preco sem pressao sem pergunta.';
+  var regras='REGRAS: Use apenas paragrafos simples separados por linha em branco. Linguagem simples direta e humana em portugues correto com acentuacao. Tom empatico encorajador e profissional. Nunca use linguagem agressiva. Nunca use metaforas informais. Nunca use a palavra simples. Nunca faca perguntas ao leitor pois a tela e estatica use sempre afirmações. Nunca termine com pergunta. Nunca afirme dívidas gerando juros se nao foi confirmado atraso. Nunca diga trabalha duro use com sua renda mensal. Nunca afirme inadimplencia se nao informada. SEMPRE use números ao mencionar valores ex R$3.000 nao escreva por extenso. Calcule media da faixa: R$2.000-R$4.000=R$3.000 R$4.000-R$7.000=R$5.500 R$7.000-R$10.000=R$8.500 R$10.000-R$15.000=R$12.500. Quando renda for Abaixo de R$2.000 use por volta de R$2.000. Nunca mencione prazos. Nunca numere niveis. Mencione suavemente gastos extras e imprevistos. Use gatilhos emocionais sutis identificacao pertencimento esperanca curiosidade. Transicoes sempre suaves. Sempre transmita que existe saida.';
+  var estrutura='ESTRUTURA OBRIGATORIA em paragrafos corridos sem titulos sem numeracao sem labels: NUNCA escreva as palavras Acolhimento Perfil Analise Revelacao Fechamento ou qualquer titulo de parte no texto final. 1) Comece direto com 2-3 frases empaticas espelhando o que a pessoa sente baseado apenas no que informou sem julgamento. 2) Escreva Seu perfil financeiro e o de (escolha UM: Trabalhador Exausto, Apagador de Incendios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador) e explique em 2 frases usando os dados informados tom de reconhecimento nao julgamento. 3) Maximo 3 frases: calcule quanto sobra apos o percentual comprometido usando a media da faixa diga que e o disponivel para todo o resto mencione suavemente que imprevistos tornam esse espaco menor. 4) Oriente de forma concreta e realizavel reconheca que nao e facil mas que e possivel nunca use a palavra simples nunca de prazo nunca diga inimigo nunca diga nao e para se assustar termine com afirmacao. 5) OBRIGATORIO: diga que existe um padrao especifico por tras do que esta acontecendo e que ele tem nome mas NAO revele qual e crie curiosidade genuina com leveza maximo 3 linhas use afirmacao como Quando voce entende esse padrao tudo muda de perspectiva. 6) Esperanca real ancorada no que a pessoa disse querer afirmacao suave sem preco sem pressao sem pergunta. NUNCA use o nome Matias Valente no meio do texto apenas na assinatura final.';
   var dados='DADOS: Renda='+S.renda+' Situacao='+S.situacao+' Total='+S.total+' Percentual='+S.percentual+' Tipos='+tipos+' Emocional='+emocional+' Preocupacao='+preocupacao+(S.nome?' Nome='+S.nome:'');
   var promptTexto='Você é o assistente do Matias Valente ex-gerente de banco com mais de 25 anos de experiencia. Gere um diagnostico financeiro personalizado. '+regras+' '+estrutura+' '+dados+' Assine como Matias Valente.';
   var payload=JSON.stringify({renda:S.renda,situacao:S.situacao,total:S.total,percentual:S.percentual,tipos:tipos,emocional:emocional,preocupacao:preocupacao,nome:S.nome,prompt:promptTexto});
@@ -170,16 +170,16 @@ async function gerar(){
     var resultados=await Promise.all([chamarAPI,esperarTempo]);
     var resposta=resultados[0];
     var dados_resp=await resposta.json();
-    S.diagnostico=dados_resp.diagnostico||'Nao foi possivel gerar o diagnostico.';
+    S.diagnostico=dados_resp.diagnostico||'Não foi possível gerar o diagnóstico.';
     exibir();
   }catch(e){
-    document.getElementById('tela').innerHTML='<div class="card"><p style="color:#f87171;margin-bottom:16px">Erro ao gerar diagnostico. Tente novamente.</p><button class="btn btn-primary" onclick="gerar()">Tentar novamente</button></div>';
+    document.getElementById('tela').innerHTML='<div class="card"><p style="color:#f87171;margin-bottom:16px">Erro ao gerar diagnóstico. Tente novamente.</p><button class="btn btn-primary" onclick="gerar()">Tentar novamente</button></div>';
   }
 }
 
 function exibir(){
   progBar(100);
-  var saud=S.nome?S.nome+', sua analise esta pronta':'Sua análise está pronta';
+  var saud=S.nome?S.nome+', sua análise está pronta':'Sua análise está pronta';
   var partes=S.diagnostico.split('\n\n').filter(function(p){return p.trim();});
   var txt=partes.map(function(p){return '<p>'+p.replace(/\n/g,'<br>')+'</p>';}).join('');
   var tela=document.getElementById('tela');
