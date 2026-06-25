@@ -10,85 +10,66 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#080814;color:#e0e0f0;font-family:'Inter',sans-serif;min-height:100vh;padding:0}
 #app{max-width:560px;margin:0 auto;padding:28px 20px 80px}
-
 .logo{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#6b5fd4;text-align:center;margin-bottom:6px;font-weight:500}
 .logo-linha{width:40px;height:1px;background:linear-gradient(90deg,transparent,#6b5fd4,transparent);margin:0 auto 24px}
-
 .progress-wrap{height:2px;background:#12122a;border-radius:2px;margin-bottom:32px;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,#6b5fd4,#9b8bff);border-radius:2px;transition:width .5s ease}
-
 .card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:32px 28px;margin-bottom:16px;box-shadow:0 4px 24px rgba(0,0,0,.4)}
-
 .step-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#4a4a7a;margin-bottom:12px;font-weight:500}
 .step-title{font-size:20px;font-weight:600;color:#fff;margin-bottom:8px;line-height:1.4}
 .step-sub{font-size:14px;color:#7070a0;margin-bottom:22px;line-height:1.7}
-
 .btn{display:block;width:100%;padding:16px 24px;border-radius:12px;font-size:14px;font-weight:600;text-align:center;cursor:pointer;border:none;margin-bottom:10px;transition:all .2s;font-family:'Inter',sans-serif;letter-spacing:.3px}
 .btn:active{transform:scale(.98)}
-
 .btn-primary{background:linear-gradient(135deg,#7c6fd4,#9b8bff);color:#fff;box-shadow:0 4px 20px rgba(124,111,212,.4)}
 .btn-primary:hover{box-shadow:0 6px 28px rgba(124,111,212,.6);transform:translateY(-1px)}
-
 .btn-outline{background:transparent;color:#9b8bff;border:1px solid #3a3a6a}
 .btn-outline:hover{background:#9b8bff15;border-color:#9b8bff}
-
 .btn-green{background:transparent;color:#34d399;border:1px solid #34d39940;font-size:13px}
 .btn-green:hover{background:#34d39910}
-
 .btn-muted{background:transparent;color:#3a3a5a;border:none;font-size:12px;padding:10px;margin-top:4px}
 .btn-muted:hover{color:#6060a0}
-
-.opcao{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid #12122a;cursor:pointer;transition:all .15s;border-radius:4px}
+.opcao{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid #12122a;cursor:pointer;transition:all .15s}
 .opcao:last-child{border-bottom:none}
 .opcao:hover .opcao-txt{color:#fff}
 .opcao:hover .check{border-color:#6b5fd4}
-
 .check{width:22px;height:22px;border-radius:50%;border:1.5px solid #2a2a4a;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .check.on{background:linear-gradient(135deg,#7c6fd4,#9b8bff);border-color:transparent;box-shadow:0 0 12px rgba(124,111,212,.4)}
 .check.on::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
 .opcao-txt{font-size:14px;color:#a0a0c0;line-height:1.5;transition:color .15s}
-
 .loading{text-align:center;padding:44px 20px}
 .dots{display:inline-flex;gap:8px;margin-bottom:20px}
 .dot{width:8px;height:8px;border-radius:50%;background:#7c6fd4;animation:pulse 1.4s infinite}
 .dot:nth-child(2){animation-delay:.25s}
 .dot:nth-child(3){animation-delay:.5s}
 @keyframes pulse{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
-
-.msg-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-left:3px solid #7c6fd4;border-radius:20px;padding:22px 26px;margin-bottom:16px;opacity:0;transition:opacity 1s ease;box-shadow:0 4px 24px rgba(0,0,0,.3)}
+.msg-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-left:3px solid #7c6fd4;border-radius:20px;padding:22px 26px;margin-bottom:16px;opacity:0;transition:opacity 1.2s ease;box-shadow:0 4px 24px rgba(0,0,0,.3)}
 .msg-card p{font-size:14px;color:#b0b0d0;line-height:1.8}
-
 .diagnostico{font-size:15px;line-height:1.95;color:#c8c8e8}
 .diagnostico p{margin-bottom:18px}
 .diagnostico p:last-child{margin-bottom:0}
-
 .divider{border:none;border-top:1px solid #1a1a32;margin:22px 0}
-
 .oferta-header{margin-bottom:24px}
 .oferta-titulo{font-size:20px;font-weight:700;color:#fff;margin-bottom:12px;line-height:1.3}
 .oferta-desc{font-size:14px;color:#7070a0;line-height:1.8}
 .oferta-credencial{font-size:13px;color:#9b8bff;font-style:italic;margin-top:10px;padding:12px 16px;background:#9b8bff10;border-radius:10px;border-left:2px solid #9b8bff40}
-
 .opcao-card{background:#080814;border:1px solid #1e1e3a;border-radius:14px;padding:20px;margin-bottom:12px}
 .opcao-card.destaque{border-color:#7c6fd430;background:linear-gradient(145deg,#0a0a1e,#0f0f28);box-shadow:0 0 30px rgba(124,111,212,.08)}
 .opcao-card-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9b8bff;background:#9b8bff15;padding:4px 10px;border-radius:20px;margin-bottom:10px}
 .opcao-card-titulo{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px}
-.opcao-card-sub{font-size:12px;color:#5050808;margin-bottom:14px;color:#6060a0;font-style:italic}
+.opcao-card-sub{font-size:12px;color:#6060a0;margin-bottom:14px;font-style:italic}
 .check-item{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:#9090b8;margin-bottom:8px;line-height:1.5}
 .check-icon{color:#34d399;flex-shrink:0;font-weight:700;margin-top:1px;font-size:12px}
-
+.bonus-bloco{border-top:1px solid #1e1e3a;margin-top:16px;padding-top:16px}
+.bonus-titulo{font-size:12px;font-weight:700;color:#9b8bff;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
 .btn-compra{display:block;width:100%;padding:18px 24px;border-radius:14px;font-size:15px;font-weight:700;text-align:center;cursor:pointer;border:none;margin-bottom:10px;transition:all .2s;font-family:'Inter',sans-serif;letter-spacing:.3px}
 .btn-compra:active{transform:scale(.98)}
 .btn-compra-1{background:linear-gradient(135deg,#5a4fbf,#7c6fd4);color:#fff;box-shadow:0 4px 20px rgba(90,79,191,.35)}
 .btn-compra-1:hover{box-shadow:0 8px 32px rgba(90,79,191,.5);transform:translateY(-2px)}
 .btn-compra-2{background:linear-gradient(135deg,#7c6fd4,#b09bff);color:#fff;box-shadow:0 4px 24px rgba(124,111,212,.45)}
 .btn-compra-2:hover{box-shadow:0 8px 36px rgba(124,111,212,.6);transform:translateY(-2px)}
-.btn-preco{font-size:12px;font-weight:400;opacity:.85;margin-top:2px}
-
+.btn-preco{font-size:13px;font-weight:400;opacity:.9;margin-top:3px}
 .anonimo{font-size:11px;color:#3a3a5a;text-align:center;margin:8px 0 16px;letter-spacing:.5px}
-
 .rodape{font-size:11px;color:#2a2a4a;text-align:center;margin-top:24px;line-height:1.7}
-
 input[type=text]{width:100%;padding:14px 16px;border-radius:10px;border:1px solid #1e1e3a;background:#080814;color:#e0e0f0;font-size:14px;font-family:'Inter',sans-serif;margin-bottom:12px;outline:none;transition:border-color .2s}
 input[type=text]:focus{border-color:#7c6fd4;box-shadow:0 0 0 3px rgba(124,111,212,.1)}
 </style>
@@ -100,15 +81,9 @@ input[type=text]:focus{border-color:#7c6fd4;box-shadow:0 0 0 3px rgba(124,111,21
   <div class="progress-wrap"><div class="progress-fill" id="prog" style="width:0%"></div></div>
   <div id="tela"></div>
 </div>
-
 <script>
-const S = {
-  etapa:0, nome:'', renda:'', situacao:'', total:'',
-  percentual:'', tipos:[], emocional:[], preocupacao:[],
-  diagnostico:''
-};
-
-const perguntas = [
+const S={etapa:0,nome:'',renda:'',situacao:'',total:'',percentual:'',tipos:[],emocional:[],preocupacao:[],diagnostico:''};
+const perguntas=[
   {id:'nome',tipo:'texto',label:'Boas-vindas',titulo:'Como posso te chamar?',sub:'Pode ser nome, apelido ou deixar em branco. Opcional.',prog:10},
   {id:'renda',tipo:'unica',label:'Pergunta 1 de 7',titulo:'Qual é sua renda mensal aproximada?',opcoes:['Abaixo de R$2.000','R$2.000 a R$4.000','R$4.000 a R$7.000','R$7.000 a R$10.000','R$10.000 a R$15.000','Acima de R$15.000'],prog:25},
   {id:'situacao',tipo:'unica',label:'Pergunta 2 de 7',titulo:'Como está sua situação com dívidas em atraso?',opcoes:['Várias dívidas em atraso','Nome sujo, mas já parei de atrasar','Sem atraso, mas no limite todo mês','Sem atraso e com alguma folga'],prog:38},
@@ -118,10 +93,8 @@ const perguntas = [
   {id:'emocional',tipo:'multipla',label:'Pergunta 6 de 7',titulo:'Qual dessas frases mais parece com a sua situação hoje?',sub:'Pode marcar mais de uma.',opcoes:['Trabalho muito e nunca sobra nada','Vivo apagando incêndios financeiros todo mês','O cartão de crédito virou um problema','Tenho medo de olhar minhas contas','Não sei por onde começar','Sinto que nunca vou conseguir sair disso'],prog:88},
   {id:'preocupacao',tipo:'multipla',label:'Pergunta 7 de 7',titulo:'O que mais te preocupa hoje?',sub:'Pode marcar mais de uma.',opcoes:['Limpar o nome','Parar de receber cobranças','Não conseguir pagar tudo que precisa','Não poder ajudar minha família','Nunca conseguir sair dessa situação de vez','Ter paz e não pensar mais nisso'],prog:95}
 ];
-
 let sel=[];
 function prog(p){document.getElementById('prog').style.width=p+'%';}
-
 function render(){
   const tela=document.getElementById('tela');
   const i=S.etapa;
@@ -138,7 +111,7 @@ function render(){
     return;
   }
   const p=perguntas[i-1];
-  if(!p) return;
+  if(!p)return;
   prog(p.prog);
   sel=Array.isArray(S[p.id])?[...S[p.id]]:[];
   if(p.tipo==='texto'){
@@ -185,7 +158,6 @@ function render(){
     return;
   }
 }
-
 function av(){S.etapa++;render();}
 function salvarTexto(){const v=document.getElementById('inp').value.trim();S[perguntas[S.etapa-1].id]=v;av();}
 function escolherUnica(id,val){S[id]=val;av();}
@@ -206,7 +178,7 @@ async function gerar(){
     <div class="card loading" id="card-loading">
       <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
       <p style="font-size:15px;font-weight:600;color:#fff;margin-bottom:8px">Cruzando suas respostas...</p>
-      <p style="font-size:13px;color:#5050808;color:#606090">Sua análise está sendo preparada. Isso leva alguns instantes.</p>
+      <p style="font-size:13px;color:#606090">Sua análise está sendo preparada. Isso leva alguns instantes.</p>
     </div>
     <div class="msg-card" id="card-msg1">
       <p>Análise Financeira é o caminho para solução. Não existe fórmula mágica, guru financeiro que oferece milagre ou planilha que resolva sozinha. O que existe é entender a sua real situação — e a maioria das pessoas nunca para para fazer uma análise eficiente.</p>
@@ -215,44 +187,46 @@ async function gerar(){
       <p>A análise que você vai receber não vai te julgar. Ela foi feita para mostrar o que está acontecendo — não para te culpar pelo que passou.<br><br><span style="color:#9b8bff;font-style:italic">Identificar e nomear o problema já é o primeiro alívio.</span></p>
     </div>`;
 
-  setTimeout(()=>{const m=document.getElementById('card-msg1');if(m)m.style.opacity='1';},4000);
-  setTimeout(()=>{const m=document.getElementById('card-msg2');if(m)m.style.opacity='1';},10000);
+  setTimeout(()=>{const m=document.getElementById('card-msg1');if(m)m.style.opacity='1';},6000);
+  setTimeout(()=>{const m=document.getElementById('card-msg2');if(m)m.style.opacity='1';},12000);
 
   const prompt=`Você é o assistente do Matias Valente, ex-gerente de banco com mais de 25 anos de experiência. Gere um diagnóstico financeiro personalizado seguindo rigorosamente estas instruções:
 
-REGRAS ABSOLUTAS DE FORMATO:
-- NUNCA use hashtags (#), asteriscos (*), traços (---) ou qualquer símbolo de formatação
+REGRAS ABSOLUTAS:
+- NUNCA use hashtags, asteriscos, traços ou símbolos de formatação
 - Use apenas parágrafos simples separados por linha em branco
-- Linguagem simples, direta e humana — sem termos técnicos ou palavras difíceis
+- Linguagem simples, direta e humana — sem termos técnicos
 - Tom sempre empático e encorajador — nunca julgador
 - NUNCA mencione prazos em dias, semanas ou meses
-- NUNCA diga que a renda da pessoa é variável — ela informou uma faixa de renda fixa
-- NUNCA diga que o primeiro passo é gratuito — apenas informe o passo
-- Tamanho equilibrado — nem curto demais nem longo demais
+- NUNCA diga que a renda da pessoa é variável — ela informou uma faixa de renda
+- NUNCA diga que o próximo passo é simples — quem está endividado sofre e merece respeito
+- NUNCA chame o próximo passo de gratuito — apenas informe o que fazer
+- Use gatilhos emocionais sutis e discretos que gerem identificação e desejo de agir
+- Sempre transmita que existe saída, mesmo que a situação esteja difícil
 - Baseie a análise em padrões reais de comportamento financeiro do brasileiro
 
-ESTRUTURA OBRIGATÓRIA — escreva em parágrafos corridos, sem títulos ou numeração:
+ESTRUTURA — escreva em parágrafos corridos, sem títulos ou numeração visível:
 
 PARTE 1 — ACOLHIMENTO EMOCIONAL
-Espelhe o que a pessoa está sentindo com base nas respostas dela. Mostre que você entende a situação sem julgamento. 2 a 3 frases humanas e empáticas.
+Espelhe com profundidade o que a pessoa está sentindo. Mostre que você entende a dor real por trás dos números. 2 a 3 frases humanas, empáticas e que gerem identificação imediata.
 
 PARTE 2 — PERFIL FINANCEIRO
-Comece com: "Seu perfil financeiro é o de..." — NUNCA use a palavra "arquétipo". Escolha exatamente um entre: Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador. Explique em 2 frases simples por que esse perfil se encaixa nessa pessoa específica.
+Comece com: "Seu perfil financeiro é o de..." — NUNCA use a palavra "arquétipo". Escolha exatamente um: Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador. Explique em 2 frases por que esse perfil se encaixa nessa pessoa específica, usando os dados reais informados.
 
 PARTE 3 — NÍVEL DE ATENÇÃO
-Apresente o nível de 1 a 5 com legenda positiva e encorajadora. Exemplo: "Nível 4 — Situação que pede atenção, mas com caminho real para mudar". Nunca use tom de condenação ou urgência excessiva.
+Apresente o nível de 1 a 5 com legenda positiva. Sempre reforce que tem caminho. Nunca condene.
 
 PARTE 4 — O QUE MAIS ESTÁ PESANDO
-Faça uma análise cuidadosa e precisa do endividamento. Use os dados informados para calcular: se a renda está na faixa informada e o percentual comprometido é o indicado, calcule aproximadamente quanto sobra por mês e o que isso representa na prática. Cite os tipos de dívida reais informados. Seja específico e cirúrgico, baseado em padrões comprovados de comportamento financeiro.
+Faça cálculos aproximados e cuidadosos: se a renda está na faixa informada, estime um valor médio dessa faixa e calcule quanto sobra depois do percentual comprometido. Mostre o impacto real no dia a dia. Cite os tipos de dívida reais. Seja específico e cirúrgico.
 
 PARTE 5 — PRÓXIMO PASSO
-Dê uma orientação concreta e realizável. Sem prazo. Sem mencionar que é gratuito. Respeite o ritmo de cada pessoa.
+Dê uma orientação concreta e realizável. Nunca diga que é simples. Nunca dê prazo. Respeite a dificuldade real da situação. Mostre que o caso tem solução mesmo que esteja difícil.
 
 PARTE 6 — REVELAÇÃO
-Diga que existe um padrão por trás do que está acontecendo, mas não revele qual é. Máximo 3 linhas. Desperte curiosidade genuína.
+Diga que existe um padrão por trás do que está acontecendo, mas não revele qual é. Máximo 3 linhas. Crie curiosidade genuína e desejo de entender mais.
 
 PARTE 7 — FECHAMENTO
-Uma frase de esperança real — não promessa vazia. Seguida de transição natural para a próxima etapa, sem citar preço.
+Uma frase de esperança real ancorada nos dados da pessoa. Seguida de transição natural e discreta para o próximo passo, sem citar preço.
 
 Assine como: Matias Valente
 
@@ -293,7 +267,6 @@ function exibir(){
   const textoFormatado=S.diagnostico
     .split('\n\n').filter(p=>p.trim())
     .map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('');
-
   document.getElementById('tela').innerHTML=`
     <div class="card">
       <div class="step-label">Análise exclusiva</div>
@@ -312,7 +285,7 @@ function exibir(){
       <div class="opcao-card">
         <div class="opcao-card-titulo">Opção 1 — O caminho para sair do aperto financeiro</div>
         <div class="opcao-card-sub">Para quem quer saber exatamente o que fazer — e em que ordem.</div>
-        <div class="check-item"><span class="check-icon">✓</span>Valor real de cada dívida, não faixas de valores</div>
+        <div class="check-item"><span class="check-icon">✓</span>Análise do valor real de cada dívida</div>
         <div class="check-item"><span class="check-icon">✓</span>Ordem exata de qual atacar primeiro</div>
         <div class="check-item"><span class="check-icon">✓</span>Próximos passos adaptados à sua realidade financeira</div>
         <div class="check-item"><span class="check-icon">✓</span>Ações imediatas específicas para o seu caso</div>
@@ -321,13 +294,16 @@ function exibir(){
       <div class="opcao-card destaque">
         <div class="opcao-card-badge">✦ Mais completo</div>
         <div class="opcao-card-titulo">Opção 2 — Para quem tenta sair mas não entende por que não consegue</div>
-        <div class="opcao-card-sub">Para quem já tentou antes e quer entender por que a situação se repete.</div>
+        <div class="opcao-card-sub">Para quem já tentou se organizar e não consegue.</div>
         <div class="check-item"><span class="check-icon">✓</span>Tudo da Opção 1</div>
-        <div class="check-item"><span class="check-icon">✓</span>Os motivos que mantêm a situação se repetindo</div>
+        <div class="check-item"><span class="check-icon">✓</span>Os motivos que mantêm no aperto financeiro</div>
         <div class="check-item"><span class="check-icon">✓</span>Mudanças específicas para o seu perfil</div>
         <div class="check-item"><span class="check-icon">✓</span>Guia prático + mensagem final personalizada</div>
-        <div class="check-item"><span class="check-icon">✓</span>Planilha financeira para controle</div>
-        <div class="check-item"><span class="check-icon">✓</span>Livro digital "O Número da Paz" — Matias Valente</div>
+        <div class="bonus-bloco">
+          <div class="bonus-titulo">+ 2 bônus exclusivos</div>
+          <div class="check-item"><span class="check-icon">✓</span>Planilha financeira para controle</div>
+          <div class="check-item"><span class="check-icon">✓</span>Livro digital "O Número da Paz" — Matias Valente</div>
+        </div>
       </div>
 
       <p class="anonimo">🔒 Tudo anônimo, como foi até aqui.</p>
