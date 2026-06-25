@@ -36,17 +36,21 @@ body{background:#0f0f1a;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFo
 .dot:nth-child(2){animation-delay:.2s}
 .dot:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
-.diagnostico{font-size:15px;line-height:1.85;color:#d8d8f0;white-space:pre-wrap}
+.diagnostico{font-size:15px;line-height:1.9;color:#d8d8f0}
+.diagnostico p{margin-bottom:16px}
 .divider{border:none;border-top:1px solid #2a2a4a;margin:20px 0}
-.oferta-titulo{font-size:16px;font-weight:500;color:#fff;margin-bottom:6px}
-.oferta-desc{font-size:13px;color:#8080b0;margin-bottom:16px;line-height:1.6}
-.oferta-bloco{margin-bottom:16px}
-.oferta-bloco-titulo{font-size:13px;font-weight:500;color:#c0c0e0;margin-bottom:8px}
-.check-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#9090c0;margin-bottom:6px}
-.check-item::before{content:'✓';color:#4ade80;flex-shrink:0;font-weight:600}
+.oferta-titulo{font-size:17px;font-weight:600;color:#fff;margin-bottom:10px;line-height:1.4}
+.oferta-desc{font-size:14px;color:#a0a0c0;margin-bottom:20px;line-height:1.7}
+.oferta-bloco{background:#0f0f1a;border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.oferta-bloco-titulo{font-size:14px;font-weight:600;color:#fff;margin-bottom:4px}
+.oferta-bloco-sub{font-size:12px;color:#6060a0;margin-bottom:12px;font-style:italic}
+.check-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#b0b0d0;margin-bottom:7px;line-height:1.5}
+.check-item::before{content:'✓';color:#4ade80;flex-shrink:0;font-weight:700;margin-top:1px}
 .rodape{font-size:11px;color:#404060;text-align:center;margin-top:20px}
+.msg-card{background:#14142a;border:1px solid #2a2a4a;border-left:3px solid #8b7cf6;border-radius:16px;padding:20px 24px;margin-bottom:16px;opacity:0;transition:opacity 0.9s ease}
 input[type=text]{width:100%;padding:12px 14px;border-radius:8px;border:1px solid #2a2a4a;background:#0f0f1a;color:#e0e0f0;font-size:14px;font-family:inherit;margin-bottom:10px;outline:none}
 input[type=text]:focus{border-color:#8b7cf6}
+.credencial{font-size:12px;color:#6060a0;text-align:center;margin-bottom:20px;line-height:1.6;font-style:italic}
 </style>
 </head>
 <body>
@@ -57,12 +61,10 @@ input[type=text]:focus{border-color:#8b7cf6}
 </div>
 
 <script>
-const KEY = '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';
-
 const S = {
   etapa: 0,
   nome: '', renda: '', situacao: '', total: '',
-  percentual: '', tipos: [], emocional: [], preocupacao: '',
+  percentual: '', tipos: [], emocional: [], preocupacao: [],
   diagnostico: ''
 };
 
@@ -90,9 +92,9 @@ function render(){
     tela.innerHTML = `
       <div class="card">
         <div class="step-label">Análise gratuita</div>
-        <div class="step-title">Olá! Sou o assistente do Matias Valente.</div>
-        <div class="step-sub" style="margin-top:12px">Vou fazer uma análise gratuita da sua situação financeira, cruzando seus dados com padrões identificados em milhares de situações reais.<br><br>Você não precisa se identificar. Leva menos de 2 minutos.</div>
-        <button class="btn btn-primary" onclick="av()">✅ Sim, quero minha análise</button>
+        <div class="step-title">Olá! Sou o assistente do Matias Valente. 👋</div>
+        <div class="step-sub" style="margin-top:12px">Vou fazer uma análise gratuita da sua situação financeira com o que há de mais moderno em tecnologia, analisando seu comprometimento financeiro, cruzando seus dados com padrões de comportamento identificados em milhares de situações reais — o que permite que o resultado seja feito exclusivamente para você, não para qualquer pessoa.<br><br>Você não precisa se identificar em nenhum momento. Pode usar nome fictício, apelido ou deixar em branco. Nenhum dado é vinculado ao seu nome real.<br><br>Isso é entre você e a análise. Leva menos de 2 minutos.</div>
+        <button class="btn btn-primary" onclick="av()">✅ SIM, QUERO MINHA ANÁLISE</button>
       </div>
       <p class="rodape">Seus dados não são armazenados.</p>`;
     return;
@@ -118,7 +120,7 @@ function render(){
 
   if(p.tipo === 'unica'){
     const its = p.opcoes.map(op=>`
-      <div class="opcao" onclick="escolherUnica('${p.id}','${op}')">
+      <div class="opcao" onclick="escolherUnica('${p.id}','${op.replace(/'/g,"\\'")}')">
         <div class="check ${S[p.id]===op?'on':''}"></div>
         <span class="opcao-txt">${op}</span>
       </div>`).join('');
@@ -134,7 +136,7 @@ function render(){
 
   if(p.tipo === 'multipla'){
     const its = p.opcoes.map((op,idx)=>`
-      <div class="opcao" onclick="toggleSel('${op}',${idx})">
+      <div class="opcao" onclick="toggleSel('${op.replace(/'/g,"\\'")}',${idx})">
         <div class="check ${sel.includes(op)?'on':''}" id="ck${idx}"></div>
         <span class="opcao-txt">${op}</span>
       </div>`).join('');
@@ -183,32 +185,65 @@ function confirmarSel(id){
 async function gerar(){
   prog(98);
   document.getElementById('tela').innerHTML = `
-    <div class="card loading">
+    <div class="card loading" id="card-loading">
       <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
       <p style="font-size:15px;font-weight:500;color:#fff;margin-bottom:8px">Cruzando suas respostas...</p>
       <p style="font-size:13px;color:#8080b0">Sua análise está sendo preparada. Isso leva alguns instantes.</p>
+    </div>
+    <div class="msg-card" id="card-msg1">
+      <p style="font-size:14px;color:#d0d0f0;line-height:1.7">Análise Financeira é o caminho para solução. Não existe fórmula mágica, guru financeiro que oferece milagre ou planilha que resolva sozinha. O que existe é entender a sua real situação — e a maioria das pessoas nunca para para fazer uma análise eficiente.</p>
+    </div>
+    <div class="msg-card" id="card-msg2">
+      <p style="font-size:14px;color:#d0d0f0;line-height:1.7">A análise que você vai receber não vai te julgar. Ela foi feita para mostrar o que está acontecendo — não para te culpar pelo que passou.<br><br><em style="color:#8b7cf6">Identificar e nomear o problema já é o primeiro alívio.</em></p>
     </div>`;
 
-  const prompt = `Você é o assistente do Matias Valente. Gere um diagnóstico financeiro empático seguindo essa sequência obrigatória:
+  setTimeout(()=>{ const m=document.getElementById('card-msg1'); if(m) m.style.opacity='1'; }, 3000);
+  setTimeout(()=>{ const m=document.getElementById('card-msg2'); if(m) m.style.opacity='1'; }, 6000);
 
-1) Identificação emocional — espelhe o sentimento com linguagem humana e empática (2-3 linhas)
-2) Arquétipo — revele o nome (Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador) e explique em 2 frases por que esse perfil se encaixa
-3) Nível de risco de 1 a 5 com legenda positiva — nunca de condenação
-4) O que mais pesa — cite as dívidas e comprometimentos reais informados
-5) Primeiro passo concreto e gratuito realizável hoje
-6) Mini Revelação — abra uma lacuna psicológica sem revelar o padrão completo (máximo 4 linhas)
-7) Transição para oferta — sem mencionar preço
+  const prompt = `Você é o assistente do Matias Valente, ex-gerente de banco com mais de 25 anos de experiência. Gere um diagnóstico financeiro seguindo rigorosamente estas instruções:
 
-Assine como Matias Valente. Escreva de forma direta, empática e humanizada. Sem bullets excessivos.
+REGRAS DE FORMATO:
+- Nunca use hashtags (#), asteriscos (***), traços (---) ou marcadores especiais
+- Use parágrafos simples separados por linha em branco
+- Linguagem simples, direta e humana — sem palavras difíceis ou técnicas
+- Tom sempre empático, nunca julgador
+- Nunca dê prazos em dias ou meses
+- Tamanho equilibrado — nem muito curto nem muito longo
+- Baseie a análise em padrões reais de comportamento financeiro do brasileiro
 
-DADOS:
+ESTRUTURA OBRIGATÓRIA — siga exatamente esta ordem, sem títulos ou numeração visível:
+
+1. ACOLHIMENTO EMOCIONAL
+Espelhe o que a pessoa está sentindo com base nas respostas dela. Mostre que você entende a situação sem julgamento. 2 a 3 frases.
+
+2. PERFIL FINANCEIRO
+Use "Seu perfil financeiro é o de..." — nunca use a palavra "arquétipo". Escolha um entre: Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador. Explique em 2 frases simples por que esse perfil se encaixa nessa pessoa.
+
+3. NÍVEL DE ATENÇÃO
+Apresente o nível de 1 a 5 com uma legenda positiva e encorajadora. Exemplo: "Nível 4 — Situação séria, mas com caminho claro para mudar". Nunca use tom de condenação.
+
+4. O QUE MAIS ESTÁ PESANDO
+Com base nas dívidas informadas, faça uma análise simples do que está pressionando mais o orçamento. Se possível, faça um cálculo aproximado usando a faixa de renda e o percentual comprometido informados. Exemplo: "Com uma renda de aproximadamente R$3.000 e mais de 50% comprometido, sobram menos de R$1.500 por mês para tudo — alimentação, transporte e imprevistos". Cite os tipos de dívida reais informados.
+
+5. PRIMEIRO PASSO
+Dê uma dica concreta, gratuita e realizável. Sem prazo. Respeite o ritmo de cada pessoa. Baseie na realidade financeira dela.
+
+6. MINI REVELAÇÃO
+Abra uma lacuna — diga que existe um padrão por trás do que está acontecendo, mas não revele qual é. Máximo 3 linhas. Deve despertar curiosidade genuína, não ansiedade.
+
+7. FECHAMENTO E TRANSIÇÃO
+Uma frase de esperança real — não promessa vazia. Seguida de uma transição natural para a próxima etapa, sem citar preço.
+
+Assine como: Matias Valente
+
+DADOS DA PESSOA:
 ${S.nome ? 'Nome: '+S.nome : ''}
-Renda: ${S.renda}
-Situação: ${S.situacao}
-Total devido: ${S.total}
-% comprometida: ${S.percentual}
+Renda mensal: ${S.renda}
+Situação atual: ${S.situacao}
+Total estimado de dívidas: ${S.total}
+Percentual do salário comprometido: ${S.percentual}
 Tipos de dívida: ${Array.isArray(S.tipos)?S.tipos.join(', '):S.tipos}
-Identificação emocional: ${Array.isArray(S.emocional)?S.emocional.join(', '):S.emocional}
+Como se sente: ${Array.isArray(S.emocional)?S.emocional.join(', '):S.emocional}
 Maior preocupação: ${Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.preocupacao}`;
 
   try {
@@ -221,53 +256,66 @@ Maior preocupação: ${Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.p
         tipos:Array.isArray(S.tipos)?S.tipos.join(', '):S.tipos,
         emocional:Array.isArray(S.emocional)?S.emocional.join(', '):S.emocional,
         preocupacao:Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.preocupacao,
-        nome:S.nome
+        nome:S.nome,
+        prompt:prompt
       })
     });
     const d = await r.json();
     S.diagnostico = d.diagnostico || 'Não foi possível gerar o diagnóstico.';
     exibir();
   } catch(e){
-    document.getElementById('tela').innerHTML = `<div class="card"><p style="color:#f87171;margin-bottom:16px">Erro ao gerar diagnóstico.</p><button class="btn btn-primary" onclick="gerar()">Tentar novamente</button></div>`;
+    document.getElementById('tela').innerHTML = `<div class="card"><p style="color:#f87171;margin-bottom:16px">Erro ao gerar diagnóstico. Tente novamente.</p><button class="btn btn-primary" onclick="gerar()">Tentar novamente</button></div>`;
   }
 }
 
 function exibir(){
   prog(100);
   const saud = S.nome ? S.nome+', sua análise está pronta' : 'Sua análise está pronta';
+  const textoFormatado = S.diagnostico
+    .split('\n\n')
+    .filter(p=>p.trim())
+    .map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`)
+    .join('');
+
   document.getElementById('tela').innerHTML = `
     <div class="card">
       <div class="step-label">Análise exclusiva</div>
       <div class="step-title">${saud}</div>
-      <div style="margin-top:16px" class="diagnostico">${S.diagnostico}</div>
+      <div style="margin-top:20px" class="diagnostico">${textoFormatado}</div>
     </div>
 
     <div class="card">
-      <div class="oferta-titulo">Existem dois caminhos a partir daqui</div>
-      <div class="oferta-desc">A diferença não é o tamanho — é a dor que cada um resolve.</div>
+      <div class="oferta-titulo">Existem dois caminhos para te ajudar a partir daqui</div>
+      <div class="oferta-desc">Você tem agora uma análise baseada em faixas de valores — um primeiro mapa da sua situação. Sem um estudo mais profundo com os números reais, fica difícil saber exatamente por onde começar.<br><br>Com mais de 25 anos como gerente de banco, conheci centenas de perfis e comportamentos financeiros diferentes. Sei o que funciona — e o que só parece funcionar.<br><br>Cada opção resolve uma dor diferente. Qual delas pode ser útil a você?</div>
 
       <div class="oferta-bloco">
-        <div class="oferta-bloco-titulo">Opção 1 — O caminho para sair</div>
-        <div class="check-item">Valor real de cada dívida, não faixas</div>
+        <div class="oferta-bloco-titulo">Opção 1 — O caminho para sair do aperto financeiro</div>
+        <div class="oferta-bloco-sub">Para quem quer saber exatamente o que fazer — e em que ordem.</div>
+        <div class="check-item">Valor real de cada dívida, não faixas de valores</div>
         <div class="check-item">Ordem exata de qual atacar primeiro</div>
-        <div class="check-item">Estimativa de tempo com sua renda real</div>
-        <div class="check-item">Uma ação imediata específica para o seu caso</div>
+        <div class="check-item">Próximos passos adaptados à sua realidade financeira</div>
+        <div class="check-item">Ações imediatas específicas para o seu caso</div>
       </div>
 
       <div class="divider"></div>
 
       <div class="oferta-bloco">
-        <div class="oferta-bloco-titulo">Opção 2 — Por que esse caminho se repetiu</div>
+        <div class="oferta-bloco-titulo">Opção 2 — Para quem tenta sair mas não entende por que não consegue</div>
+        <div class="oferta-bloco-sub">Para quem já tentou antes e quer entender por que a situação se repete.</div>
         <div class="check-item">Tudo da Opção 1</div>
-        <div class="check-item">O padrão que mantém a situação se repetindo</div>
-        <div class="check-item">3 mudanças específicas para o seu perfil</div>
+        <div class="check-item">Os motivos que mantêm a situação se repetindo</div>
+        <div class="check-item">Mudanças específicas para o seu perfil</div>
         <div class="check-item">Guia prático + mensagem final personalizada</div>
+        <div class="check-item">Planilha financeira para controle</div>
+        <div class="check-item">Livro digital "O Número da Paz" — Matias Valente</div>
       </div>
 
-      <button class="btn btn-primary" onclick="window.open('https://pay.kiwify.com.br/7A0vh4P','_blank')">Quero entender o caminho para sair</button>
-      <button class="btn btn-outline" onclick="window.open('https://kiwify.app/sTU8H60','_blank')">Quero entender por que se repetiu</button>
+      <p style="font-size:12px;color:#6060a0;text-align:center;margin-bottom:16px;font-style:italic">Tudo anônimo, como foi até aqui.</p>
+
+      <button class="btn btn-primary" onclick="window.open('https://pay.kiwify.com.br/7A0vh4P','_blank')">QUERO ENTENDER O CAMINHO PARA SAIR</button>
+      <button class="btn btn-outline" onclick="window.open('https://kiwify.app/sTU8H60','_blank')">QUERO ENTENDER POR QUE SE REPETIU</button>
       <button class="btn btn-green" onclick="salvarWA()">📱 Salvar análise no WhatsApp</button>
-      <button class="btn btn-muted" onclick="fechar()">Agora não</button>
+      <button class="btn btn-muted" onclick="fechar()">Vou pensar um pouco mais</button>
     </div>
 
     <p class="rodape">Seus dados não são armazenados. Análise gerada de forma anônima.</p>`;
@@ -281,9 +329,9 @@ function fechar(){
   const cards = document.querySelectorAll('.card');
   const last = cards[cards.length-1];
   last.innerHTML = `
-    <p style="font-size:15px;font-weight:500;color:#fff;margin-bottom:8px">Tudo bem — a análise fica aqui quando você estiver pronto.</p>
-    <p style="font-size:13px;color:#8080b0;line-height:1.6">O canal do Matias Valente continua te ajudando de graça. Toda semana tem vídeo novo sobre exatamente o que você está passando.</p>
-    <p style="font-size:13px;color:#8b7cf6;margin-top:12px">— Matias Valente</p>`;
+    <p style="font-size:15px;font-weight:500;color:#fff;margin-bottom:10px">Tudo bem — a análise fica aqui quando você estiver pronto.</p>
+    <p style="font-size:13px;color:#8080b0;line-height:1.7">O canal do Matias Valente continua te ajudando de graça. Toda semana tem conteúdo novo sobre exatamente o que você está passando.</p>
+    <p style="font-size:13px;color:#8b7cf6;margin-top:14px">— Matias Valente</p>`;
 }
 
 render();
