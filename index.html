@@ -183,12 +183,8 @@ async function gerar(){
       <p>A análise que você vai receber não vai te julgar. Ela foi feita para mostrar o que está acontecendo — não para te culpar pelo que passou.<br><br><span style="color:#9b8bff;font-style:italic">Identificar e nomear o problema já é o primeiro alívio.</span></p>
     </div>`;
 
-  // Mensagens aparecem em 6s e 12s
   setTimeout(()=>{const m=document.getElementById('card-msg1');if(m)m.style.opacity='1';},6000);
   setTimeout(()=>{const m=document.getElementById('card-msg2');if(m)m.style.opacity='1';},12000);
-
-  // Aguarda mínimo de 25 segundos antes de exibir resultado
-  const inicioTempo = Date.now();
 
   const prompt=`Você é o assistente do Matias Valente, ex-gerente de banco com mais de 25 anos de experiência. Gere um diagnóstico financeiro personalizado seguindo rigorosamente estas instruções:
 
@@ -197,32 +193,31 @@ REGRAS ABSOLUTAS — NUNCA VIOLE:
 - Use apenas parágrafos simples separados por linha em branco
 - Linguagem simples, direta e humana — sem termos técnicos
 - Tom sempre empático e encorajador — nunca julgador ou dramático
-- NUNCA afirme que a pessoa está inadimplente se ela não informou isso — use "aperto financeiro" ou "endividamento"
-- NUNCA faça afirmações dramáticas ou negativas que não foram confirmadas pelos dados
-- NUNCA diga que a renda é variável — a pessoa informou uma faixa de renda
-- NUNCA diga que o próximo passo é simples — quem está endividado sofre
+- NUNCA diga "trabalha duro" ou "trabalha muito" — a pessoa pode ser aposentada, autônoma ou qualquer outra coisa. Use variações neutras como "com sua renda mensal" ou "com o que você recebe por mês"
+- NUNCA afirme que tal valor está indo para dívidas — a pessoa pode estar no aperto sem estar pagando nada. Use expressões como "com esse percentual comprometido" ou "com essa pressão financeira"
+- NUNCA afirme que a pessoa está inadimplente se ela não informou isso
+- SEMPRE que mencionar renda, use "mais ou menos R$X" deixando claro que é uma estimativa baseada na faixa informada
+- SEMPRE calcule usando a média da faixa informada. Exemplos: R$2.000-R$4.000 = R$3.000; R$4.000-R$7.000 = R$5.500; R$7.000-R$10.000 = R$8.500
 - NUNCA mencione prazos em dias, semanas ou meses
-- NUNCA chame o próximo passo de gratuito
-- NUNCA numere os níveis de atenção — não apresente scoring numérico ao cliente
-- Sempre calcule usando a média da faixa de renda informada
-- Sempre transmita que existe saída, mesmo que a situação esteja difícil
+- NUNCA numere níveis ou apresente scoring numérico
+- NUNCA chame o próximo passo de gratuito ou simples
+- Quando pertinente, mencione que gastos extras e emergências tornam a situação ainda mais apertada
 - Use gatilhos emocionais sutis que gerem identificação e desejo de agir
-- Quando pertinente, mencione gastos extras e emergências que surgem inesperadamente
-- Se coloque dentro do que acontece normalmente com as pessoas nessa situação
+- Sempre transmita que existe saída, mesmo que a situação esteja difícil
 
 ESTRUTURA — escreva em parágrafos corridos, sem títulos ou numeração visível:
 
 PARTE 1 — ACOLHIMENTO EMOCIONAL
-Espelhe com cuidado o que a pessoa está sentendo com base no que ela informou. Não afirme nada além do que foi dito. Mostre empatia real. 2 a 3 frases humanas que gerem identificação imediata.
+Com base no que a pessoa informou sobre como se sente e sua maior preocupação, espelhe a situação com empatia real. Não afirme nada além do que foi informado. 2 a 3 frases humanas que gerem identificação imediata.
 
 PARTE 2 — PERFIL FINANCEIRO
 Comece com: "Seu perfil financeiro é o de..." — NUNCA use a palavra "arquétipo". Escolha exatamente um: Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador. Explique em 2 frases por que esse perfil se encaixa, usando os dados reais informados.
 
 PARTE 3 — ANÁLISE DA SITUAÇÃO
-Calcule usando a média da faixa de renda informada. Se a faixa for R$2.000 a R$4.000, use R$3.000 como base. Calcule quanto sobra após o percentual comprometido. Mostre o impacto real no dia a dia, incluindo que gastos extras e emergências tornam a situação ainda mais apertada. Cite os tipos de dívida informados. Seja preciso e empático — nunca dramático.
+Use a média da faixa de renda. Calcule quanto sobra após o percentual comprometido. Não diga que esse valor está indo para dívidas — diga que é o que fica disponível para todo o resto. Mencione que gastos extras e imprevistos tornam esse espaço ainda menor. Cite os tipos de dívida ou compromissos informados de forma neutra. Seja preciso, empático e nunca dramático.
 
 PARTE 4 — PRÓXIMO PASSO
-Dê uma orientação concreta e realizável. Nunca diga que é simples. Nunca dê prazo. Reconheça a dificuldade real. Mostre que existe caminho mesmo que a situação esteja difícil.
+Dê uma orientação concreta e realizável. Nunca diga que é simples. Nunca dê prazo. Reconheça a dificuldade real. Mostre que existe caminho mesmo que esteja difícil.
 
 PARTE 5 — REVELAÇÃO
 Diga que existe um padrão por trás do que está acontecendo, mas não revele qual é. Máximo 3 linhas. Crie curiosidade genuína.
@@ -237,8 +232,8 @@ ${S.nome?'Nome: '+S.nome:''}
 Renda mensal: ${S.renda}
 Situação atual: ${S.situacao}
 Total estimado de dívidas: ${S.total}
-Percentual do salário comprometido: ${S.percentual}
-Tipos de dívida: ${Array.isArray(S.tipos)?S.tipos.join(', '):S.tipos}
+Percentual comprometido: ${S.percentual}
+Tipos de dívida ou compromissos: ${Array.isArray(S.tipos)?S.tipos.join(', '):S.tipos}
 Como se sente: ${Array.isArray(S.emocional)?S.emocional.join(', '):S.emocional}
 Maior preocupação: ${Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.preocupacao}`;
 
@@ -248,15 +243,15 @@ Maior preocupação: ${Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.p
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-          renda:S.renda,situacao:S.situacao,total:S.total,
+          renda:S.renda, situacao:S.situacao, total:S.total,
           percentual:S.percentual,
           tipos:Array.isArray(S.tipos)?S.tipos.join(', '):S.tipos,
           emocional:Array.isArray(S.emocional)?S.emocional.join(', '):S.emocional,
           preocupacao:Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.preocupacao,
-          nome:S.nome,prompt:prompt
+          nome:S.nome, prompt:prompt
         })
       }),
-      new Promise(resolve => setTimeout(resolve, 25000))
+      new Promise(resolve=>setTimeout(resolve,35000))
     ]);
     const d=await resposta.json();
     S.diagnostico=d.diagnostico||'Não foi possível gerar o diagnóstico.';
@@ -290,7 +285,7 @@ function exibir(){
       <div class="opcao-card">
         <div class="opcao-card-titulo">Opção 1 — O caminho para sair do aperto financeiro</div>
         <div class="opcao-card-sub">Para quem quer saber exatamente o que fazer — e em que ordem.</div>
-        <div class="check-item"><span class="check-icon">✓</span>Análise do valor real de cada dívida</div>
+        <div class="check-item"><span class="check-icon">✓</span>Análise exata da sua situação</div>
         <div class="check-item"><span class="check-icon">✓</span>Ordem exata de qual atacar primeiro</div>
         <div class="check-item"><span class="check-icon">✓</span>Próximos passos adaptados à sua realidade financeira</div>
         <div class="check-item"><span class="check-icon">✓</span>Ações imediatas específicas para o seu caso</div>
@@ -298,8 +293,8 @@ function exibir(){
 
       <div class="opcao-card destaque">
         <div class="opcao-card-badge">✦ Mais completo</div>
-        <div class="opcao-card-titulo">Opção 2 — Para quem tenta sair mas não entende por que não consegue</div>
-        <div class="opcao-card-sub">Para quem já tentou se organizar e não consegue.</div>
+        <div class="opcao-card-titulo">Opção 2 — Para quem tenta sair do endividamento e não consegue</div>
+        <div class="opcao-card-sub">Ideal para organizar a vida financeira.</div>
         <div class="check-item"><span class="check-icon">✓</span>Tudo da Opção 1</div>
         <div class="check-item"><span class="check-icon">✓</span>Os motivos que mantêm no aperto financeiro</div>
         <div class="check-item"><span class="check-icon">✓</span>Mudanças específicas para o seu perfil</div>
