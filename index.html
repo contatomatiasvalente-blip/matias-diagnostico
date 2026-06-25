@@ -212,13 +212,20 @@ Identificação emocional: ${Array.isArray(S.emocional)?S.emocional.join(', '):S
 Maior preocupação: ${Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.preocupacao}`;
 
   try {
-    const r = await fetch('https://api.anthropic.com/v1/messages',{
+    const r = await fetch('https://matias-diagnostico.contato-matiasvalente.workers.dev',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':KEY,'anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1500,messages:[{role:'user',content:prompt}]})
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        renda:S.renda, situacao:S.situacao, total:S.total,
+        percentual:S.percentual,
+        tipos:Array.isArray(S.tipos)?S.tipos.join(', '):S.tipos,
+        emocional:Array.isArray(S.emocional)?S.emocional.join(', '):S.emocional,
+        preocupacao:Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.preocupacao,
+        nome:S.nome
+      })
     });
     const d = await r.json();
-    S.diagnostico = d.content?.[0]?.text || 'Não foi possível gerar o diagnóstico.';
+    S.diagnostico = d.diagnostico || 'Não foi possível gerar o diagnóstico.';
     exibir();
   } catch(e){
     document.getElementById('tela').innerHTML = `<div class="card"><p style="color:#f87171;margin-bottom:16px">Erro ao gerar diagnóstico.</p><button class="btn btn-primary" onclick="gerar()">Tentar novamente</button></div>`;
