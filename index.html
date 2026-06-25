@@ -22,11 +22,9 @@ body{background:#080814;color:#e0e0f0;font-family:'Inter',sans-serif;min-height:
 .btn:active{transform:scale(.98)}
 .btn-primary{background:linear-gradient(135deg,#7c6fd4,#9b8bff);color:#fff;box-shadow:0 4px 20px rgba(124,111,212,.4)}
 .btn-primary:hover{box-shadow:0 6px 28px rgba(124,111,212,.6);transform:translateY(-1px)}
-.btn-outline{background:transparent;color:#9b8bff;border:1px solid #3a3a6a}
-.btn-outline:hover{background:#9b8bff15;border-color:#9b8bff}
 .btn-green{background:transparent;color:#34d399;border:1px solid #34d39940;font-size:13px}
 .btn-green:hover{background:#34d39910}
-.btn-muted{background:transparent;color:#3a3a5a;border:none;font-size:12px;padding:10px;margin-top:4px}
+.btn-muted{background:transparent;color:#3a3a5a;border:none;font-size:12px;padding:10px;margin-top:4px;display:block;width:100%;text-align:center;cursor:pointer;font-family:'Inter',sans-serif}
 .btn-muted:hover{color:#6060a0}
 .opcao{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid #12122a;cursor:pointer;transition:all .15s}
 .opcao:last-child{border-bottom:none}
@@ -47,7 +45,6 @@ body{background:#080814;color:#e0e0f0;font-family:'Inter',sans-serif;min-height:
 .diagnostico{font-size:15px;line-height:1.95;color:#c8c8e8}
 .diagnostico p{margin-bottom:18px}
 .diagnostico p:last-child{margin-bottom:0}
-.divider{border:none;border-top:1px solid #1a1a32;margin:22px 0}
 .oferta-header{margin-bottom:24px}
 .oferta-titulo{font-size:20px;font-weight:700;color:#fff;margin-bottom:12px;line-height:1.3}
 .oferta-desc{font-size:14px;color:#7070a0;line-height:1.8}
@@ -60,14 +57,13 @@ body{background:#080814;color:#e0e0f0;font-family:'Inter',sans-serif;min-height:
 .check-item{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:#9090b8;margin-bottom:8px;line-height:1.5}
 .check-icon{color:#34d399;flex-shrink:0;font-weight:700;margin-top:1px;font-size:12px}
 .bonus-bloco{border-top:1px solid #1e1e3a;margin-top:16px;padding-top:16px}
-.bonus-titulo{font-size:12px;font-weight:700;color:#9b8bff;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
-.btn-compra{display:block;width:100%;padding:18px 24px;border-radius:14px;font-size:15px;font-weight:700;text-align:center;cursor:pointer;border:none;margin-bottom:10px;transition:all .2s;font-family:'Inter',sans-serif;letter-spacing:.3px}
+.bonus-titulo{font-size:11px;font-weight:700;color:#9b8bff;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.btn-compra{display:block;width:100%;padding:18px 24px;border-radius:14px;font-size:16px;font-weight:700;text-align:center;cursor:pointer;border:none;margin-bottom:12px;transition:all .2s;font-family:'Inter',sans-serif}
 .btn-compra:active{transform:scale(.98)}
 .btn-compra-1{background:linear-gradient(135deg,#5a4fbf,#7c6fd4);color:#fff;box-shadow:0 4px 20px rgba(90,79,191,.35)}
 .btn-compra-1:hover{box-shadow:0 8px 32px rgba(90,79,191,.5);transform:translateY(-2px)}
 .btn-compra-2{background:linear-gradient(135deg,#7c6fd4,#b09bff);color:#fff;box-shadow:0 4px 24px rgba(124,111,212,.45)}
 .btn-compra-2:hover{box-shadow:0 8px 36px rgba(124,111,212,.6);transform:translateY(-2px)}
-.btn-preco{font-size:13px;font-weight:400;opacity:.9;margin-top:3px}
 .anonimo{font-size:11px;color:#3a3a5a;text-align:center;margin:8px 0 16px;letter-spacing:.5px}
 .rodape{font-size:11px;color:#2a2a4a;text-align:center;margin-top:24px;line-height:1.7}
 input[type=text]{width:100%;padding:14px 16px;border-radius:10px;border:1px solid #1e1e3a;background:#080814;color:#e0e0f0;font-size:14px;font-family:'Inter',sans-serif;margin-bottom:12px;outline:none;transition:border-color .2s}
@@ -187,46 +183,52 @@ async function gerar(){
       <p>A análise que você vai receber não vai te julgar. Ela foi feita para mostrar o que está acontecendo — não para te culpar pelo que passou.<br><br><span style="color:#9b8bff;font-style:italic">Identificar e nomear o problema já é o primeiro alívio.</span></p>
     </div>`;
 
+  // Mensagens aparecem em 6s e 12s
   setTimeout(()=>{const m=document.getElementById('card-msg1');if(m)m.style.opacity='1';},6000);
   setTimeout(()=>{const m=document.getElementById('card-msg2');if(m)m.style.opacity='1';},12000);
 
+  // Aguarda mínimo de 25 segundos antes de exibir resultado
+  const inicioTempo = Date.now();
+
   const prompt=`Você é o assistente do Matias Valente, ex-gerente de banco com mais de 25 anos de experiência. Gere um diagnóstico financeiro personalizado seguindo rigorosamente estas instruções:
 
-REGRAS ABSOLUTAS:
+REGRAS ABSOLUTAS — NUNCA VIOLE:
 - NUNCA use hashtags, asteriscos, traços ou símbolos de formatação
 - Use apenas parágrafos simples separados por linha em branco
 - Linguagem simples, direta e humana — sem termos técnicos
-- Tom sempre empático e encorajador — nunca julgador
+- Tom sempre empático e encorajador — nunca julgador ou dramático
+- NUNCA afirme que a pessoa está inadimplente se ela não informou isso — use "aperto financeiro" ou "endividamento"
+- NUNCA faça afirmações dramáticas ou negativas que não foram confirmadas pelos dados
+- NUNCA diga que a renda é variável — a pessoa informou uma faixa de renda
+- NUNCA diga que o próximo passo é simples — quem está endividado sofre
 - NUNCA mencione prazos em dias, semanas ou meses
-- NUNCA diga que a renda da pessoa é variável — ela informou uma faixa de renda
-- NUNCA diga que o próximo passo é simples — quem está endividado sofre e merece respeito
-- NUNCA chame o próximo passo de gratuito — apenas informe o que fazer
-- Use gatilhos emocionais sutis e discretos que gerem identificação e desejo de agir
+- NUNCA chame o próximo passo de gratuito
+- NUNCA numere os níveis de atenção — não apresente scoring numérico ao cliente
+- Sempre calcule usando a média da faixa de renda informada
 - Sempre transmita que existe saída, mesmo que a situação esteja difícil
-- Baseie a análise em padrões reais de comportamento financeiro do brasileiro
+- Use gatilhos emocionais sutis que gerem identificação e desejo de agir
+- Quando pertinente, mencione gastos extras e emergências que surgem inesperadamente
+- Se coloque dentro do que acontece normalmente com as pessoas nessa situação
 
 ESTRUTURA — escreva em parágrafos corridos, sem títulos ou numeração visível:
 
 PARTE 1 — ACOLHIMENTO EMOCIONAL
-Espelhe com profundidade o que a pessoa está sentindo. Mostre que você entende a dor real por trás dos números. 2 a 3 frases humanas, empáticas e que gerem identificação imediata.
+Espelhe com cuidado o que a pessoa está sentendo com base no que ela informou. Não afirme nada além do que foi dito. Mostre empatia real. 2 a 3 frases humanas que gerem identificação imediata.
 
 PARTE 2 — PERFIL FINANCEIRO
-Comece com: "Seu perfil financeiro é o de..." — NUNCA use a palavra "arquétipo". Escolha exatamente um: Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador. Explique em 2 frases por que esse perfil se encaixa nessa pessoa específica, usando os dados reais informados.
+Comece com: "Seu perfil financeiro é o de..." — NUNCA use a palavra "arquétipo". Escolha exatamente um: Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador. Explique em 2 frases por que esse perfil se encaixa, usando os dados reais informados.
 
-PARTE 3 — NÍVEL DE ATENÇÃO
-Apresente o nível de 1 a 5 com legenda positiva. Sempre reforce que tem caminho. Nunca condene.
+PARTE 3 — ANÁLISE DA SITUAÇÃO
+Calcule usando a média da faixa de renda informada. Se a faixa for R$2.000 a R$4.000, use R$3.000 como base. Calcule quanto sobra após o percentual comprometido. Mostre o impacto real no dia a dia, incluindo que gastos extras e emergências tornam a situação ainda mais apertada. Cite os tipos de dívida informados. Seja preciso e empático — nunca dramático.
 
-PARTE 4 — O QUE MAIS ESTÁ PESANDO
-Faça cálculos aproximados e cuidadosos: se a renda está na faixa informada, estime um valor médio dessa faixa e calcule quanto sobra depois do percentual comprometido. Mostre o impacto real no dia a dia. Cite os tipos de dívida reais. Seja específico e cirúrgico.
+PARTE 4 — PRÓXIMO PASSO
+Dê uma orientação concreta e realizável. Nunca diga que é simples. Nunca dê prazo. Reconheça a dificuldade real. Mostre que existe caminho mesmo que a situação esteja difícil.
 
-PARTE 5 — PRÓXIMO PASSO
-Dê uma orientação concreta e realizável. Nunca diga que é simples. Nunca dê prazo. Respeite a dificuldade real da situação. Mostre que o caso tem solução mesmo que esteja difícil.
+PARTE 5 — REVELAÇÃO
+Diga que existe um padrão por trás do que está acontecendo, mas não revele qual é. Máximo 3 linhas. Crie curiosidade genuína.
 
-PARTE 6 — REVELAÇÃO
-Diga que existe um padrão por trás do que está acontecendo, mas não revele qual é. Máximo 3 linhas. Crie curiosidade genuína e desejo de entender mais.
-
-PARTE 7 — FECHAMENTO
-Uma frase de esperança real ancorada nos dados da pessoa. Seguida de transição natural e discreta para o próximo passo, sem citar preço.
+PARTE 6 — FECHAMENTO
+Uma frase de esperança real baseada nos dados da pessoa. Seguida de transição natural para o próximo passo, sem citar preço.
 
 Assine como: Matias Valente
 
@@ -241,19 +243,22 @@ Como se sente: ${Array.isArray(S.emocional)?S.emocional.join(', '):S.emocional}
 Maior preocupação: ${Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.preocupacao}`;
 
   try{
-    const r=await fetch('https://matias-diagnostico.contato-matiasvalente.workers.dev',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        renda:S.renda,situacao:S.situacao,total:S.total,
-        percentual:S.percentual,
-        tipos:Array.isArray(S.tipos)?S.tipos.join(', '):S.tipos,
-        emocional:Array.isArray(S.emocional)?S.emocional.join(', '):S.emocional,
-        preocupacao:Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.preocupacao,
-        nome:S.nome,prompt:prompt
-      })
-    });
-    const d=await r.json();
+    const [resposta] = await Promise.all([
+      fetch('https://matias-diagnostico.contato-matiasvalente.workers.dev',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          renda:S.renda,situacao:S.situacao,total:S.total,
+          percentual:S.percentual,
+          tipos:Array.isArray(S.tipos)?S.tipos.join(', '):S.tipos,
+          emocional:Array.isArray(S.emocional)?S.emocional.join(', '):S.emocional,
+          preocupacao:Array.isArray(S.preocupacao)?S.preocupacao.join(', '):S.preocupacao,
+          nome:S.nome,prompt:prompt
+        })
+      }),
+      new Promise(resolve => setTimeout(resolve, 25000))
+    ]);
+    const d=await resposta.json();
     S.diagnostico=d.diagnostico||'Não foi possível gerar o diagnóstico.';
     exibir();
   }catch(e){
@@ -308,16 +313,10 @@ function exibir(){
 
       <p class="anonimo">🔒 Tudo anônimo, como foi até aqui.</p>
 
-      <button class="btn-compra btn-compra-1" onclick="window.open('https://pay.kiwify.com.br/7A0vh4P','_blank')">
-        Opção 1 — Quero sair do aperto
-        <div class="btn-preco">R$ 67</div>
-      </button>
-      <button class="btn-compra btn-compra-2" onclick="window.open('https://kiwify.app/sTU8H60','_blank')">
-        Opção 2 — Quero entender por que se repete
-        <div class="btn-preco">R$ 97</div>
-      </button>
+      <button class="btn-compra btn-compra-1" onclick="window.open('https://pay.kiwify.com.br/7A0vh4P','_blank')">Opção 1 — R$ 67</button>
+      <button class="btn-compra btn-compra-2" onclick="window.open('https://kiwify.app/sTU8H60','_blank')">Opção 2 — R$ 97</button>
       <button class="btn btn-green" onclick="salvarWA()">📱 Salvar análise no WhatsApp</button>
-      <button class="btn btn-muted" onclick="fechar()">Vou pensar um pouco mais</button>
+      <button class="btn-muted" onclick="fechar()">Vou pensar um pouco mais</button>
     </div>
 
     <p class="rodape">Seus dados não são armazenados.<br>Análise gerada de forma exclusiva e anônima.</p>`;
