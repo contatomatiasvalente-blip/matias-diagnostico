@@ -954,11 +954,6 @@ function exibirResultado() {
   b1.textContent = 'Quero o diagnóstico comportamental completo — R$ 97';
   b1.onclick = function(){ window.open('https://kiwify.app/sTU8H60','_blank'); };
 
-  var b2 = document.createElement('button');
-  b2.className = 'btn-compra btn-wa';
-  b2.textContent = 'Salvar análise no WhatsApp';
-  b2.onclick = salvarWA;
-
   var b3 = document.createElement('button');
   b3.className = 'btn-skip';
   b3.textContent = 'Já estou satisfeito com esta análise';
@@ -966,7 +961,6 @@ function exibirResultado() {
 
   cardA.appendChild(bPdf);
   cardA.appendChild(b1);
-  cardA.appendChild(b2);
   cardA.appendChild(b3);
   tela.appendChild(cardA);
 
