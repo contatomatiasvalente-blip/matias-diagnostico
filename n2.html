@@ -141,7 +141,7 @@ var D = {
 
 function opcaoBtn(campo, valor, label) {
   var on = D[campo] === valor ? ' on' : '';
-  return '<div class="opcao-btn opcao-campo-'+campo+' '+on+'" data-campo="'+campo+'" data-valor="'+valor+'" onclick="selecionarOpcao(this)">' + label + '</div>';
+  return '<div class="opcao-btn opcao-campo" data-campo="'+campo+'" data-valor="'+valor+'"'+on+'>' + label + '</div>';
 }
 
 
@@ -154,19 +154,26 @@ function opcaoBtn(campo, valor, label) {
 }
 
 function selecionarOpcao(el) {
-  var campo = el.dataset.campo;
-  var valor = el.dataset.valor;
+  var campo = el.getAttribute('data-campo');
+  var valor = el.getAttribute('data-valor');
+  if (!campo || !valor) return;
   D[campo] = valor;
-  // Remover .on de todos os botões do mesmo campo
-  var todos = document.querySelectorAll('.opcao-campo-' + campo);
+  var parent = el.parentNode;
+  var todos = parent.querySelectorAll('.opcao-btn');
   for (var i=0; i<todos.length; i++) todos[i].classList.remove('on');
   el.classList.add('on');
-  // Cheque especial
   if (campo === 'cheque_especial') {
     var wrap = document.getElementById('cheque-valor-wrap');
     if (wrap) wrap.style.display = (valor !== 'NaoUso') ? 'block' : 'none';
   }
 }
+
+function aplicarListeners() {
+  document.querySelectorAll('.opcao-btn.opcao-campo').forEach(function(el) {
+    el.addEventListener('click', function() { selecionarOpcao(this); });
+  });
+}
+
 
 function toggleOpcaoData(el) {
   var campo = el.dataset.campo;
@@ -281,6 +288,7 @@ function render() {
   if (blocoAtual === 0) {
     setProg(0, 'Introdução');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Análise Completa N2</div><div class="bloco-titulo">Sua análise aprofundada começa aqui</div><div class="bloco-sub" style="margin-top:12px">Você adquiriu acesso à análise financeira completa do Matias Valente.<br><br>Este questionário vai mapear sua situação com precisão — receitas reais, despesas detalhadas, dívidas, comportamento financeiro e o que está por trás do padrão que se repete.<br><br>São 7 blocos de perguntas. Leva cerca de 10 minutos. Quanto mais detalhado você for, mais precisa e útil será sua análise.<br><br><strong style="color:#9b8bff">Todas as perguntas marcadas são obrigatórias.</strong> Tudo é confidencial e anônimo.</div><button class="btn btn-primary" onclick="avancar()">Começar minha análise completa</button></div>';
+    aplicarListeners();
     return;
   }
 
@@ -299,6 +307,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>4.</span> Sua renda é estável ou varia todo mês?</div><div class="opcoes-grid col1">' + opcaoBtn('renda_estavel','Estavel','Estável — recebo praticamente o mesmo todo mês') + opcaoBtn('renda_estavel','Varia','Varia — há meses melhores e piores') + opcaoBtn('renda_estavel','Instavel','Muito instável — não consigo prever') + '</div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco1()">Continuar</button></div>';
+    aplicarListeners();
     return;
   }
 
@@ -335,6 +344,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>11.</span> Quais desses gastos você tem todo mês? <span class="hint">Marque e informe o valor aproximado de cada um</span></div>'+htmlTags+'</div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco2()">Continuar</button></div>';
+    aplicarListeners();
     return;
   }
 
@@ -392,6 +402,7 @@ function render() {
     restaurarDividas();
     restaurarRenegs();
     restaurarEmps();
+    aplicarListeners();
     return;
   }
 
@@ -406,6 +417,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>15.</span> Quando sobra dinheiro, o que costuma acontecer? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlSobra+'</div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco4()">Continuar</button></div>';
+    aplicarListeners();
     return;
   }
 
@@ -427,6 +439,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>20.</span> A situação financeira afeta seus relacionamentos ou sua saúde? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlRelac+'</div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco5()">Continuar</button></div>';
+    aplicarListeners();
     return;
   }
 
@@ -442,6 +455,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>23.</span> Como era a relação com dinheiro na sua família de origem?</div>' + '<div class="opcoes-grid col1">' + opcaoBtn('familia_dinheiro','Educacao','Havia educação financeira — aprendi a poupar') + opcaoBtn('familia_dinheiro','Apertado','Sempre foi apertado — sobrevivência') + opcaoBtn('familia_dinheiro','Gastava','Gastava-se tudo — não havia cultura de poupança') + opcaoBtn('familia_dinheiro','Tabu','Nunca falávamos de dinheiro em casa — era tabu') + '</div></div></div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco6()">Continuar</button></div>';
+    aplicarListeners();
     return;
   }
 
@@ -457,6 +471,8 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>28.</span> Por que organizar suas finanças é importante para você agora? <span class="hint">O que o dinheiro vai te permitir fazer, ser ou sentir que hoje não consegue?</span></div><textarea id="q28" placeholder="Escreva com suas próprias palavras...">'+D.por_que_agora+'</textarea></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco7()">Gerar minha análise completa</button></div>';
+    aplicarListeners();
+    aplicarListeners();
     return;
   }
 
