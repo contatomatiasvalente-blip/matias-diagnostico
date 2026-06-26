@@ -129,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 var D = {
   nome:'', renda_liquida:'', outras_rendas:'', renda_estavel:'',
+  contas_consumo:'', gastos_ocultos:'', gastos_ocultos_valores:'',
   moradia:'', transporte:'', alimentacao:'', saude_escola:'',
   dividas_detalhe:'', maior_juros:'', nome_negativado:'', tentou_negociar:'',
   decisao_compra:'', cartao_gestao:'', habito_poupar:'', sobra_dinheiro:'',
@@ -209,11 +210,16 @@ function render() {
 
   if (blocoAtual === 2) {
     setProg(28, 'Bloco 2 de 7 — Despesas mensais');
-    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 2 de 7</div><div class="bloco-titulo">Despesas mensais fixas</div><div class="bloco-sub">O que sai todo mês independente do que aconteça. Coloque valores aproximados.</div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>4.</span> Moradia — aluguel, financiamento ou condomínio</div><input type="text" id="q4" placeholder="Ex: R$ 1.200 ou Moro com familiar" value="'+D.moradia+'"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>5.</span> Transporte — carro, combustível, Uber, ônibus</div><input type="text" id="q5" placeholder="Ex: R$ 600 (carro + combustível)" value="'+D.transporte+'"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>6.</span> Alimentação — mercado, feiras, refeições fora</div><input type="text" id="q6" placeholder="Ex: R$ 800" value="'+D.alimentacao+'"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>7.</span> Saúde, escola, plano de saúde, mensalidades</div><input type="text" id="q7" placeholder="Ex: R$ 400 (plano + escola)" value="'+D.saude_escola+'"></div>' +
+    var tagsOcultos = ['Delivery e alimentação fora','Streaming e celular','Manutenção da casa (diarista, reparos)','Manutenção do carro (seguro, IPVA, revisão)','Farmácia e medicamentos contínuos','Academia ou assinaturas','Pet (ração, veterinário)'];
+    var htmlOcultos = tagsOcultos.map(function(t){ return '<div class="tag-btn'+(D.gastos_ocultos && D.gastos_ocultos.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTag(this,\'gastos_ocultos\')">'+t+'</div>'; }).join('');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 2 de 7</div><div class="bloco-titulo">Despesas mensais</div><div class="bloco-sub">O que sai todo mês. Coloque valores aproximados — estimativas são bem-vindas.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>4.</span> Moradia — aluguel, financiamento, condomínio, IPTU</div><input type="text" id="q4" placeholder="Ex: R$ 1.200 ou Moro com familiar sem custo" value="'+D.moradia+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>5.</span> Contas de consumo — água, luz, gás, internet, telefone</div><input type="text" id="q5b" placeholder="Ex: R$ 450 (total das contas)" value="'+D.contas_consumo+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>6.</span> Transporte — financiamento do carro, combustível, Uber, ônibus</div><input type="text" id="q5" placeholder="Ex: R$ 600" value="'+D.transporte+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>7.</span> Alimentação — mercado, feira, refeições no trabalho</div><input type="text" id="q6" placeholder="Ex: R$ 800" value="'+D.alimentacao+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>8.</span> Saúde — plano de saúde, odontológico, consultas particulares</div><input type="text" id="q7" placeholder="Ex: R$ 400" value="'+D.saude_escola+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>9.</span> Educação — escola, faculdade, cursos, material escolar, van escolar</div><input type="text" id="q8b" placeholder="Ex: R$ 600" value="'+D.educacao+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>10.</span> Quais desses gastos você tem todo mês? <span style="font-size:11px;color:#5050a0">(marque todos que se aplicam)</span></div><div class="tag-wrap">'+htmlOcultos+'</div><div style="margin-top:10px"><input type="text" id="q_ocultos_val" placeholder="Valores aproximados de cada um que marcou (Ex: delivery R$200, celular R$80)" value="'+D.gastos_ocultos_valores+'"></div></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco2()">Continuar</button></div>';
     return;
   }
@@ -249,11 +255,11 @@ function render() {
       stressBtns += '<button class="stress-btn'+(D.nivel_stress===s?' on':'')+'" data-val="'+s+'" onclick="setStress('+s+')">'+s+'</button>';
     }
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 5 de 7</div><div class="bloco-titulo">O lado emocional do dinheiro</div><div class="bloco-sub">A relação com dinheiro vai muito além dos números. Responda com honestidade.</div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>16.</span> Como você se sente quando pensa nas suas finanças?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.sentimento_financas==='Ansioso e preocupado'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Ansioso e preocupado\',false)">Ansioso e preocupado</div><div class="opcao-btn'+(D.sentimento_financas==='Com vergonha ou culpa'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Com vergonha ou culpa\',false)">Com vergonha ou culpa</div><div class="opcao-btn'+(D.sentimento_financas==='Paralisado — não sei o que fazer'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Paralisado — não sei o que fazer\',false)">Paralisado — não sei o que fazer</div><div class="opcao-btn'+(D.sentimento_financas==='Resignado — aceito que é assim'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Resignado — aceito que é assim\',false)">Resignado — aceito que é assim</div><div class="opcao-btn'+(D.sentimento_financas==='Determinado a mudar'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Determinado a mudar\',false)">Determinado a mudar</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>16.</span> Como você se sente quando pensa nas suas finanças? <span style="font-size:11px;color:#5050a0">(pode marcar mais de uma)</span></div><div class="tag-wrap"><div class="opcao-btn'+(D.sentimento_financas==='Ansioso e preocupado'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Ansioso e preocupado\',false)">Ansioso e preocupado</div><div class="opcao-btn'+(D.sentimento_financas==='Com vergonha ou culpa'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Com vergonha ou culpa\',false)">Com vergonha ou culpa</div><div class="opcao-btn'+(D.sentimento_financas==='Paralisado — não sei o que fazer'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Paralisado — não sei o que fazer\',false)">Paralisado — não sei o que fazer</div><div class="opcao-btn'+(D.sentimento_financas==='Resignado — aceito que é assim'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Resignado — aceito que é assim\',false)">Resignado — aceito que é assim</div><div class="opcao-btn'+(D.sentimento_financas==='Determinado a mudar'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Determinado a mudar\',false)">Determinado a mudar</div></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>17.</span> Em uma escala de 1 a 10, qual o nível de estresse financeiro que você sente hoje?<br><span style="font-size:11px;color:#5050a0">1 = tranquilo &nbsp;&nbsp; 10 = insuportável</span></div><div class="stress-escala" id="stress-wrap">'+stressBtns+'</div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>18.</span> Houve algum evento de vida que mudou sua relação com dinheiro?<br><span style="font-size:11px;color:#5050a0">Ex: demissão, separação, doença, morte na família, garantiu dívida de alguém</span></div><textarea id="q18" placeholder="Descreva brevemente ou escreva Não">'+D.evento_vida+'</textarea></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>19.</span> Você tende a evitar olhar suas contas ou pensar no que deve?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.evita_contas==='Sim, evito bastante — é muito pesado'?' on':'')+'" onclick="toggleOpcao(this,\'evita_contas\',\'Sim, evito bastante — é muito pesado\',false)">Sim, evito bastante — é muito pesado</div><div class="opcao-btn'+(D.evita_contas==='Às vezes evito'?' on':'')+'" onclick="toggleOpcao(this,\'evita_contas\',\'Às vezes evito\',false)">Às vezes evito</div><div class="opcao-btn'+(D.evita_contas==='Não, encaro a situação de frente'?' on':'')+'" onclick="toggleOpcao(this,\'evita_contas\',\'Não, encaro a situação de frente\',false)">Não, encaro a situação de frente</div></div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>20.</span> A situação financeira afeta seus relacionamentos ou sua saúde?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.dinheiro_relacionamentos==='Sim, gera conflitos em casa com frequência'?' on':'')+'" onclick="toggleOpcao(this,\'dinheiro_relacionamentos\',\'Sim, gera conflitos em casa com frequência\',false)">Sim, gera conflitos em casa com frequência</div><div class="opcao-btn'+(D.dinheiro_relacionamentos==='Afeta meu sono e minha saúde'?' on':'')+'" onclick="toggleOpcao(this,\'dinheiro_relacionamentos\',\'Afeta meu sono e minha saúde\',false)">Afeta meu sono e minha saúde</div><div class="opcao-btn'+(D.dinheiro_relacionamentos==='Evito falar de dinheiro com quem amo'?' on':'')+'" onclick="toggleOpcao(this,\'dinheiro_relacionamentos\',\'Evito falar de dinheiro com quem amo\',false)">Evito falar de dinheiro com quem amo</div><div class="opcao-btn'+(D.dinheiro_relacionamentos==='Não afeta muito meus relacionamentos'?' on':'')+'" onclick="toggleOpcao(this,\'dinheiro_relacionamentos\',\'Não afeta muito meus relacionamentos\',false)">Não afeta muito meus relacionamentos</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>20.</span> A situação financeira afeta seus relacionamentos ou sua saúde? <span style="font-size:11px;color:#5050a0">(pode marcar mais de uma)</span></div><div class="tag-wrap"><div class="tag-btn" data-val="Sim, gera conflitos em casa com frequência" onclick="toggleTag(this,\'dinheiro_relacionamentos\')">Sim, gera conflitos em casa</div><div class="tag-btn" data-val="Afeta meu sono e minha saúde" onclick="toggleTag(this,\'dinheiro_relacionamentos\')">Afeta meu sono e saúde</div><div class="tag-btn" data-val="Evito falar de dinheiro com quem amo" onclick="toggleTag(this,\'dinheiro_relacionamentos\')">Evito falar de dinheiro</div><div class="tag-btn" data-val="Não afeta muito meus relacionamentos" onclick="toggleTag(this,\'dinheiro_relacionamentos\')">Não afeta muito</div></div></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco5()">Continuar</button></div>';
     return;
   }
@@ -261,8 +267,8 @@ function render() {
   if (blocoAtual === 6) {
     setProg(84, 'Bloco 6 de 7 — Contexto familiar');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 6 de 7</div><div class="bloco-titulo">Contexto familiar</div><div class="bloco-sub">O ambiente ao redor influencia muito as finanças pessoais.</div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>21.</span> Você tem dependentes financeiros?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.dependentes==='Sim, tenho filhos dependentes'?' on':'')+'" onclick="toggleOpcao(this,\'dependentes\',\'Sim, tenho filhos dependentes\',false)">Sim, tenho filhos dependentes</div><div class="opcao-btn'+(D.dependentes==='Sim, ajudo pais ou familiares'?' on':'')+'" onclick="toggleOpcao(this,\'dependentes\',\'Sim, ajudo pais ou familiares\',false)">Sim, ajudo pais ou familiares</div><div class="opcao-btn'+(D.dependentes==='Sim, filhos e familiares'?' on':'')+'" onclick="toggleOpcao(this,\'dependentes\',\'Sim, filhos e familiares\',false)">Sim, filhos e familiares</div><div class="opcao-btn'+(D.dependentes==='Não tenho dependentes financeiros'?' on':'')+'" onclick="toggleOpcao(this,\'dependentes\',\'Não tenho dependentes financeiros\',false)">Não tenho dependentes financeiros</div></div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>22.</span> Alguém compartilha as despesas da casa com você?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.compartilha_despesas==='Sim, cônjuge ou parceiro(a)'?' on':'')+'" onclick="toggleOpcao(this,\'compartilha_despesas\',\'Sim, cônjuge ou parceiro(a)\',false)">Sim, cônjuge ou parceiro(a)</div><div class="opcao-btn'+(D.compartilha_despesas==='Sim, outros membros da família'?' on':'')+'" onclick="toggleOpcao(this,\'compartilha_despesas\',\'Sim, outros membros da família\',false)">Sim, outros membros da família</div><div class="opcao-btn'+(D.compartilha_despesas==='Não, arco com tudo sozinho(a)'?' on':'')+'" onclick="toggleOpcao(this,\'compartilha_despesas\',\'Não, arco com tudo sozinho(a)\',false)">Não, arco com tudo sozinho(a)</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>21.</span> Você tem dependentes financeiros? <span style="font-size:11px;color:#5050a0">(pode marcar mais de uma)</span></div><div class="tag-wrap"><div class="tag-btn" data-val="Tenho filhos dependentes" onclick="toggleTag(this,\'dependentes\')">Tenho filhos</div><div class="tag-btn" data-val="Ajudo pais ou familiares" onclick="toggleTag(this,\'dependentes\')">Ajudo pais ou familiares</div><div class="tag-btn" data-val="Cônjuge ou parceiro depende de mim" onclick="toggleTag(this,\'dependentes\')">Cônjuge depende de mim</div><div class="tag-btn" data-val="Não tenho dependentes financeiros" onclick="toggleTag(this,\'dependentes\')">Não tenho dependentes</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>22.</span> Alguém compartilha as despesas da casa com você? <span style="font-size:11px;color:#5050a0">(pode marcar mais de uma)</span></div><div class="tag-wrap"><div class="tag-btn" data-val="Cônjuge ou parceiro(a) divide as despesas" onclick="toggleTag(this,\'compartilha_despesas\')">Cônjuge ou parceiro(a)</div><div class="tag-btn" data-val="Outros membros da família contribuem" onclick="toggleTag(this,\'compartilha_despesas\')">Outros familiares</div><div class="tag-btn" data-val="Filho(a) adulto contribui" onclick="toggleTag(this,\'compartilha_despesas\')">Filho(a) adulto</div><div class="tag-btn" data-val="Não, arco com tudo sozinho(a)" onclick="toggleTag(this,\'compartilha_despesas\')">Arco sozinho(a)</div></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>23.</span> Como era a relação com dinheiro na sua família de origem?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.familia_dinheiro==='Havia educação financeira — aprendi a poupar'?' on':'')+'" onclick="toggleOpcao(this,\'familia_dinheiro\',\'Havia educação financeira — aprendi a poupar\',false)">Havia educação financeira — aprendi a poupar</div><div class="opcao-btn'+(D.familia_dinheiro==='Sempre foi apertado — sobrevivência'?' on':'')+'" onclick="toggleOpcao(this,\'familia_dinheiro\',\'Sempre foi apertado — sobrevivência\',false)">Sempre foi apertado — sobrevivência</div><div class="opcao-btn'+(D.familia_dinheiro==='Gastava-se tudo — não havia cultura de poupança'?' on':'')+'" onclick="toggleOpcao(this,\'familia_dinheiro\',\'Gastava-se tudo — não havia cultura de poupança\',false)">Gastava-se tudo — não havia cultura de poupança</div><div class="opcao-btn'+(D.familia_dinheiro==='Nunca falávamos de dinheiro em casa'?' on':'')+'" onclick="toggleOpcao(this,\'familia_dinheiro\',\'Nunca falávamos de dinheiro em casa\',false)">Nunca falávamos de dinheiro em casa</div></div></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco6()">Continuar</button></div>';
     return;
@@ -272,7 +278,7 @@ function render() {
     setProg(95, 'Bloco 7 de 7 — Objetivos');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 7 de 7</div><div class="bloco-titulo">O que você quer mudar</div><div class="bloco-sub">A última parte — e a mais importante para direcionar sua análise.</div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>24.</span> O que você quer que mude na sua vida financeira nos próximos 12 meses?<br><span style="font-size:11px;color:#5050a0">Seja específico — quanto mais detalhado, melhor será sua análise</span></div><textarea id="q24" placeholder="Ex: Quitar o cartão, limpar o nome, ter R$500 guardados, parar de me sentir ansioso com dinheiro..." style="min-height:100px">'+D.objetivo_12meses+'</textarea></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>25.</span> O que te impede de agir hoje?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.impedimento==='Não sei por onde começar'?' on':'')+'" onclick="toggleOpcao(this,\'impedimento\',\'Não sei por onde começar\',false)">Não sei por onde começar</div><div class="opcao-btn'+(D.impedimento==='Falta de dinheiro — não sobra nada para mudar'?' on':'')+'" onclick="toggleOpcao(this,\'impedimento\',\'Falta de dinheiro — não sobra nada para mudar\',false)">Falta de dinheiro — não sobra nada para mudar</div><div class="opcao-btn'+(D.impedimento==='Medo de encarar a situação real'?' on':'')+'" onclick="toggleOpcao(this,\'impedimento\',\'Medo de encarar a situação real\',false)">Medo de encarar a situação real</div><div class="opcao-btn'+(D.impedimento==='Já tentei antes e não funcionou'?' on':'')+'" onclick="toggleOpcao(this,\'impedimento\',\'Já tentei antes e não funcionou\',false)">Já tentei antes e não funcionou</div><div class="opcao-btn'+(D.impedimento==='Falta de apoio — faço tudo sozinho(a)'?' on':'')+'" onclick="toggleOpcao(this,\'impedimento\',\'Falta de apoio — faço tudo sozinho(a)\',false)">Falta de apoio — faço tudo sozinho(a)</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>25.</span> O que te impede de agir hoje? <span style="font-size:11px;color:#5050a0">(pode marcar mais de uma)</span></div><div class="tag-wrap"><div class="tag-btn" data-val="Não sei por onde começar" onclick="toggleTag(this,\'impedimento\')">Não sei por onde começar</div><div class="tag-btn" data-val="Falta de dinheiro — não sobra nada" onclick="toggleTag(this,\'impedimento\')">Não sobra nada para mudar</div><div class="tag-btn" data-val="Medo de encarar a situação real" onclick="toggleTag(this,\'impedimento\')">Medo de encarar a situação</div><div class="tag-btn" data-val="Já tentei antes e não funcionou" onclick="toggleTag(this,\'impedimento\')">Já tentei e não funcionou</div><div class="tag-btn" data-val="Falta de apoio — faço tudo sozinho(a)" onclick="toggleTag(this,\'impedimento\')">Falta de apoio</div><div class="tag-btn" data-val="Parceiro(a) não colabora" onclick="toggleTag(this,\'impedimento\')">Parceiro(a) não colabora</div></div></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco7()">Gerar minha análise completa</button></div>';
     return;
   }
@@ -299,9 +305,12 @@ function salvarBloco1() {
 }
 function salvarBloco2() {
   D.moradia = getVal('q4');
+  D.contas_consumo = getVal('q5b');
   D.transporte = getVal('q5');
   D.alimentacao = getVal('q6');
   D.saude_escola = getVal('q7');
+  D.educacao = getVal('q8b');
+  D.gastos_ocultos_valores = getVal('q_ocultos_val');
   avancar();
 }
 function salvarBloco3() {
@@ -323,89 +332,71 @@ function salvarBloco7() {
 }
 
 async function gerarAnalise() {
-  var prompt = 'Você é o assistente do Matias Valente, ex-gerente de banco com mais de 25 anos de experiência. Esta é uma análise financeira COMPLETA E APROFUNDADA — o cliente pagou por ela. Gere um diagnóstico detalhado, cirúrgico e empático em português correto com todos os acentos e cedilhas.\n\n' +
+  var prompt = 'Você é o assistente do Matias Valente, ex-gerente de banco com mais de 25 anos de experiência. Esta é uma análise financeira COMPLETA E APROFUNDADA — o cliente pagou por ela. Gere um diagnóstico detalhado, cirúrgico e empático em português correto com todos os acentos e cedilhas.' +
 
-  'REGRAS ABSOLUTAS:\n' +
-  '- Escreva em português correto com acentuação completa\n' +
-  '- Use parágrafos simples separados por linha em branco\n' +
-  '- Tom empático, profissional e encorajador — nunca agressivo\n' +
-  '- NUNCA use a palavra "simples"\n' +
-  '- NUNCA faça perguntas diretas\n' +
-  '- NUNCA mencione prazos em dias ou meses\n' +
-  '- Faça cálculos reais com os números informados\n' +
-  '- Use valores em números: R$3.000, não "três mil"\n' +
-  '- Esta análise é MUITO MAIS COMPLETA que o diagnóstico inicial — deve ser profunda e detalhada\n\n' +
+  ' REGRAS ABSOLUTAS:' +
+  ' Escreva SEMPRE em português correto com acentuação completa.' +
+  ' Use parágrafos simples separados por linha em branco — NUNCA use títulos, numeração ou labels entre os parágrafos.' +
+  ' Tom empático, profissional e encorajador — nunca agressivo ou dramático.' +
+  ' NUNCA use a palavra simples.' +
+  ' NUNCA faça perguntas diretas ao leitor.' +
+  ' NUNCA mencione prazos em dias ou meses.' +
+  ' Faça cálculos REAIS com os números exatos informados — some todas as despesas e subtraia da renda.' +
+  ' Use valores em números: R$3.000, não três mil.' +
+  ' NUNCA repita o mesmo valor como intervalo — escreva R$6.000, não R$6.000 a R$6.000.' +
+  ' NUNCA invente dados que não foram informados.' +
+  ' ASSINATURA: apenas Matias Valente sem subtítulos.' +
 
-  'ESTRUTURA OBRIGATÓRIA — escreva em parágrafos corridos, sem títulos nem numeração:\n\n' +
+  ' ESTRUTURA OBRIGATÓRIA — EXATAMENTE 9 PARÁGRAFOS, NENHUM PODE SER OMITIDO:' +
+  ' PARÁGRAFO 1 — RECONHECIMENTO EMOCIONAL: 3-4 frases empáticas baseadas no sentimento informado, nível de estresse e impacto nos relacionamentos. Alta empatia.' +
+  ' PARÁGRAFO 2 — PERFIL COMPORTAMENTAL: Identifique o perfil (Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador) e explique em profundidade conectando ao comportamento informado.' +
+  ' PARÁGRAFO 3 — DIAGNÓSTICO MATEMÁTICO: Some TODAS as despesas informadas (moradia + contas consumo + transporte + alimentação + saúde + educação + gastos ocultos + parcelas das dívidas). Subtraia da renda líquida. Mostre o resultado real. Destaque especialmente os gastos ocultos como delivery, streaming e manutenção pois são onde o dinheiro some sem perceber. Se houver déficit, aponte claramente. Se sobrar, mostre quanto e o que fazer com esse valor. Seja preciso e didático.' +
+  ' PARÁGRAFO 4 — O PADRÃO POR TRÁS DOS NÚMEROS: Com base no contexto familiar, eventos de vida e comportamento emocional, revele o padrão psicológico que perpetua a situação. Este é o diferencial da análise.' +
+  ' PARÁGRAFO 5 — ESTRATÉGIA DE SAÍDA PASSO 1: A ação mais urgente e de maior impacto. Concreta e realizável.' +
+  ' PARÁGRAFO 6 — ESTRATÉGIA DE SAÍDA PASSO 2: Segunda ação prioritária complementar à primeira.' +
+  ' PARÁGRAFO 7 — ESTRATÉGIA DE SAÍDA PASSO 3: Terceira ação focada em construir novo padrão financeiro sustentável.' +
+  ' PARÁGRAFO 8 — MUDANÇAS ESPECÍFICAS: 3 mudanças de comportamento específicas para essa pessoa conectadas ao objetivo que ela declarou.' +
+  ' PARÁGRAFO 9 — MENSAGEM FINAL: Mensagem direta, calorosa e real. Conecte ao objetivo declarado, ao esforço de responder tudo e ao caminho possível. Esperança genuína ancorada nos dados reais.' +
 
-  'PARÁGRAFO 1 — RECONHECIMENTO EMOCIONAL PROFUNDO: Espelhe com precisão o que a pessoa está vivendo emocionalmente com base em tudo que ela revelou — o nível de estresse, o sentimento, o impacto nos relacionamentos. 3-4 frases de alta empatia.\n\n' +
+  ' DADOS DA PESSOA:' +
+  ' Renda líquida mensal: ' + D.renda_liquida +
+  ' Outras rendas: ' + D.outras_rendas + (D.outras_rendas_desc ? ' — ' + D.outras_rendas_desc : '') +
+  ' Estabilidade da renda: ' + D.renda_estavel +
+  ' Moradia: ' + D.moradia +
+  ' Contas de consumo (água, luz, internet): ' + D.contas_consumo +
+  ' Educação (escola, cursos, van): ' + D.educacao +
+  ' Gastos ocultos identificados: ' + D.gastos_ocultos +
+  ' Valores dos gastos ocultos: ' + D.gastos_ocultos_valores +
+  ' Transporte: ' + D.transporte +
+  ' Alimentação: ' + D.alimentacao +
+  ' Saúde/escola: ' + D.saude_escola +
+  ' Dívidas detalhadas: ' + D.dividas_detalhe +
+  ' Dívida que mais pesa: ' + D.maior_juros +
+  ' Nome negativado: ' + D.nome_negativado +
+  ' Tentou renegociar: ' + D.tentou_negociar +
+  ' Decisão de compra: ' + D.decisao_compra +
+  ' Gestão do cartão: ' + D.cartao_gestao +
+  ' Hábito de poupar: ' + D.habito_poupar +
+  ' Quando sobra dinheiro: ' + D.sobra_dinheiro +
+  ' Sentimento com finanças: ' + D.sentimento_financas +
+  ' Nível de estresse (1-10): ' + D.nivel_stress +
+  ' Evento de vida marcante: ' + D.evento_vida +
+  ' Evita olhar as contas: ' + D.evita_contas +
+  ' Impacto nos relacionamentos/saúde: ' + D.dinheiro_relacionamentos +
+  ' Dependentes: ' + D.dependentes +
+  ' Compartilha despesas: ' + D.compartilha_despesas +
+  ' Relação familiar com dinheiro: ' + D.familia_dinheiro +
+  ' Objetivo em 12 meses: ' + D.objetivo_12meses +
+  ' O que impede de agir: ' + D.impedimento;
 
-  'PARÁGRAFO 2 — PERFIL FINANCEIRO COMPORTAMENTAL: Identifique o perfil (Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador) e explique em profundidade — inclua o padrão comportamental observado nas respostas sobre decisão de compra, cartão, poupar e o que faz quando sobra dinheiro.\n\n' +
-
-  'PARÁGRAFO 3 — DIAGNÓSTICO MATEMÁTICO: Faça os cálculos com os números reais informados. Renda líquida menos todas as despesas fixas menos parcelas das dívidas. Mostre o que sobra (ou o déficit). Se houver dívidas com juros altos, estime o custo mensal. Seja preciso e didático.\n\n' +
-
-  'PARÁGRAFO 4 — O PADRÃO POR TRÁS DOS NÚMEROS: Com base no contexto familiar, eventos de vida e comportamento emocional, revele o padrão psicológico e comportamental que está perpetuando a situação. Este é o diferencial da análise completa — aponte o que vem antes dos números.\n\n' +
-
-  'PARÁGRAFO 5 — ESTRATÉGIA DE SAÍDA — PASSO 1: A ação mais urgente e de maior impacto para a situação específica dessa pessoa. Concreta, realizável, baseada nos dados reais.\n\n' +
-
-  'PARÁGRAFO 6 — ESTRATÉGIA DE SAÍDA — PASSO 2: A segunda ação prioritária, complementar à primeira.\n\n' +
-
-  'PARÁGRAFO 7 — ESTRATÉGIA DE SAÍDA — PASSO 3: A terceira ação, focada em construir um novo padrão financeiro sustentável.\n\n' +
-
-  'PARÁGRAFO 8 — MUDANÇAS ESPECÍFICAS PARA O SEU PERFIL: Com base em tudo analisado, aponte 3 mudanças de comportamento específicas para essa pessoa — não genéricas. Conecte ao que ela disse querer em 12 meses.\n\n' +
-
-  'PARÁGRAFO 9 — MENSAGEM FINAL PERSONALIZADA: Uma mensagem direta, calorosa e real. Conecte ao objetivo que a pessoa declarou, ao esforço que ela demonstrou ao responder tudo isso, e ao caminho que ela pode construir. Termine com esperança genuína ancorada nos dados reais.\n\n' +
-
-  'ASSINATURA: apenas "Matias Valente" — sem subtítulos.\n\n' +
-
-  'DADOS COMPLETOS DA PESSOA:\n' +
-  'Renda líquida mensal: ' + D.renda_liquida + '\n' +
-  'Outras rendas: ' + D.outras_rendas + (D.outras_rendas_desc ? ' — ' + D.outras_rendas_desc : '') + '\n' +
-  'Estabilidade da renda: ' + D.renda_estavel + '\n' +
-  'Moradia: ' + D.moradia + '\n' +
-  'Transporte: ' + D.transporte + '\n' +
-  'Alimentação: ' + D.alimentacao + '\n' +
-  'Saúde/escola: ' + D.saude_escola + '\n' +
-  'Dívidas detalhadas: ' + D.dividas_detalhe + '\n' +
-  'Dívida que mais pesa: ' + D.maior_juros + '\n' +
-  'Nome negativado: ' + D.nome_negativado + '\n' +
-  'Tentou renegociar: ' + D.tentou_negociar + '\n' +
-  'Decisão de compra: ' + D.decisao_compra + '\n' +
-  'Gestão do cartão: ' + D.cartao_gestao + '\n' +
-  'Hábito de poupar: ' + D.habito_poupar + '\n' +
-  'Quando sobra dinheiro: ' + D.sobra_dinheiro + '\n' +
-  'Sentimento com finanças: ' + D.sentimento_financas + '\n' +
-  'Nível de estresse (1-10): ' + D.nivel_stress + '\n' +
-  'Evento de vida marcante: ' + D.evento_vida + '\n' +
-  'Evita olhar as contas: ' + D.evita_contas + '\n' +
-  'Impacto nos relacionamentos: ' + D.dinheiro_relacionamentos + '\n' +
-  'Dependentes: ' + D.dependentes + '\n' +
-  'Compartilha despesas: ' + D.compartilha_despesas + '\n' +
-  'Relação familiar com dinheiro: ' + D.familia_dinheiro + '\n' +
-  'Objetivo em 12 meses: ' + D.objetivo_12meses + '\n' +
-  'O que impede de agir: ' + D.impedimento;
-
-  try {
-    var resultado = await Promise.all([
-      fetch('https://matias-diagnostico.contato-matiasvalente.workers.dev', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          renda: D.renda_liquida,
-          situacao: D.renda_estavel,
-          total: D.dividas_detalhe,
-          percentual: '',
-          tipos: D.maior_juros,
-          emocional: D.sentimento_financas,
-          preocupacao: D.impedimento,
-          nome: D.nome,
-          prompt: prompt
-        })
-      }),
-      new Promise(function(r){ setTimeout(r, 40000); })
-    ]);
-    var d = await resultado[0].json();
-    D.diagnostico = d.diagnostico || 'Não foi possível gerar a análise.';
+  var payload = JSON.stringify({renda:D.renda_liquida,situacao:D.renda_estavel,total:D.dividas_detalhe,percentual:'',tipos:D.maior_juros,emocional:D.sentimento_financas,preocupacao:D.impedimento,nome:D.nome,prompt:prompt});
+  var esperarTempo = new Promise(function(resolve){setTimeout(resolve,40000);});
+  var chamarAPI = fetch('https://matias-diagnostico.contato-matiasvalente.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:payload});
+  try{
+    var resultados = await Promise.all([chamarAPI,esperarTempo]);
+    var resposta = resultados[0];
+    var dados_resp = await resposta.json();
+    D.diagnostico = dados_resp.diagnostico || 'Não foi possível gerar a análise.';
     exibirResultado();
   } catch(e) {
     document.getElementById('tela').innerHTML = '<div class="card"><p style="color:#f87171;margin-bottom:16px">Erro ao gerar análise. Tente novamente.</p><button class="btn btn-primary" onclick="gerarAnalise()">Tentar novamente</button></div>';
