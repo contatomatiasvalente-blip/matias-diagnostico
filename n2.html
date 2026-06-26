@@ -1,1 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análise Financeira Completa — Matias Valente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080814;color:#e0e0f0;font-family:'Inter',sans-serif;min-height:100vh}
+#app{max-width:600px;margin:0 auto;padding:28px 20px 80px}
+.logo{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#6b5fd4;text-align:center;margin-bottom:6px;font-weight:500}
+.logo-linha{width:40px;height:1px;background:linear-gradient(90deg,transparent,#6b5fd4,transparent);margin:0 auto 20px}
+.progress-wrap{height:2px;background:#12122a;border-radius:2px;margin-bottom:8px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6b5fd4,#9b8bff);border-radius:2px;transition:width .5s ease}
+.progress-label{font-size:11px;color:#4a4a7a;text-align:right;margin-bottom:24px}
+.card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:28px 24px;margin-bottom:16px;box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.bloco-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#7c6fd4;margin-bottom:8px;font-weight:600}
+.bloco-titulo{font-size:18px;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.4}
+.bloco-sub{font-size:13px;color:#6060a0;margin-bottom:20px;line-height:1.6}
+.pergunta{margin-bottom:22px}
+.pergunta-label{font-size:13px;font-weight:500;color:#c0c0e0;margin-bottom:10px;line-height:1.5}
+.pergunta-label span{color:#7c6fd4}
+input[type=text],input[type=number],textarea,select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #1e1e3a;background:#080814;color:#e0e0f0;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;-webkit-appearance:none}
+input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{border-color:#7c6fd4;box-shadow:0 0 0 3px rgba(124,111,212,.1)}
+textarea{resize:vertical;min-height:80px;line-height:1.6}
+select option{background:#0e0e22;color:#e0e0f0}
+.opcoes-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opcoes-grid.col1{grid-template-columns:1fr}
+.opcao-btn{padding:11px 14px;border-radius:10px;border:1px solid #1e1e3a;background:#080814;color:#a0a0c0;font-size:13px;cursor:pointer;transition:all .2s;text-align:left;font-family:'Inter',sans-serif;line-height:1.4}
+.opcao-btn:hover{border-color:#7c6fd4;color:#fff}
+.opcao-btn.on{border-color:#7c6fd4;background:#7c6fd415;color:#c0b0ff}
+.multipla-hint{font-size:11px;color:#4a4a7a;margin-bottom:8px}
+.divider{border:none;border-top:1px solid #1a1a32;margin:20px 0}
+.btn{display:block;width:100%;padding:16px 24px;border-radius:12px;font-size:14px;font-weight:600;text-align:center;cursor:pointer;border:none;margin-top:16px;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-primary{background:linear-gradient(135deg,#7c6fd4,#9b8bff);color:#fff;box-shadow:0 4px 20px rgba(124,111,212,.4)}
+.btn-primary:hover{box-shadow:0 6px 28px rgba(124,111,212,.6);transform:translateY(-1px)}
+.btn:active{transform:scale(.98)}
+.loading{text-align:center;padding:48px 20px}
+.dots{display:inline-flex;gap:8px;margin-bottom:20px}
+.dot{width:9px;height:9px;border-radius:50%;background:#7c6fd4;animation:pulse 1.4s infinite}
+.dot:nth-child(2){animation-delay:.25s}
+.dot:nth-child(3){animation-delay:.5s}
+@keyframes pulse{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+.msg-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-left:3px solid #7c6fd4;border-radius:20px;padding:20px 24px;margin-bottom:16px;opacity:0;transition:opacity 1.2s ease}
+.msg-card p{font-size:14px;color:#b0b0d0;line-height:1.8}
+.resultado-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:32px 28px;margin-bottom:16px;box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.resultado-titulo{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7c6fd4;margin-bottom:10px}
+.resultado-nome{font-size:24px;font-weight:600;color:#fff;margin-bottom:24px}
+.diagnostico-texto{font-size:15px;line-height:1.95;color:#c8c8e8}
+.diagnostico-texto p{margin-bottom:18px}
+.diagnostico-texto p:last-child{margin-bottom:0}
+.oferta-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:28px 24px;margin-bottom:16px}
+.oferta-titulo{font-size:18px;font-weight:700;color:#fff;margin-bottom:10px}
+.oferta-desc{font-size:14px;color:#7070a0;line-height:1.8;margin-bottom:20px}
+.item-lista{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#9090b8;margin-bottom:9px;line-height:1.5}
+.item-lista::before{content:'✓';color:#34d399;font-weight:700;flex-shrink:0;margin-top:1px}
+.btn-compra{display:block;width:100%;padding:18px;border-radius:14px;font-size:16px;font-weight:700;text-align:center;cursor:pointer;border:none;margin-bottom:12px;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-compra:active{transform:scale(.98)}
+.btn-n3{background:linear-gradient(135deg,#7c6fd4,#b09bff);color:#fff;box-shadow:0 4px 24px rgba(124,111,212,.45)}
+.btn-n3:hover{box-shadow:0 8px 36px rgba(124,111,212,.6);transform:translateY(-2px)}
+.btn-wa{background:transparent;color:#34d399;border:1px solid #34d39940;font-size:13px}
+.btn-wa:hover{background:#34d39910}
+.btn-skip{background:transparent;color:#3a3a5a;border:none;font-size:12px;padding:10px;margin-top:4px;display:block;width:100%;text-align:center;cursor:pointer;font-family:'Inter',sans-serif}
+.anonimo{font-size:11px;color:#3a3a5a;text-align:center;margin:8px 0 16px}
+.rodape{font-size:11px;color:#2a2a4a;text-align:center;margin-top:24px;line-height:1.7}
+.range-wrap{display:flex;align-items:center;gap:12px}
+input[type=range]{-webkit-appearance:none;flex:1;height:4px;background:#1e1e3a;border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#7c6fd4,#9b8bff);cursor:pointer;box-shadow:0 0 8px rgba(124,111,212,.5)}
+.range-val{font-size:14px;font-weight:600;color:#9b8bff;min-width:60px;text-align:right}
+.stress-escala{display:flex;gap:6px;flex-wrap:wrap}
+.stress-btn{width:40px;height:40px;border-radius:8px;border:1px solid #1e1e3a;background:#080814;color:#a0a0c0;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.stress-btn:hover{border-color:#7c6fd4}
+.stress-btn.on{background:linear-gradient(135deg,#7c6fd4,#9b8bff);border-color:transparent;color:#fff}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tag-btn{padding:8px 14px;border-radius:20px;border:1px solid #1e1e3a;background:#080814;color:#a0a0c0;font-size:12px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.tag-btn:hover{border-color:#7c6fd4;color:#fff}
+.tag-btn.on{border-color:#7c6fd4;background:#7c6fd415;color:#c0b0ff}
+</style>
+</head>
+<body>
+<!-- TELA DE SENHA -->
+<div id="tela-senha" style="max-width:400px;margin:80px auto;padding:20px">
+  <div style="background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:36px 28px;box-shadow:0 4px 24px rgba(0,0,0,.4);text-align:center">
+    <div style="font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#6b5fd4;margin-bottom:6px">Matias Valente</div>
+    <div style="width:40px;height:1px;background:linear-gradient(90deg,transparent,#6b5fd4,transparent);margin:0 auto 24px"></div>
+    <div style="font-size:20px;font-weight:600;color:#fff;margin-bottom:8px">Análise Financeira Completa</div>
+    <div style="font-size:13px;color:#6060a0;margin-bottom:28px;line-height:1.6">Digite a senha que você recebeu por e-mail após a compra para acessar seu questionário personalizado.</div>
+    <input type="password" id="campo-senha" placeholder="Digite sua senha de acesso" style="width:100%;padding:14px 16px;border-radius:10px;border:1px solid #1e1e3a;background:#080814;color:#e0e0f0;font-size:14px;font-family:Inter,sans-serif;outline:none;margin-bottom:12px;text-align:center;letter-spacing:2px">
+    <div id="erro-senha" style="display:none;font-size:12px;color:#f87171;margin-bottom:12px">Senha incorreta. Verifique o e-mail que recebeu após a compra.</div>
+    <button onclick="verificarSenha()" style="display:block;width:100%;padding:16px;border-radius:12px;border:none;background:linear-gradient(135deg,#7c6fd4,#9b8bff);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Acessar minha análise</button>
+    <div style="margin-top:20px;font-size:12px;color:#3a3a5a">Não recebeu o e-mail? Verifique sua caixa de spam ou entre em contato.</div>
+  </div>
+</div>
 
+<div id="app" style="display:none">
+  <div class="logo">Matias Valente</div>
+  <div class="logo-linha"></div>
+  <div class="progress-wrap"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <div class="progress-label" id="prog-label">Bloco 1 de 7</div>
+  <div id="tela"></div>
+</div>
+
+<script>
+var SENHA_CORRETA = 'matias2026';
+
+function verificarSenha() {
+  var s = document.getElementById('campo-senha').value.trim();
+  if (s === SENHA_CORRETA) {
+    document.getElementById('tela-senha').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    render();
+  } else {
+    document.getElementById('erro-senha').style.display = 'block';
+    document.getElementById('campo-senha').value = '';
+    document.getElementById('campo-senha').focus();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var campo = document.getElementById('campo-senha');
+  if (campo) {
+    campo.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') verificarSenha();
+    });
+  }
+});
+
+var D = {
+  nome:'', renda_liquida:'', outras_rendas:'', renda_estavel:'',
+  moradia:'', transporte:'', alimentacao:'', saude_escola:'',
+  dividas_detalhe:'', maior_juros:'', nome_negativado:'', tentou_negociar:'',
+  decisao_compra:'', cartao_gestao:'', habito_poupar:'', sobra_dinheiro:'',
+  sentimento_financas:'', nivel_stress:5, evento_vida:'', evita_contas:'', dinheiro_relacionamentos:'',
+  dependentes:'', compartilha_despesas:'', familia_dinheiro:'',
+  objetivo_12meses:'', impedimento:'',
+  diagnostico:''
+};
+
+var blocoAtual = 0;
+var totalBlocos = 7;
+
+function setProg(pct, label) {
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = label;
+}
+
+function toggleOpcao(el, campo, valor, multiplo) {
+  if (!multiplo) {
+    var parent = el.parentNode;
+    var btns = parent.querySelectorAll('.opcao-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('on');
+    el.classList.add('on');
+    D[campo] = valor;
+  } else {
+    el.classList.toggle('on');
+    var selected = [];
+    var parent2 = el.parentNode;
+    var btns2 = parent2.querySelectorAll('.opcao-btn.on');
+    for (var j = 0; j < btns2.length; j++) selected.push(btns2[j].dataset.val);
+    D[campo] = selected.join(', ');
+  }
+}
+
+function toggleTag(el, campo) {
+  el.classList.toggle('on');
+  var parent = el.parentNode;
+  var tags = parent.querySelectorAll('.tag-btn.on');
+  var vals = [];
+  for (var i = 0; i < tags.length; i++) vals.push(tags[i].dataset.val);
+  D[campo] = vals.join(', ');
+}
+
+function setStress(val) {
+  D['nivel_stress'] = val;
+  var btns = document.querySelectorAll('.stress-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.toggle('on', parseInt(btns[i].dataset.val) === val);
+  }
+}
+
+function getVal(id) {
+  var el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function render() {
+  var tela = document.getElementById('tela');
+  tela.innerHTML = '';
+
+  if (blocoAtual === 0) {
+    setProg(0, 'Introdução');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Análise Completa N2</div><div class="bloco-titulo">Sua análise aprofundada começa aqui</div><div class="bloco-sub" style="margin-top:12px">Você adquiriu acesso à análise financeira completa do Matias Valente.<br><br>Este questionário vai mapear sua situação com precisão — receitas, despesas reais, dívidas, comportamento e o que está por trás do padrão que se repete.<br><br>São 7 blocos de perguntas. Leva cerca de 8 minutos. Quanto mais detalhado você for, mais precisa e útil será sua análise.<br><br>Tudo é confidencial e anônimo.</div><button class="btn btn-primary" onclick="avancar()">Começar minha análise completa</button></div><p class="rodape">Seus dados são usados exclusivamente para gerar sua análise.</p>';
+    return;
+  }
+
+  if (blocoAtual === 1) {
+    setProg(14, 'Bloco 1 de 7 — Renda e receitas');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 1 de 7</div><div class="bloco-titulo">Renda e receitas</div><div class="bloco-sub">Vamos entender o que entra todo mês. Seja o mais preciso possível.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>1.</span> Qual é a sua renda mensal líquida aproximada? (o que cai na conta após descontos)</div><input type="text" id="q1" placeholder="Ex: R$ 3.500" value="'+D.renda_liquida+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>2.</span> Você tem outras fontes de renda? (freela, aluguel, pensão, bicos, etc.)</div><div class="opcoes-grid"><div class="opcao-btn'+(D.outras_rendas==='Sim, tenho'?' on':'')+'" data-val="Sim, tenho" onclick="toggleOpcao(this,\'outras_rendas\',\'Sim, tenho\',false)">Sim, tenho</div><div class="opcao-btn'+(D.outras_rendas==='Não tenho'?' on':'')+'" data-val="Não tenho" onclick="toggleOpcao(this,\'outras_rendas\',\'Não tenho\',false)">Não tenho</div></div>' +
+      (D.outras_rendas === 'Sim, tenho' ? '<div style="margin-top:8px"><input type="text" id="q2b" placeholder="Descreva brevemente e o valor aproximado" value="'+D.outras_rendas_desc+'"></div>' : '') +
+      '</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>3.</span> Sua renda é estável ou varia todo mês?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.renda_estavel==='Estável — recebo o mesmo todo mês'?' on':'')+'" onclick="toggleOpcao(this,\'renda_estavel\',\'Estável — recebo o mesmo todo mês\',false)">Estável — recebo o mesmo todo mês</div><div class="opcao-btn'+(D.renda_estavel==='Varia — mês bom e mês ruim'?' on':'')+'" onclick="toggleOpcao(this,\'renda_estavel\',\'Varia — mês bom e mês ruim\',false)">Varia — mês bom e mês ruim</div><div class="opcao-btn'+(D.renda_estavel==='Muito instável — não sei quanto vou receber'?' on':'')+'" onclick="toggleOpcao(this,\'renda_estavel\',\'Muito instável — não sei quanto vou receber\',false)">Muito instável — não sei quanto vou receber</div></div></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco1()">Continuar</button></div>';
+    return;
+  }
+
+  if (blocoAtual === 2) {
+    setProg(28, 'Bloco 2 de 7 — Despesas mensais');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 2 de 7</div><div class="bloco-titulo">Despesas mensais fixas</div><div class="bloco-sub">O que sai todo mês independente do que aconteça. Coloque valores aproximados.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>4.</span> Moradia — aluguel, financiamento ou condomínio</div><input type="text" id="q4" placeholder="Ex: R$ 1.200 ou Moro com familiar" value="'+D.moradia+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>5.</span> Transporte — carro, combustível, Uber, ônibus</div><input type="text" id="q5" placeholder="Ex: R$ 600 (carro + combustível)" value="'+D.transporte+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>6.</span> Alimentação — mercado, feiras, refeições fora</div><input type="text" id="q6" placeholder="Ex: R$ 800" value="'+D.alimentacao+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>7.</span> Saúde, escola, plano de saúde, mensalidades</div><input type="text" id="q7" placeholder="Ex: R$ 400 (plano + escola)" value="'+D.saude_escola+'"></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco2()">Continuar</button></div>';
+    return;
+  }
+
+  if (blocoAtual === 3) {
+    setProg(42, 'Bloco 3 de 7 — Dívidas');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 3 de 7</div><div class="bloco-titulo">Suas dívidas em detalhes</div><div class="bloco-sub">Esta é a parte mais importante. Seja preciso — é aqui que a análise vai realmente trabalhar para você.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>8.</span> Liste suas dívidas principais: credor, valor total e parcela mensal<br><span style="font-size:12px;color:#5050a0">Ex: Cartão Nubank — R$4.000 total — R$400/mês</span></div><textarea id="q8" placeholder="Liste uma por linha..." style="min-height:110px">'+D.dividas_detalhe+'</textarea></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>9.</span> Qual dívida você sente que pesa mais no seu orçamento?</div><input type="text" id="q9" placeholder="Ex: Cartão de crédito — juros muito altos" value="'+D.maior_juros+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>10.</span> Seu nome está negativado (SPC/Serasa)?</div><div class="opcoes-grid"><div class="opcao-btn'+(D.nome_negativado==='Sim'?' on':'')+'" onclick="toggleOpcao(this,\'nome_negativado\',\'Sim\',false)">Sim</div><div class="opcao-btn'+(D.nome_negativado==='Não'?' on':'')+'" onclick="toggleOpcao(this,\'nome_negativado\',\'Não\',false)">Não</div><div class="opcao-btn'+(D.nome_negativado==='Não sei'?' on':'')+'" onclick="toggleOpcao(this,\'nome_negativado\',\'Não sei\',false)">Não sei</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>11.</span> Você já tentou renegociar alguma dívida?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.tentou_negociar==='Sim, consegui boas condições'?' on':'')+'" onclick="toggleOpcao(this,\'tentou_negociar\',\'Sim, consegui boas condições\',false)">Sim, consegui boas condições</div><div class="opcao-btn'+(D.tentou_negociar==='Tentei mas não consegui'?' on':'')+'" onclick="toggleOpcao(this,\'tentou_negociar\',\'Tentei mas não consegui\',false)">Tentei mas não consegui</div><div class="opcao-btn'+(D.tentou_negociar==='Nunca tentei'?' on':'')+'" onclick="toggleOpcao(this,\'tentou_negociar\',\'Nunca tentei\',false)">Nunca tentei</div></div></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco3()">Continuar</button></div>';
+    return;
+  }
+
+  if (blocoAtual === 4) {
+    setProg(56, 'Bloco 4 de 7 — Comportamento financeiro');
+    var tagsSobra = ['Pago dívidas','Guardo um pouco','Gasto com lazer','Compro algo que queria','Gasto sem perceber','Ajudo alguém da família','Invisto'];
+    var htmlTagsSobra = tagsSobra.map(function(t){ return '<div class="tag-btn'+(D.sobra_dinheiro && D.sobra_dinheiro.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTag(this,\'sobra_dinheiro\')">'+t+'</div>'; }).join('');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 4 de 7</div><div class="bloco-titulo">Seu comportamento com dinheiro</div><div class="bloco-sub">Como você age e decide no dia a dia financeiro.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>12.</span> Como você costuma tomar decisões de compra?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.decisao_compra==='Planejo e pesquiso antes de comprar'?' on':'')+'" onclick="toggleOpcao(this,\'decisao_compra\',\'Planejo e pesquiso antes de comprar\',false)">Planejo e pesquiso antes de comprar</div><div class="opcao-btn'+(D.decisao_compra==='Às vezes planejo, às vezes compro por impulso'?' on':'')+'" onclick="toggleOpcao(this,\'decisao_compra\',\'Às vezes planejo, às vezes compro por impulso\',false)">Às vezes planejo, às vezes compro por impulso</div><div class="opcao-btn'+(D.decisao_compra==='Compro por impulso com frequência'?' on':'')+'" onclick="toggleOpcao(this,\'decisao_compra\',\'Compro por impulso com frequência\',false)">Compro por impulso com frequência</div><div class="opcao-btn'+(D.decisao_compra==='Evito comprar — tenho medo de gastar'?' on':'')+'" onclick="toggleOpcao(this,\'decisao_compra\',\'Evito comprar — tenho medo de gastar\',false)">Evito comprar — tenho medo de gastar</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>13.</span> Como você usa o cartão de crédito?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.cartao_gestao==='Pago a fatura total todo mês'?' on':'')+'" onclick="toggleOpcao(this,\'cartao_gestao\',\'Pago a fatura total todo mês\',false)">Pago a fatura total todo mês</div><div class="opcao-btn'+(D.cartao_gestao==='Pago o mínimo ou parcelo a fatura'?' on':'')+'" onclick="toggleOpcao(this,\'cartao_gestao\',\'Pago o mínimo ou parcelo a fatura\',false)">Pago o mínimo ou parcelo a fatura</div><div class="opcao-btn'+(D.cartao_gestao==='Uso o limite mas tento pagar tudo'?' on':'')+'" onclick="toggleOpcao(this,\'cartao_gestao\',\'Uso o limite mas tento pagar tudo\',false)">Uso o limite mas tento pagar tudo</div><div class="opcao-btn'+(D.cartao_gestao==='Não uso cartão de crédito'?' on':'')+'" onclick="toggleOpcao(this,\'cartao_gestao\',\'Não uso cartão de crédito\',false)">Não uso cartão de crédito</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>14.</span> Você consegue guardar algum valor todo mês?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.habito_poupar==='Sim, guardo regularmente'?' on':'')+'" onclick="toggleOpcao(this,\'habito_poupar\',\'Sim, guardo regularmente\',false)">Sim, guardo regularmente</div><div class="opcao-btn'+(D.habito_poupar==='Às vezes, quando sobra'?' on':'')+'" onclick="toggleOpcao(this,\'habito_poupar\',\'Às vezes, quando sobra\',false)">Às vezes, quando sobra</div><div class="opcao-btn'+(D.habito_poupar==='Raramente ou nunca'?' on':'')+'" onclick="toggleOpcao(this,\'habito_poupar\',\'Raramente ou nunca\',false)">Raramente ou nunca</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>15.</span> Quando sobra dinheiro, o que costuma acontecer? <span style="font-size:11px;color:#5050a0">(pode marcar mais de uma)</span></div><div class="tag-wrap">'+htmlTagsSobra+'</div></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco4()">Continuar</button></div>';
+    return;
+  }
+
+  if (blocoAtual === 5) {
+    setProg(70, 'Bloco 5 de 7 — Lado emocional');
+    var stressBtns = '';
+    for (var s = 1; s <= 10; s++) {
+      stressBtns += '<button class="stress-btn'+(D.nivel_stress===s?' on':'')+'" data-val="'+s+'" onclick="setStress('+s+')">'+s+'</button>';
+    }
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 5 de 7</div><div class="bloco-titulo">O lado emocional do dinheiro</div><div class="bloco-sub">A relação com dinheiro vai muito além dos números. Responda com honestidade.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>16.</span> Como você se sente quando pensa nas suas finanças?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.sentimento_financas==='Ansioso e preocupado'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Ansioso e preocupado\',false)">Ansioso e preocupado</div><div class="opcao-btn'+(D.sentimento_financas==='Com vergonha ou culpa'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Com vergonha ou culpa\',false)">Com vergonha ou culpa</div><div class="opcao-btn'+(D.sentimento_financas==='Paralisado — não sei o que fazer'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Paralisado — não sei o que fazer\',false)">Paralisado — não sei o que fazer</div><div class="opcao-btn'+(D.sentimento_financas==='Resignado — aceito que é assim'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Resignado — aceito que é assim\',false)">Resignado — aceito que é assim</div><div class="opcao-btn'+(D.sentimento_financas==='Determinado a mudar'?' on':'')+'" onclick="toggleOpcao(this,\'sentimento_financas\',\'Determinado a mudar\',false)">Determinado a mudar</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>17.</span> Em uma escala de 1 a 10, qual o nível de estresse financeiro que você sente hoje?<br><span style="font-size:11px;color:#5050a0">1 = tranquilo &nbsp;&nbsp; 10 = insuportável</span></div><div class="stress-escala" id="stress-wrap">'+stressBtns+'</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>18.</span> Houve algum evento de vida que mudou sua relação com dinheiro?<br><span style="font-size:11px;color:#5050a0">Ex: demissão, separação, doença, morte na família, garantiu dívida de alguém</span></div><textarea id="q18" placeholder="Descreva brevemente ou escreva Não">'+D.evento_vida+'</textarea></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>19.</span> Você tende a evitar olhar suas contas ou pensar no que deve?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.evita_contas==='Sim, evito bastante — é muito pesado'?' on':'')+'" onclick="toggleOpcao(this,\'evita_contas\',\'Sim, evito bastante — é muito pesado\',false)">Sim, evito bastante — é muito pesado</div><div class="opcao-btn'+(D.evita_contas==='Às vezes evito'?' on':'')+'" onclick="toggleOpcao(this,\'evita_contas\',\'Às vezes evito\',false)">Às vezes evito</div><div class="opcao-btn'+(D.evita_contas==='Não, encaro a situação de frente'?' on':'')+'" onclick="toggleOpcao(this,\'evita_contas\',\'Não, encaro a situação de frente\',false)">Não, encaro a situação de frente</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>20.</span> A situação financeira afeta seus relacionamentos ou sua saúde?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.dinheiro_relacionamentos==='Sim, gera conflitos em casa com frequência'?' on':'')+'" onclick="toggleOpcao(this,\'dinheiro_relacionamentos\',\'Sim, gera conflitos em casa com frequência\',false)">Sim, gera conflitos em casa com frequência</div><div class="opcao-btn'+(D.dinheiro_relacionamentos==='Afeta meu sono e minha saúde'?' on':'')+'" onclick="toggleOpcao(this,\'dinheiro_relacionamentos\',\'Afeta meu sono e minha saúde\',false)">Afeta meu sono e minha saúde</div><div class="opcao-btn'+(D.dinheiro_relacionamentos==='Evito falar de dinheiro com quem amo'?' on':'')+'" onclick="toggleOpcao(this,\'dinheiro_relacionamentos\',\'Evito falar de dinheiro com quem amo\',false)">Evito falar de dinheiro com quem amo</div><div class="opcao-btn'+(D.dinheiro_relacionamentos==='Não afeta muito meus relacionamentos'?' on':'')+'" onclick="toggleOpcao(this,\'dinheiro_relacionamentos\',\'Não afeta muito meus relacionamentos\',false)">Não afeta muito meus relacionamentos</div></div></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco5()">Continuar</button></div>';
+    return;
+  }
+
+  if (blocoAtual === 6) {
+    setProg(84, 'Bloco 6 de 7 — Contexto familiar');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 6 de 7</div><div class="bloco-titulo">Contexto familiar</div><div class="bloco-sub">O ambiente ao redor influencia muito as finanças pessoais.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>21.</span> Você tem dependentes financeiros?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.dependentes==='Sim, tenho filhos dependentes'?' on':'')+'" onclick="toggleOpcao(this,\'dependentes\',\'Sim, tenho filhos dependentes\',false)">Sim, tenho filhos dependentes</div><div class="opcao-btn'+(D.dependentes==='Sim, ajudo pais ou familiares'?' on':'')+'" onclick="toggleOpcao(this,\'dependentes\',\'Sim, ajudo pais ou familiares\',false)">Sim, ajudo pais ou familiares</div><div class="opcao-btn'+(D.dependentes==='Sim, filhos e familiares'?' on':'')+'" onclick="toggleOpcao(this,\'dependentes\',\'Sim, filhos e familiares\',false)">Sim, filhos e familiares</div><div class="opcao-btn'+(D.dependentes==='Não tenho dependentes financeiros'?' on':'')+'" onclick="toggleOpcao(this,\'dependentes\',\'Não tenho dependentes financeiros\',false)">Não tenho dependentes financeiros</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>22.</span> Alguém compartilha as despesas da casa com você?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.compartilha_despesas==='Sim, cônjuge ou parceiro(a)'?' on':'')+'" onclick="toggleOpcao(this,\'compartilha_despesas\',\'Sim, cônjuge ou parceiro(a)\',false)">Sim, cônjuge ou parceiro(a)</div><div class="opcao-btn'+(D.compartilha_despesas==='Sim, outros membros da família'?' on':'')+'" onclick="toggleOpcao(this,\'compartilha_despesas\',\'Sim, outros membros da família\',false)">Sim, outros membros da família</div><div class="opcao-btn'+(D.compartilha_despesas==='Não, arco com tudo sozinho(a)'?' on':'')+'" onclick="toggleOpcao(this,\'compartilha_despesas\',\'Não, arco com tudo sozinho(a)\',false)">Não, arco com tudo sozinho(a)</div></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>23.</span> Como era a relação com dinheiro na sua família de origem?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.familia_dinheiro==='Havia educação financeira — aprendi a poupar'?' on':'')+'" onclick="toggleOpcao(this,\'familia_dinheiro\',\'Havia educação financeira — aprendi a poupar\',false)">Havia educação financeira — aprendi a poupar</div><div class="opcao-btn'+(D.familia_dinheiro==='Sempre foi apertado — sobrevivência'?' on':'')+'" onclick="toggleOpcao(this,\'familia_dinheiro\',\'Sempre foi apertado — sobrevivência\',false)">Sempre foi apertado — sobrevivência</div><div class="opcao-btn'+(D.familia_dinheiro==='Gastava-se tudo — não havia cultura de poupança'?' on':'')+'" onclick="toggleOpcao(this,\'familia_dinheiro\',\'Gastava-se tudo — não havia cultura de poupança\',false)">Gastava-se tudo — não havia cultura de poupança</div><div class="opcao-btn'+(D.familia_dinheiro==='Nunca falávamos de dinheiro em casa'?' on':'')+'" onclick="toggleOpcao(this,\'familia_dinheiro\',\'Nunca falávamos de dinheiro em casa\',false)">Nunca falávamos de dinheiro em casa</div></div></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco6()">Continuar</button></div>';
+    return;
+  }
+
+  if (blocoAtual === 7) {
+    setProg(95, 'Bloco 7 de 7 — Objetivos');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 7 de 7</div><div class="bloco-titulo">O que você quer mudar</div><div class="bloco-sub">A última parte — e a mais importante para direcionar sua análise.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>24.</span> O que você quer que mude na sua vida financeira nos próximos 12 meses?<br><span style="font-size:11px;color:#5050a0">Seja específico — quanto mais detalhado, melhor será sua análise</span></div><textarea id="q24" placeholder="Ex: Quitar o cartão, limpar o nome, ter R$500 guardados, parar de me sentir ansioso com dinheiro..." style="min-height:100px">'+D.objetivo_12meses+'</textarea></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>25.</span> O que te impede de agir hoje?</div><div class="opcoes-grid col1"><div class="opcao-btn'+(D.impedimento==='Não sei por onde começar'?' on':'')+'" onclick="toggleOpcao(this,\'impedimento\',\'Não sei por onde começar\',false)">Não sei por onde começar</div><div class="opcao-btn'+(D.impedimento==='Falta de dinheiro — não sobra nada para mudar'?' on':'')+'" onclick="toggleOpcao(this,\'impedimento\',\'Falta de dinheiro — não sobra nada para mudar\',false)">Falta de dinheiro — não sobra nada para mudar</div><div class="opcao-btn'+(D.impedimento==='Medo de encarar a situação real'?' on':'')+'" onclick="toggleOpcao(this,\'impedimento\',\'Medo de encarar a situação real\',false)">Medo de encarar a situação real</div><div class="opcao-btn'+(D.impedimento==='Já tentei antes e não funcionou'?' on':'')+'" onclick="toggleOpcao(this,\'impedimento\',\'Já tentei antes e não funcionou\',false)">Já tentei antes e não funcionou</div><div class="opcao-btn'+(D.impedimento==='Falta de apoio — faço tudo sozinho(a)'?' on':'')+'" onclick="toggleOpcao(this,\'impedimento\',\'Falta de apoio — faço tudo sozinho(a)\',false)">Falta de apoio — faço tudo sozinho(a)</div></div></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco7()">Gerar minha análise completa</button></div>';
+    return;
+  }
+
+  if (blocoAtual === 8) {
+    setProg(100, 'Gerando sua análise...');
+    tela.innerHTML = '<div class="card loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p style="font-size:15px;font-weight:600;color:#fff;margin-bottom:8px">Processando sua análise completa...</p><p style="font-size:13px;color:#606090">Estamos cruzando todos os seus dados para gerar um diagnóstico preciso e personalizado. Isso pode levar até 40 segundos.</p></div>' +
+      '<div class="msg-card" id="msg1"><p>Você acabou de fazer algo que a maioria das pessoas nunca faz — parar para olhar com honestidade para a própria situação financeira. Isso já é parte da solução.</p></div>' +
+      '<div class="msg-card" id="msg2"><p>Com mais de 25 anos como gerente de banco, vi centenas de perfis. O que separa quem sai do aperto de quem fica é uma coisa só: entender o padrão. E é exatamente isso que estamos construindo para você agora.</p></div>';
+    setTimeout(function(){ var m=document.getElementById('msg1'); if(m) m.style.opacity='1'; }, 8000);
+    setTimeout(function(){ var m=document.getElementById('msg2'); if(m) m.style.opacity='1'; }, 18000);
+    gerarAnalise();
+    return;
+  }
+}
+
+function avancar() { blocoAtual++; render(); window.scrollTo(0,0); }
+
+function salvarBloco1() {
+  D.renda_liquida = getVal('q1');
+  var q2b = document.getElementById('q2b');
+  if (q2b) D.outras_rendas_desc = q2b.value.trim();
+  avancar();
+}
+function salvarBloco2() {
+  D.moradia = getVal('q4');
+  D.transporte = getVal('q5');
+  D.alimentacao = getVal('q6');
+  D.saude_escola = getVal('q7');
+  avancar();
+}
+function salvarBloco3() {
+  D.dividas_detalhe = getVal('q8');
+  D.maior_juros = getVal('q9');
+  avancar();
+}
+function salvarBloco4() { avancar(); }
+function salvarBloco5() {
+  D.evento_vida = getVal('q18');
+  avancar();
+}
+function salvarBloco6() { avancar(); }
+function salvarBloco7() {
+  D.objetivo_12meses = getVal('q24');
+  blocoAtual = 8;
+  render();
+  window.scrollTo(0,0);
+}
+
+async function gerarAnalise() {
+  var prompt = 'Você é o assistente do Matias Valente, ex-gerente de banco com mais de 25 anos de experiência. Esta é uma análise financeira COMPLETA E APROFUNDADA — o cliente pagou por ela. Gere um diagnóstico detalhado, cirúrgico e empático em português correto com todos os acentos e cedilhas.\n\n' +
+
+  'REGRAS ABSOLUTAS:\n' +
+  '- Escreva em português correto com acentuação completa\n' +
+  '- Use parágrafos simples separados por linha em branco\n' +
+  '- Tom empático, profissional e encorajador — nunca agressivo\n' +
+  '- NUNCA use a palavra "simples"\n' +
+  '- NUNCA faça perguntas diretas\n' +
+  '- NUNCA mencione prazos em dias ou meses\n' +
+  '- Faça cálculos reais com os números informados\n' +
+  '- Use valores em números: R$3.000, não "três mil"\n' +
+  '- Esta análise é MUITO MAIS COMPLETA que o diagnóstico inicial — deve ser profunda e detalhada\n\n' +
+
+  'ESTRUTURA OBRIGATÓRIA — escreva em parágrafos corridos, sem títulos nem numeração:\n\n' +
+
+  'PARÁGRAFO 1 — RECONHECIMENTO EMOCIONAL PROFUNDO: Espelhe com precisão o que a pessoa está vivendo emocionalmente com base em tudo que ela revelou — o nível de estresse, o sentimento, o impacto nos relacionamentos. 3-4 frases de alta empatia.\n\n' +
+
+  'PARÁGRAFO 2 — PERFIL FINANCEIRO COMPORTAMENTAL: Identifique o perfil (Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador) e explique em profundidade — inclua o padrão comportamental observado nas respostas sobre decisão de compra, cartão, poupar e o que faz quando sobra dinheiro.\n\n' +
+
+  'PARÁGRAFO 3 — DIAGNÓSTICO MATEMÁTICO: Faça os cálculos com os números reais informados. Renda líquida menos todas as despesas fixas menos parcelas das dívidas. Mostre o que sobra (ou o déficit). Se houver dívidas com juros altos, estime o custo mensal. Seja preciso e didático.\n\n' +
+
+  'PARÁGRAFO 4 — O PADRÃO POR TRÁS DOS NÚMEROS: Com base no contexto familiar, eventos de vida e comportamento emocional, revele o padrão psicológico e comportamental que está perpetuando a situação. Este é o diferencial da análise completa — aponte o que vem antes dos números.\n\n' +
+
+  'PARÁGRAFO 5 — ESTRATÉGIA DE SAÍDA — PASSO 1: A ação mais urgente e de maior impacto para a situação específica dessa pessoa. Concreta, realizável, baseada nos dados reais.\n\n' +
+
+  'PARÁGRAFO 6 — ESTRATÉGIA DE SAÍDA — PASSO 2: A segunda ação prioritária, complementar à primeira.\n\n' +
+
+  'PARÁGRAFO 7 — ESTRATÉGIA DE SAÍDA — PASSO 3: A terceira ação, focada em construir um novo padrão financeiro sustentável.\n\n' +
+
+  'PARÁGRAFO 8 — MUDANÇAS ESPECÍFICAS PARA O SEU PERFIL: Com base em tudo analisado, aponte 3 mudanças de comportamento específicas para essa pessoa — não genéricas. Conecte ao que ela disse querer em 12 meses.\n\n' +
+
+  'PARÁGRAFO 9 — MENSAGEM FINAL PERSONALIZADA: Uma mensagem direta, calorosa e real. Conecte ao objetivo que a pessoa declarou, ao esforço que ela demonstrou ao responder tudo isso, e ao caminho que ela pode construir. Termine com esperança genuína ancorada nos dados reais.\n\n' +
+
+  'ASSINATURA: apenas "Matias Valente" — sem subtítulos.\n\n' +
+
+  'DADOS COMPLETOS DA PESSOA:\n' +
+  'Renda líquida mensal: ' + D.renda_liquida + '\n' +
+  'Outras rendas: ' + D.outras_rendas + (D.outras_rendas_desc ? ' — ' + D.outras_rendas_desc : '') + '\n' +
+  'Estabilidade da renda: ' + D.renda_estavel + '\n' +
+  'Moradia: ' + D.moradia + '\n' +
+  'Transporte: ' + D.transporte + '\n' +
+  'Alimentação: ' + D.alimentacao + '\n' +
+  'Saúde/escola: ' + D.saude_escola + '\n' +
+  'Dívidas detalhadas: ' + D.dividas_detalhe + '\n' +
+  'Dívida que mais pesa: ' + D.maior_juros + '\n' +
+  'Nome negativado: ' + D.nome_negativado + '\n' +
+  'Tentou renegociar: ' + D.tentou_negociar + '\n' +
+  'Decisão de compra: ' + D.decisao_compra + '\n' +
+  'Gestão do cartão: ' + D.cartao_gestao + '\n' +
+  'Hábito de poupar: ' + D.habito_poupar + '\n' +
+  'Quando sobra dinheiro: ' + D.sobra_dinheiro + '\n' +
+  'Sentimento com finanças: ' + D.sentimento_financas + '\n' +
+  'Nível de estresse (1-10): ' + D.nivel_stress + '\n' +
+  'Evento de vida marcante: ' + D.evento_vida + '\n' +
+  'Evita olhar as contas: ' + D.evita_contas + '\n' +
+  'Impacto nos relacionamentos: ' + D.dinheiro_relacionamentos + '\n' +
+  'Dependentes: ' + D.dependentes + '\n' +
+  'Compartilha despesas: ' + D.compartilha_despesas + '\n' +
+  'Relação familiar com dinheiro: ' + D.familia_dinheiro + '\n' +
+  'Objetivo em 12 meses: ' + D.objetivo_12meses + '\n' +
+  'O que impede de agir: ' + D.impedimento;
+
+  try {
+    var resultado = await Promise.all([
+      fetch('https://matias-diagnostico.contato-matiasvalente.workers.dev', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          renda: D.renda_liquida,
+          situacao: D.renda_estavel,
+          total: D.dividas_detalhe,
+          percentual: '',
+          tipos: D.maior_juros,
+          emocional: D.sentimento_financas,
+          preocupacao: D.impedimento,
+          nome: D.nome,
+          prompt: prompt
+        })
+      }),
+      new Promise(function(r){ setTimeout(r, 40000); })
+    ]);
+    var d = await resultado[0].json();
+    D.diagnostico = d.diagnostico || 'Não foi possível gerar a análise.';
+    exibirResultado();
+  } catch(e) {
+    document.getElementById('tela').innerHTML = '<div class="card"><p style="color:#f87171;margin-bottom:16px">Erro ao gerar análise. Tente novamente.</p><button class="btn btn-primary" onclick="gerarAnalise()">Tentar novamente</button></div>';
+  }
+}
+
+function exibirResultado() {
+  var partes = D.diagnostico.split('\n\n').filter(function(p){ return p.trim(); });
+  var txt = partes.map(function(p){ return '<p>'+p.replace(/\n/g,'<br>')+'</p>'; }).join('');
+  var tela = document.getElementById('tela');
+  tela.innerHTML = '';
+
+  var cardR = document.createElement('div');
+  cardR.className = 'resultado-card';
+  cardR.innerHTML = '<div class="resultado-titulo">Análise completa exclusiva</div><div class="resultado-nome">Sua análise está pronta</div><div class="diagnostico-texto">'+txt+'</div>';
+  tela.appendChild(cardR);
+
+  var cardA = document.createElement('div');
+  cardA.className = 'oferta-card';
+  cardA.innerHTML = '<div class="oferta-titulo">Quer ir ainda mais fundo?</div><div class="oferta-desc">A Opção 2 inclui tudo o que você acabou de receber mais o diagnóstico comportamental completo — o padrão pelo nome, as 3 mudanças específicas para o seu perfil e o guia prático personalizado.</div>';
+
+  var b1 = document.createElement('button');
+  b1.className = 'btn-compra btn-n3';
+  b1.textContent = 'Quero o diagnóstico comportamental completo — R$ 97';
+  b1.onclick = function(){ window.open('https://kiwify.app/sTU8H60','_blank'); };
+
+  var b2 = document.createElement('button');
+  b2.className = 'btn-compra btn-wa';
+  b2.textContent = '📱 Salvar análise no WhatsApp';
+  b2.onclick = salvarWA;
+
+  var b3 = document.createElement('button');
+  b3.className = 'btn-skip';
+  b3.textContent = 'Já estou satisfeito com esta análise';
+  b3.onclick = fecharOferta;
+
+  cardA.appendChild(b1);
+  cardA.appendChild(b2);
+  cardA.appendChild(b3);
+  tela.appendChild(cardA);
+
+  var rodape = document.createElement('p');
+  rodape.className = 'rodape';
+  rodape.textContent = 'Análise gerada de forma exclusiva e confidencial.';
+  tela.appendChild(rodape);
+}
+
+function salvarWA() {
+  window.open('https://wa.me/?text=' + encodeURIComponent('Minha análise completa — Matias Valente:\n\n' + D.diagnostico), '_blank');
+}
+
+function gerarPDF() {
+  var dataHoje = new Date().toLocaleDateString('pt-BR');
+  var partes = D.diagnostico.split('\n\n').filter(function(p){ return p.trim(); });
+  var txtHtml = partes.map(function(p){ return '<p style="margin-bottom:16px;text-align:justify">'+p.replace(/\n/g,'<br>')+'</p>'; }).join('');
+
+  var html = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">' +
+  '<title>Análise Financeira Completa — Matias Valente</title>' +
+  '<style>' +
+  '@page{size:A4;margin:2cm}' +
+  '*{margin:0;padding:0;box-sizing:border-box}' +
+  'body{font-family:Georgia,serif;color:#1a1a2e;background:#fff;font-size:13px;line-height:1.8}' +
+  '.header{border-bottom:3px solid #7c6fd4;padding-bottom:20px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end}' +
+  '.header-nome{font-size:22px;font-weight:bold;color:#7c6fd4;letter-spacing:2px}' +
+  '.header-sub{font-size:11px;color:#8080a0;letter-spacing:1px;margin-top:4px}' +
+  '.header-data{font-size:11px;color:#8080a0;text-align:right}' +
+  '.titulo-doc{font-size:18px;font-weight:bold;color:#1a1a2e;margin-bottom:6px}' +
+  '.subtitulo-doc{font-size:13px;color:#7c6fd4;margin-bottom:24px;font-style:italic}' +
+  '.secao{margin-bottom:24px}' +
+  '.secao-titulo{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7c6fd4;font-family:Arial,sans-serif;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #e0e0f0}' +
+  '.dados-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}' +
+  '.dado-item{background:#f8f8ff;padding:8px 12px;border-radius:4px;border-left:3px solid #7c6fd450}' +
+  '.dado-label{font-size:10px;color:#8080a0;font-family:Arial,sans-serif;letter-spacing:0.5px;margin-bottom:2px}' +
+  '.dado-valor{font-size:12px;color:#1a1a2e;font-weight:bold}' +
+  '.analise-texto{font-size:13px;line-height:1.85;color:#1a1a2e}' +
+  '.analise-texto p{margin-bottom:16px;text-align:justify}' +
+  '.footer{margin-top:40px;padding-top:20px;border-top:2px solid #7c6fd4;display:flex;justify-content:space-between;align-items:center}' +
+  '.footer-nome{font-size:14px;font-weight:bold;color:#7c6fd4;font-style:italic}' +
+  '.footer-aviso{font-size:10px;color:#a0a0c0;font-family:Arial,sans-serif}' +
+  '.divider{border:none;border-top:1px solid #e8e8f0;margin:20px 0}' +
+  '.destaque{background:#f0eeff;border-left:4px solid #7c6fd4;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-style:italic;color:#3a3a6a}' +
+  '</style></head><body>' +
+
+  '<div class="header">' +
+  '<div><div class="header-nome">MATIAS VALENTE</div><div class="header-sub">EX-GERENTE DE BANCO · 25 ANOS DE EXPERIÊNCIA</div></div>' +
+  '<div class="header-data">Análise gerada em: '+dataHoje+'<br>Documento confidencial</div>' +
+  '</div>' +
+
+  '<div class="titulo-doc">Relatório de Análise Financeira Completa</div>' +
+  '<div class="subtitulo-doc">Diagnóstico exclusivo e personalizado</div>' +
+
+  '<div class="secao">' +
+  '<div class="secao-titulo">Dados informados</div>' +
+  '<div class="dados-grid">' +
+  '<div class="dado-item"><div class="dado-label">Renda líquida mensal</div><div class="dado-valor">'+(D.renda_liquida||'Não informado')+'</div></div>' +
+  '<div class="dado-item"><div class="dado-label">Estabilidade da renda</div><div class="dado-valor">'+(D.renda_estavel||'Não informado')+'</div></div>' +
+  '<div class="dado-item"><div class="dado-label">Moradia</div><div class="dado-valor">'+(D.moradia||'Não informado')+'</div></div>' +
+  '<div class="dado-item"><div class="dado-label">Transporte</div><div class="dado-valor">'+(D.transporte||'Não informado')+'</div></div>' +
+  '<div class="dado-item"><div class="dado-label">Alimentação</div><div class="dado-valor">'+(D.alimentacao||'Não informado')+'</div></div>' +
+  '<div class="dado-item"><div class="dado-label">Saúde e educação</div><div class="dado-valor">'+(D.saude_escola||'Não informado')+'</div></div>' +
+  '<div class="dado-item"><div class="dado-label">Nome negativado</div><div class="dado-valor">'+(D.nome_negativado||'Não informado')+'</div></div>' +
+  '<div class="dado-item"><div class="dado-label">Nível de estresse (1-10)</div><div class="dado-valor">'+D.nivel_stress+'</div></div>' +
+  '</div>' +
+  (D.dividas_detalhe ? '<div class="dado-item" style="grid-column:span 2;margin-top:4px"><div class="dado-label">Dívidas detalhadas</div><div class="dado-valor" style="white-space:pre-line;font-weight:normal">'+D.dividas_detalhe+'</div></div>' : '') +
+  '</div>' +
+
+  '<div class="divider"></div>' +
+
+  '<div class="secao">' +
+  '<div class="secao-titulo">Análise completa personalizada</div>' +
+  '<div class="analise-texto">'+txtHtml+'</div>' +
+  '</div>' +
+
+  (D.objetivo_12meses ? '<div class="destaque"><strong>Seu objetivo declarado:</strong> ' + D.objetivo_12meses + '</div>' : '') +
+
+  '<div class="footer">' +
+  '<div class="footer-nome">— Matias Valente</div>' +
+  '<div class="footer-aviso">Este relatório foi gerado de forma exclusiva e anônima.<br>Nenhum dado pessoal é armazenado.</div>' +
+  '</div>' +
+
+  '</body></html>';
+
+  var janela = window.open('', '_blank');
+  janela.document.write(html);
+  janela.document.close();
+  setTimeout(function(){ janela.print(); }, 800);
+}
+
+function fecharOferta() {
+  var cards = document.querySelectorAll('.oferta-card');
+  if (cards.length) {
+    cards[0].innerHTML = '<p style="font-size:15px;font-weight:600;color:#fff;margin-bottom:10px">Sua análise ficará aqui para consulta.</p><p style="font-size:13px;color:#6060a0;line-height:1.7">Quando quiser dar o próximo passo, o canal do Matias Valente continua te ajudando de graça.</p><p style="font-size:13px;color:#7c6fd4;margin-top:14px;font-style:italic">— Matias Valente</p>';
+  }
+}
+
+render();
+</script>
+</div>
+</div>
+</body>
+</html>
