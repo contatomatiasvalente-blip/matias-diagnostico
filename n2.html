@@ -141,7 +141,7 @@ var D = {
 
 function opcaoBtn(campo, valor, label) {
   var on = D[campo] === valor ? ' on' : '';
-  return '<div class="opcao-btn'+on+'" data-campo='+JSON.stringify(campo)+' data-valor='+JSON.stringify(valor)+' onclick="handleOpcao(event)">'+label+'</div>';
+  return '<div class="opcao-btn'+on+'" onclick="selOpcao(this,\''+campo+'\',\''+valor+'\')" >'+label+'</div>';
 }
 
 
@@ -172,6 +172,18 @@ function renderOpcoes(containerId, campo, opcoes) {
     };
     container.appendChild(btn);
   });
+}
+
+function selOpcao(el, campo, valor) {
+  D[campo] = valor;
+  var parent = el.parentNode;
+  var btns = parent.querySelectorAll('.opcao-btn');
+  for (var k=0; k<btns.length; k++) btns[k].classList.remove('on');
+  el.classList.add('on');
+  if (campo === 'cheque_especial') {
+    var wrap = document.getElementById('cheque-valor-wrap');
+    if (wrap) wrap.style.display = (valor !== 'NaoUso') ? 'block' : 'none';
+  }
 }
 
 function handleOpcao(e) {
@@ -319,21 +331,13 @@ function render() {
       '<input type="text" id="q3_valor" placeholder="Valor aproximado: R$" style="margin-bottom:8px" value="'+D.outras_rendas_valor+'" oninput="mostrarQ3Tipo(this.value)">' +
       '<div id="q3-tipo-wrap" style="'+(D.outras_rendas_valor?'':'display:none')+'">' +
       '<input type="text" id="q3_tipo" placeholder="Proveniente de quê? Ex: aluguel, freela, investimentos..." value="'+D.outras_rendas_tipo+'"></div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>4.</span> Sua renda é estável ou varia todo mês?</div><div id="opcoes-renda-estavel" class="opcoes-grid col1">' +
-      '<div class="opcao-btn" data-campo="renda_estavel" data-valor="Estavel">Estável — recebo praticamente o mesmo todo mês</div>' +
-      '<div class="opcao-btn" data-campo="renda_estavel" data-valor="Varia">Varia — há meses melhores e piores</div>' +
-      '<div class="opcao-btn" data-campo="renda_estavel" data-valor="Instavel">Muito instável — não consigo prever</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>4.</span> Sua renda é estável ou varia todo mês?</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>4.</span> Sua renda é estável ou varia todo mês?</div><div class="opcoes-grid col1">' +
+      '<div class="opcao-btn" onclick="selOpcao(this,\'renda_estavel\',\'Estavel\')">Estável — recebo praticamente o mesmo todo mês</div>' +
+      '<div class="opcao-btn" onclick="selOpcao(this,\'renda_estavel\',\'Varia\')">Varia — há meses melhores e piores</div>' +
+      '<div class="opcao-btn" onclick="selOpcao(this,\'renda_estavel\',\'Instavel\')">Muito instável — não consigo prever</div>' +
       '</div></div>' +
-      '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco1()">Continuar</button></div>';
-    tela.querySelectorAll('#opcoes-renda-estavel .opcao-btn').forEach(function(el){
-      var v = el.dataset.valor; var c = el.dataset.campo;
-      el.addEventListener('click',function(){
-        D[c]=v;
-        tela.querySelectorAll('#opcoes-renda-estavel .opcao-btn').forEach(function(b){b.classList.remove('on');});
-        el.classList.add('on');
-      });
-    });
     return;
   }
 
