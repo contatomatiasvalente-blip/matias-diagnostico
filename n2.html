@@ -135,15 +135,25 @@ var blocoAtual = 0;
 
 function opcaoBtn(campo, valor, label) {
   var on = D[campo] === valor ? ' on' : '';
-  return '<div class="opcao-btn' + on + '" onclick="selecionarOpcao(this,\'' + campo + '\',\'' + valor + '\')">' + label + '</div>';
+  var id = 'opcao_' + campo + '_' + valor;
+  return '<div id="' + id + '" class="opcao-btn' + on + '" onclick="selecionarOpcao(\''+campo+'\',\''+valor+'\')">' + label + '</div>';
 }
 
-function selecionarOpcao(el, campo, valor) {
-  var parent = el.parentNode;
-  var btns = parent.querySelectorAll('.opcao-btn');
-  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('on');
-  el.classList.add('on');
+function selecionarOpcao(campo, valor) {
   D[campo] = valor;
+  // Remover .on de todos os botões do mesmo campo
+  document.querySelectorAll('[id^="opcao_' + campo + '_"]').forEach(function(b){ b.classList.remove('on'); });
+  // Adicionar .on ao selecionado
+  var el = document.getElementById('opcao_' + campo + '_' + valor);
+  if (el) el.classList.add('on');
+  // Cheque especial - mostrar campo de valor
+  if (campo === 'cheque_especial' && valor !== 'NaoUso') {
+    var wrap = document.getElementById('cheque-valor-wrap');
+    if (wrap) wrap.style.display = 'block';
+  } else if (campo === 'cheque_especial') {
+    var wrap = document.getElementById('cheque-valor-wrap');
+    if (wrap) wrap.style.display = 'none';
+  }
 }
 
 function toggleOpcaoData(el) {
@@ -179,6 +189,11 @@ function toggleOpcao(el, campo, valor) {
 function toggleTagData(el) {
   var campo = el.dataset.campo;
   toggleTag(el, campo);
+  // Mostrar campo de valor quando marcar gastos ocultos
+  if (campo === 'gastos_ocultos') {
+    var wrap = document.getElementById('gastos-val-wrap');
+    if (wrap) wrap.style.display = D.gastos_ocultos ? 'block' : 'none';
+  }
 }
 
 function toggleTag(el, campo) {
@@ -243,7 +258,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>8.</span> Alimentação — mercado, feira, refeições no trabalho</div><input type="text" id="q8" placeholder="Ex: R$ 800" value="'+D.alimentacao+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>9.</span> Saúde — plano de saúde, odontológico, consultas particulares</div><input type="text" id="q9" placeholder="Ex: R$ 350 (plano familiar)" value="'+D.saude+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>10.</span> Educação — escola, faculdade, cursos, material, van escolar <span class="hint">Coloque 0 se não tiver este gasto</span></div><input type="text" id="q10" placeholder="Ex: R$ 600" value="'+D.educacao+'"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>11.</span> Quais desses gastos você tem todo mês? <span class="hint">Marque todos que se aplicam — vamos incluir no cálculo</span></div><div class="tag-wrap">'+htmlTags+'</div><div style="margin-top:10px"><input type="text" id="q11b" placeholder="Valor aproximado de cada um Ex: delivery R$200, celular R$80, academia R$100" value="'+D.gastos_ocultos_valores+'"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>11.</span> Quais desses gastos você tem todo mês? <span class="hint">Marque os que se aplicam — ao marcar, coloque o valor aproximado</span></div><div class="tag-wrap">'+htmlTags+'</div><div id="gastos-val-wrap" style="margin-top:10px;'+(D.gastos_ocultos?'':'display:none')+';"><input type="text" id="q11b" placeholder="Ex: delivery R$200, celular R$80, academia R$100" value="'+D.gastos_ocultos_valores+'"></div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco2()">Continuar</button></div>';
     return;
@@ -277,6 +292,12 @@ function render() {
         gerarLinhaEmp(0) +
       '</div>' +
       '<button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#7c6fd4;font-size:12px;padding:8px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar empréstimo</button></div>' +
+
+      '<div class="divider"></div>' +
+
+      '<div class="pergunta"><div class="secao-titulo">Cheque especial</div>' +
+      '<div class="opcoes-grid">' + opcaoBtn('cheque_especial','NaoUso','Não uso') + opcaoBtn('cheque_especial','Uso','Uso cheque especial') + '</div>' +
+      '<div id="cheque-valor-wrap" style="margin-top:8px;display:'+(D.cheque_especial && D.cheque_especial!=='NaoUso'?'block':'none')+'"><input type="text" id="q_cheque" placeholder="Valor utilizado: R$ ___ / Limite total: R$ ___" value="'+(D.cheque_especial && D.cheque_especial!=='NaoUso'?D.cheque_especial:'')+'" onchange="D.cheque_especial=this.value"></div></div>' +
 
       '<div class="divider"></div>' +
 
