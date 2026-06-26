@@ -174,19 +174,41 @@ function renderOpcoes(containerId, campo, opcoes) {
   });
 }
 
+function criarOpcoesCheque() {
+  var container = document.getElementById('opcoes-cheque');
+  if (!container) return;
+  [['NaoUso','Não uso'],['Uso','Uso cheque especial']].forEach(function(p) {
+    (function(valor, label) {
+      var btn = document.createElement('div');
+      btn.className = 'opcao-btn' + (D.cheque_especial === valor ? ' on' : '');
+      btn.textContent = label;
+      btn.onclick = function() {
+        D.cheque_especial = valor;
+        container.querySelectorAll('.opcao-btn').forEach(function(b){b.classList.remove('on');});
+        btn.classList.add('on');
+        var wrap = document.getElementById('cheque-valor-wrap');
+        if (wrap) wrap.style.display = valor !== 'NaoUso' ? 'block' : 'none';
+      };
+      container.appendChild(btn);
+    })(p[0], p[1]);
+  });
+}
+
 function criarOpcoes(containerId, campo, pares) {
   var container = document.getElementById(containerId);
   if (!container) return;
   pares.forEach(function(p) {
-    var btn = document.createElement('div');
-    btn.className = 'opcao-btn' + (D[campo] === p[0] ? ' on' : '');
-    btn.textContent = p[1];
-    btn.onclick = function() {
-      D[campo] = p[0];
-      container.querySelectorAll('.opcao-btn').forEach(function(b){b.classList.remove('on');});
-      btn.classList.add('on');
-    };
-    container.appendChild(btn);
+    (function(valor, label) {
+      var btn = document.createElement('div');
+      btn.className = 'opcao-btn' + (D[campo] === valor ? ' on' : '');
+      btn.textContent = label;
+      btn.onclick = function() {
+        D[campo] = valor;
+        container.querySelectorAll('.opcao-btn').forEach(function(b){b.classList.remove('on');});
+        btn.classList.add('on');
+      };
+      container.appendChild(btn);
+    })(p[0], p[1]);
   });
 }
 
@@ -441,45 +463,9 @@ function render() {
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco3()">Continuar</button></div>';
     // Botões cheque especial
-    var opcCheque = document.getElementById('opcoes-cheque');
-    ['NaoUso|Não uso', 'Uso|Uso cheque especial'].forEach(function(o) {
-      var p = o.split('|'); var btn = document.createElement('div');
-      btn.className = 'opcao-btn' + (D.cheque_especial === p[0] ? ' on' : '');
-      btn.textContent = p[1];
-      btn.onclick = function() {
-        D.cheque_especial = p[0];
-        opcCheque.querySelectorAll('.opcao-btn').forEach(function(b){b.classList.remove('on');});
-        btn.classList.add('on');
-        document.getElementById('cheque-valor-wrap').style.display = p[0] !== 'NaoUso' ? 'block' : 'none';
-      };
-      opcCheque.appendChild(btn);
-    });
-    // Botões nome negativado
-    var opcNeg = document.getElementById('opcoes-negativo');
-    [['Sim','Sim'],['Nao','Não'],['NaoSei','Não sei']].forEach(function(p) {
-      var btn = document.createElement('div');
-      btn.className = 'opcao-btn' + (D.nome_negativado === p[0] ? ' on' : '');
-      btn.textContent = p[1];
-      btn.onclick = function() {
-        D.nome_negativado = p[0];
-        opcNeg.querySelectorAll('.opcao-btn').forEach(function(b){b.classList.remove('on');});
-        btn.classList.add('on');
-      };
-      opcNeg.appendChild(btn);
-    });
-    // Botões tentou renegociar
-    var opcReneg = document.getElementById('opcoes-reneg');
-    [['SimBoas','Sim, consegui boas condições'],['Tentei','Tentei mas não consegui'],['Nunca','Nunca tentei']].forEach(function(p) {
-      var btn = document.createElement('div');
-      btn.className = 'opcao-btn' + (D.tentou_negociar === p[0] ? ' on' : '');
-      btn.textContent = p[1];
-      btn.onclick = function() {
-        D.tentou_negociar = p[0];
-        opcReneg.querySelectorAll('.opcao-btn').forEach(function(b){b.classList.remove('on');});
-        btn.classList.add('on');
-      };
-      opcReneg.appendChild(btn);
-    });
+    criarOpcoesCheque();
+    criarOpcoes('opcoes-negativo','nome_negativado',[['Sim','Sim'],['Nao','Não'],['NaoSei','Não sei']]);
+    criarOpcoes('opcoes-reneg','tentou_negociar',[['SimBoas','Sim, consegui boas condições'],['Tentei','Tentei mas não consegui'],['Nunca','Nunca tentei']]);
     restaurarDividas(); restaurarRenegs(); restaurarEmps();
     return;
   }
