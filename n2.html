@@ -796,9 +796,45 @@ async function gerarAnalise() {
   ' Por que organizar agora é importante: ' + (D.por_que_agora || 'Não informado') +
   ' O que impede de agir: ' + D.impedimento;
 
-  var payload = JSON.stringify({renda:D.renda_liquida,situacao:D.renda_estavel,total:formatarDividas(),percentual:'',tipos:D.divida_mais_pesada,emocional:D.sentimento_financas,preocupacao:D.impedimento,nome:D.nome,prompt:prompt});
+  var payload = JSON.stringify({
+    renda_liquida: D.renda_liquida,
+    renda_extra_familiar: D.renda_extra_familiar,
+    outras_rendas: D.outras_rendas,
+    renda_estavel: D.renda_estavel,
+    moradia: D.moradia,
+    contas_consumo: D.contas_consumo,
+    transporte: D.transporte,
+    alimentacao: D.alimentacao,
+    saude: D.saude,
+    educacao: D.educacao,
+    gastos_ocultos: D.gastos_ocultos,
+    dividas: formatarDividas(),
+    renegociacoes: formatarRenegociacoes(),
+    emprestimos: formatarEmprestimos(),
+    cheque_especial: D.cheque_especial,
+    divida_mais_pesada: D.divida_mais_pesada,
+    nome_negativado: D.nome_negativado,
+    tentou_negociar: D.tentou_negociar,
+    decisao_compra: D.decisao_compra,
+    cartao_gestao: D.cartao_gestao,
+    habito_poupar: D.habito_poupar,
+    sobra_dinheiro: D.sobra_dinheiro,
+    sentimento_financas: D.sentimento_financas,
+    nivel_stress: D.nivel_stress,
+    evento_vida: D.evento_vida,
+    evita_contas: D.evita_contas,
+    dinheiro_relacionamentos: D.dinheiro_relacionamentos,
+    dependentes: D.dependentes,
+    compartilha_despesas: D.compartilha_despesas,
+    familia_dinheiro: D.familia_dinheiro,
+    reserva_emergencia: D.reserva_emergencia,
+    objetivo_12meses: D.objetivo_12meses,
+    sucesso_financeiro: D.sucesso_financeiro,
+    por_que_agora: D.por_que_agora,
+    impedimento: D.impedimento
+  });
   var esperarTempo = new Promise(function(resolve){setTimeout(resolve,45000);});
-  var chamarAPI = fetch('https://matias-diagnostico.contato-matiasvalente.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:payload});
+  var chamarAPI = fetch('https://matias-n2.contato-matiasvalente.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:payload});
   try {
     var resultados = await Promise.all([chamarAPI, esperarTempo]);
     var dados_resp = await resultados[0].json();
