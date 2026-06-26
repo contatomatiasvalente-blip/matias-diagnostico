@@ -251,35 +251,52 @@ function render() {
 
   if (blocoAtual === 3) {
     setProg(42, 'Bloco 3 de 7 — Dívidas');
-    var divHtml = '';
-    for (var i = 0; i < 5; i++) {
-      var d = D.dividas[i];
-      divHtml += '<div style="margin-bottom:12px"><div class="linha-num">Dívida '+(i+1)+'</div><div class="linha-estruturada col3"><input type="text" id="div'+i+'_tipo" placeholder="Tipo (ex: Cartão Nubank)" value="'+(d.tipo||'')+'"><input type="text" id="div'+i+'_total" placeholder="Valor total (R$)" value="'+(d.total||'')+'"><input type="text" id="div'+i+'_parcela" placeholder="Parcela/mês (R$)" value="'+(d.parcela||'')+'"></div></div>';
-    }
-    var renHtml = '';
-    for (var j = 0; j < 3; j++) {
-      var r = D.renegociacoes[j];
-      renHtml += '<div style="margin-bottom:12px"><div class="linha-num">Renegociação '+(j+1)+'</div><div class="linha-estruturada col3"><input type="text" id="ren'+j+'_credor" placeholder="Credor" value="'+(r.credor||'')+'"><input type="text" id="ren'+j+'_parcela" placeholder="Parcela (R$)" value="'+(r.parcela||'')+'"><input type="text" id="ren'+j+'_restantes" placeholder="Parcelas restantes" value="'+(r.restantes||'')+'"></div></div>';
-    }
-    var empHtml = '';
-    for (var k = 0; k < 3; k++) {
-      var e = D.emprestimos[k];
-      empHtml += '<div style="margin-bottom:12px"><div class="linha-num">Empréstimo/Financiamento '+(k+1)+'</div><div class="linha-estruturada col4"><input type="text" id="emp'+k+'_credor" placeholder="Banco/Credor" value="'+(e.credor||'')+'"><input type="text" id="emp'+k+'_total" placeholder="Saldo devedor (R$)" value="'+(e.total||'')+'"><input type="text" id="emp'+k+'_parcela" placeholder="Parcela (R$)" value="'+(e.parcela||'')+'"><input type="text" id="emp'+k+'_restantes" placeholder="Parcelas restantes" value="'+(e.restantes||'')+'"></div></div>';
-    }
-    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 3 de 7</div><div class="bloco-titulo">Dívidas e crédito</div><div class="bloco-sub">Esta é a parte mais importante. Quanto mais preciso, mais cirúrgica será sua análise.</div>' +
-      '<div class="pergunta"><div class="secao-titulo">Dívidas em atraso ou ativas</div><span class="hint">Preencha as que tiver. Deixe em branco o que não se aplicar.</span>'+divHtml+'</div>' +
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 3 de 7</div><div class="bloco-titulo">Dívidas e crédito</div><div class="bloco-sub">Preencha apenas o que se aplica à sua situação. Campos em branco serão ignorados.</div>' +
+
+      '<div class="pergunta"><div class="secao-titulo">Dívidas em atraso ou ativas</div>' +
+      '<span class="hint">Cartão, financiamento, empréstimo, etc. Preencha a primeira e clique em + para adicionar mais.</span>' +
+      '<div id="dividas-wrap">' +
+        gerarLinhaDivida(0) +
+      '</div>' +
+      '<button onclick="adicionarDivida()" style="background:transparent;border:1px dashed #3a3a6a;color:#7c6fd4;font-size:12px;padding:8px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar dívida</button></div>' +
+
       '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Cheque especial</div><div class="opcoes-grid"><div class="opcao-btn'+(D.cheque_especial==='Não uso'?' on':'')+'" onclick="toggleOpcaoData(this)"">Não uso</div><div class="opcao-btn'+(D.cheque_especial && D.cheque_especial!=='Não uso'?' on':'')+'" onclick="toggleOpcaoData(this)"">Uso</div></div>'+(D.cheque_especial && D.cheque_especial!=='Não uso'?'<input type="text" id="q_cheque" placeholder="Valor utilizado: R$  /  Limite total: R$" style="margin-top:8px" value="'+D.cheque_especial+'">':'')+'</div>' +
+
+      '<div class="pergunta"><div class="secao-titulo">Renegociações em andamento</div>' +
+      '<span class="hint">Acordos ativos com credores. Deixe em branco se não tiver.</span>' +
+      '<div id="reneg-wrap">' +
+        gerarLinhaReneg(0) +
+      '</div>' +
+      '<button onclick="adicionarReneg()" style="background:transparent;border:1px dashed #3a3a6a;color:#7c6fd4;font-size:12px;padding:8px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar renegociação</button></div>' +
+
       '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="secao-titulo">Renegociações em andamento</div><span class="hint">Acordos ativos com credores. Deixe em branco se não tiver.</span>'+renHtml+'</div>' +
+
+      '<div class="pergunta"><div class="secao-titulo">Empréstimos e financiamentos</div>' +
+      '<span class="hint">Consignado, pessoal, carro, imóvel. Deixe em branco se não tiver.</span>' +
+      '<div id="emp-wrap">' +
+        gerarLinhaEmp(0) +
+      '</div>' +
+      '<button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#7c6fd4;font-size:12px;padding:8px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar empréstimo</button></div>' +
+
       '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="secao-titulo">Empréstimos e financiamentos</div><span class="hint">Consignado, pessoal, carro, imóvel. Deixe em branco se não tiver.</span>'+empHtml+'</div>' +
-      '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Qual dívida pesa mais no seu orçamento hoje?</div><input type="text" id="q_pesada" placeholder="Ex: Cartão de crédito — juros muito altos" value="'+D.divida_mais_pesada+'"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Seu nome está negativado (SPC/Serasa)?</div>' + '<div class="opcoes-grid">' + opcaoBtn('nome_negativado','Sim','Sim') + opcaoBtn('nome_negativado','Nao','Não') + opcaoBtn('nome_negativado','NaoSei','Não sei') + '</div></div></div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Você já tentou renegociar alguma dívida?</div>' + '<div class="opcoes-grid col1">' + opcaoBtn('tentou_negociar','SimBoas','Sim, consegui boas condições') + opcaoBtn('tentou_negociar','Tentei','Tentei mas não consegui') + opcaoBtn('tentou_negociar','Nunca','Nunca tentei') + '</div></div></div></div>' +
+
+      '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Qual dívida pesa mais no seu orçamento hoje? <span class="hint">Opcional</span></div><input type="text" id="q_pesada" placeholder="Ex: Cartão de crédito — juros muito altos" value="'+D.divida_mais_pesada+'"></div>' +
+
+      '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Seu nome está negativado (SPC/Serasa)?</div><div class="opcoes-grid">' +
+        opcaoBtn('nome_negativado','Sim','Sim') + opcaoBtn('nome_negativado','Nao','Não') + opcaoBtn('nome_negativado','NaoSei','Não sei') +
+      '</div></div>' +
+
+      '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Você já tentou renegociar alguma dívida?</div><div class="opcoes-grid col1">' +
+        opcaoBtn('tentou_negociar','SimBoas','Sim, consegui boas condições') + opcaoBtn('tentou_negociar','Tentei','Tentei mas não consegui') + opcaoBtn('tentou_negociar','Nunca','Nunca tentei') +
+      '</div></div>' +
+
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco3()">Continuar</button></div>';
+
+    // Restaurar dados salvos
+    restaurarDividas();
+    restaurarRenegs();
+    restaurarEmps();
     return;
   }
 
@@ -383,26 +400,151 @@ function salvarBloco2() {
   avancar();
 }
 
+function gerarLinhaDivida(idx) {
+  return '<div class="linha-estruturada col3" id="div-linha-'+idx+'" style="margin-bottom:8px">' +
+    '<input type="text" id="div'+idx+'_tipo" placeholder="Tipo (Ex: Cartão Nubank)" onchange="syncDivida('+idx+')">' +
+    '<input type="text" id="div'+idx+'_total" placeholder="Valor total (R$)" onchange="syncDivida('+idx+')">' +
+    '<input type="text" id="div'+idx+'_parcela" placeholder="Parcela/mês (R$)" onchange="syncDivida('+idx+')"></div>';
+}
+
+function gerarLinhaReneg(idx) {
+  return '<div class="linha-estruturada col3" id="ren-linha-'+idx+'" style="margin-bottom:8px">' +
+    '<input type="text" id="ren'+idx+'_credor" placeholder="Credor" onchange="syncReneg('+idx+')">' +
+    '<input type="text" id="ren'+idx+'_parcela" placeholder="Parcela (R$)" onchange="syncReneg('+idx+')">' +
+    '<input type="text" id="ren'+idx+'_restantes" placeholder="Parcelas restantes" onchange="syncReneg('+idx+')"></div>';
+}
+
+function gerarLinhaEmp(idx) {
+  return '<div class="linha-estruturada col4" id="emp-linha-'+idx+'" style="margin-bottom:8px">' +
+    '<input type="text" id="emp'+idx+'_credor" placeholder="Banco/Credor" onchange="syncEmp('+idx+')">' +
+    '<input type="text" id="emp'+idx+'_total" placeholder="Saldo devedor (R$)" onchange="syncEmp('+idx+')">' +
+    '<input type="text" id="emp'+idx+'_parcela" placeholder="Parcela (R$)" onchange="syncEmp('+idx+')">' +
+    '<input type="text" id="emp'+idx+'_restantes" placeholder="Parcelas restantes" onchange="syncEmp('+idx+')"></div>';
+}
+
+var numDividas = 1;
+var numRenegs = 1;
+var numEmps = 1;
+
+function adicionarDivida() {
+  if (numDividas >= 5) return;
+  var wrap = document.getElementById('dividas-wrap');
+  if (wrap) {
+    var div = document.createElement('div');
+    div.innerHTML = gerarLinhaDivida(numDividas);
+    wrap.appendChild(div.firstChild);
+    while (D.dividas.length <= numDividas) D.dividas.push({tipo:'',total:'',parcela:''});
+    numDividas++;
+  }
+}
+
+function adicionarReneg() {
+  if (numRenegs >= 5) return;
+  var wrap = document.getElementById('reneg-wrap');
+  if (wrap) {
+    var div = document.createElement('div');
+    div.innerHTML = gerarLinhaReneg(numRenegs);
+    wrap.appendChild(div.firstChild);
+    while (D.renegociacoes.length <= numRenegs) D.renegociacoes.push({credor:'',parcela:'',restantes:''});
+    numRenegs++;
+  }
+}
+
+function adicionarEmp() {
+  if (numEmps >= 5) return;
+  var wrap = document.getElementById('emp-wrap');
+  if (wrap) {
+    var div = document.createElement('div');
+    div.innerHTML = gerarLinhaEmp(numEmps);
+    wrap.appendChild(div.firstChild);
+    while (D.emprestimos.length <= numEmps) D.emprestimos.push({credor:'',total:'',parcela:'',restantes:''});
+    numEmps++;
+  }
+}
+
+function syncDivida(idx) {
+  while (D.dividas.length <= idx) D.dividas.push({tipo:'',total:'',parcela:''});
+  D.dividas[idx].tipo = getVal('div'+idx+'_tipo');
+  D.dividas[idx].total = getVal('div'+idx+'_total');
+  D.dividas[idx].parcela = getVal('div'+idx+'_parcela');
+}
+
+function syncReneg(idx) {
+  while (D.renegociacoes.length <= idx) D.renegociacoes.push({credor:'',parcela:'',restantes:''});
+  D.renegociacoes[idx].credor = getVal('ren'+idx+'_credor');
+  D.renegociacoes[idx].parcela = getVal('ren'+idx+'_parcela');
+  D.renegociacoes[idx].restantes = getVal('ren'+idx+'_restantes');
+}
+
+function syncEmp(idx) {
+  while (D.emprestimos.length <= idx) D.emprestimos.push({credor:'',total:'',parcela:'',restantes:''});
+  D.emprestimos[idx].credor = getVal('emp'+idx+'_credor');
+  D.emprestimos[idx].total = getVal('emp'+idx+'_total');
+  D.emprestimos[idx].parcela = getVal('emp'+idx+'_parcela');
+  D.emprestimos[idx].restantes = getVal('emp'+idx+'_restantes');
+}
+
+function restaurarDividas() {
+  for (var i = 1; i < D.dividas.length; i++) {
+    if (D.dividas[i] && D.dividas[i].tipo) adicionarDivida();
+  }
+  for (var i = 0; i < D.dividas.length; i++) {
+    var el; 
+    el = document.getElementById('div'+i+'_tipo'); if(el) el.value = D.dividas[i].tipo||'';
+    el = document.getElementById('div'+i+'_total'); if(el) el.value = D.dividas[i].total||'';
+    el = document.getElementById('div'+i+'_parcela'); if(el) el.value = D.dividas[i].parcela||'';
+  }
+}
+
+function restaurarRenegs() {
+  for (var i = 1; i < D.renegociacoes.length; i++) {
+    if (D.renegociacoes[i] && D.renegociacoes[i].credor) adicionarReneg();
+  }
+  for (var i = 0; i < D.renegociacoes.length; i++) {
+    var el;
+    el = document.getElementById('ren'+i+'_credor'); if(el) el.value = D.renegociacoes[i].credor||'';
+    el = document.getElementById('ren'+i+'_parcela'); if(el) el.value = D.renegociacoes[i].parcela||'';
+    el = document.getElementById('ren'+i+'_restantes'); if(el) el.value = D.renegociacoes[i].restantes||'';
+  }
+}
+
+function restaurarEmps() {
+  for (var i = 1; i < D.emprestimos.length; i++) {
+    if (D.emprestimos[i] && D.emprestimos[i].credor) adicionarEmp();
+  }
+  for (var i = 0; i < D.emprestimos.length; i++) {
+    var el;
+    el = document.getElementById('emp'+i+'_credor'); if(el) el.value = D.emprestimos[i].credor||'';
+    el = document.getElementById('emp'+i+'_total'); if(el) el.value = D.emprestimos[i].total||'';
+    el = document.getElementById('emp'+i+'_parcela'); if(el) el.value = D.emprestimos[i].parcela||'';
+    el = document.getElementById('emp'+i+'_restantes'); if(el) el.value = D.emprestimos[i].restantes||'';
+  }
+}
+
 function salvarBloco3() {
   esconderErro();
-  for (var i = 0; i < 5; i++) {
+  // Coletar dívidas
+  for (var i = 0; i < numDividas; i++) {
+    while (D.dividas.length <= i) D.dividas.push({tipo:'',total:'',parcela:''});
     D.dividas[i].tipo = getVal('div'+i+'_tipo');
     D.dividas[i].total = getVal('div'+i+'_total');
     D.dividas[i].parcela = getVal('div'+i+'_parcela');
   }
-  for (var j = 0; j < 3; j++) {
+  // Coletar renegociações
+  for (var j = 0; j < numRenegs; j++) {
+    while (D.renegociacoes.length <= j) D.renegociacoes.push({credor:'',parcela:'',restantes:''});
     D.renegociacoes[j].credor = getVal('ren'+j+'_credor');
     D.renegociacoes[j].parcela = getVal('ren'+j+'_parcela');
     D.renegociacoes[j].restantes = getVal('ren'+j+'_restantes');
   }
-  for (var k = 0; k < 3; k++) {
+  // Coletar empréstimos
+  for (var k = 0; k < numEmps; k++) {
+    while (D.emprestimos.length <= k) D.emprestimos.push({credor:'',total:'',parcela:'',restantes:''});
     D.emprestimos[k].credor = getVal('emp'+k+'_credor');
     D.emprestimos[k].total = getVal('emp'+k+'_total');
     D.emprestimos[k].parcela = getVal('emp'+k+'_parcela');
     D.emprestimos[k].restantes = getVal('emp'+k+'_restantes');
   }
-  var chequeEl = document.getElementById('q_cheque');
-  if (chequeEl) D.cheque_especial = chequeEl.value.trim();
   D.divida_mais_pesada = getVal('q_pesada');
   if (!D.nome_negativado) { mostrarErro('Por favor informe se seu nome está negativado.'); return; }
   if (!D.tentou_negociar) { mostrarErro('Por favor informe se já tentou renegociar alguma dívida.'); return; }
