@@ -103,6 +103,30 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 </div>
 
 <script>
+var SENHA_CORRETA = 'matias2026';
+
+function verificarSenha() {
+  var s = document.getElementById('campo-senha').value.trim();
+  if (s === SENHA_CORRETA) {
+    document.getElementById('tela-senha').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    render();
+  } else {
+    document.getElementById('erro-senha').style.display = 'block';
+    document.getElementById('campo-senha').value = '';
+    document.getElementById('campo-senha').focus();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var campo = document.getElementById('campo-senha');
+  if (campo) {
+    campo.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') verificarSenha();
+    });
+  }
+});
+
 var D = {
   nome:'', renda_liquida:'', outras_rendas:'', renda_estavel:'',
   moradia:'', transporte:'', alimentacao:'', saude_escola:'',
