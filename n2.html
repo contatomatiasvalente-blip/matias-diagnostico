@@ -97,6 +97,14 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
 <script>
 var SENHA_CORRETA = 'matias2026';
 
+function mostrarQ2Quem(val) {
+  var wrap = document.getElementById('q2-quem-wrap');
+  if (wrap) wrap.style.display = val.trim() ? 'block' : 'none';
+}
+function mostrarQ3Tipo(val) {
+  var wrap = document.getElementById('q3-tipo-wrap');
+  if (wrap) wrap.style.display = val.trim() ? 'block' : 'none';
+}
 function verificarSenha() {
   var s = document.getElementById('campo-senha').value.trim();
   if (s === SENHA_CORRETA) {
@@ -116,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 var D = {
-  nome:'', renda_liquida:'', renda_extra_familiar:'', outras_rendas:'', renda_estavel:'',
+  nome:'', renda_liquida:'', renda_extra_familiar:'', renda_extra_valor:'', renda_extra_quem:'', outras_rendas:'', outras_rendas_valor:'', outras_rendas_tipo:'', renda_estavel:'',
   moradia:'', contas_consumo:'', transporte:'', alimentacao:'', saude:'', educacao:'',
   gastos_ocultos:'', gastos_ocultos_valores:'',
   dividas:[{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''}],
@@ -131,6 +139,12 @@ var D = {
   diagnostico:''
 };
 
+function opcaoBtn(campo, valor, label) {
+  var on = D[campo] === valor ? ' on' : '';
+  return '<div class="opcao-btn opcao-campo-'+campo+' '+on+'" data-campo="'+campo+'" data-valor="'+valor+'" onclick="selecionarOpcao(this)">' + label + '</div>';
+}
+
+
 var blocoAtual = 0;
 
 function opcaoBtn(campo, valor, label) {
@@ -139,20 +153,18 @@ function opcaoBtn(campo, valor, label) {
   return '<div id="' + id + '" class="opcao-btn' + on + '" onclick="selecionarOpcao(\''+campo+'\',\''+valor+'\')">' + label + '</div>';
 }
 
-function selecionarOpcao(campo, valor) {
+function selecionarOpcao(el) {
+  var campo = el.dataset.campo;
+  var valor = el.dataset.valor;
   D[campo] = valor;
   // Remover .on de todos os botões do mesmo campo
-  document.querySelectorAll('[id^="opcao_' + campo + '_"]').forEach(function(b){ b.classList.remove('on'); });
-  // Adicionar .on ao selecionado
-  var el = document.getElementById('opcao_' + campo + '_' + valor);
-  if (el) el.classList.add('on');
-  // Cheque especial - mostrar campo de valor
-  if (campo === 'cheque_especial' && valor !== 'NaoUso') {
+  var todos = document.querySelectorAll('.opcao-campo-' + campo);
+  for (var i=0; i<todos.length; i++) todos[i].classList.remove('on');
+  el.classList.add('on');
+  // Cheque especial
+  if (campo === 'cheque_especial') {
     var wrap = document.getElementById('cheque-valor-wrap');
-    if (wrap) wrap.style.display = 'block';
-  } else if (campo === 'cheque_especial') {
-    var wrap = document.getElementById('cheque-valor-wrap');
-    if (wrap) wrap.style.display = 'none';
+    if (wrap) wrap.style.display = (valor !== 'NaoUso') ? 'block' : 'none';
   }
 }
 
@@ -276,8 +288,14 @@ function render() {
     setProg(14, 'Bloco 1 de 7 — Renda');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 1 de 7</div><div class="bloco-titulo">Renda e receitas</div><div class="bloco-sub">Vamos entender tudo que entra todo mês.</div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>1.</span> Qual é a sua renda mensal líquida? <span class="hint">Valor que cai na conta após descontos — salário, aposentadoria, pensão, etc.</span></div><input type="text" id="q1" placeholder="Ex: R$ 3.500" value="'+D.renda_liquida+'"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>2.</span> Alguém na família contribui com a renda da casa?<br><span class="hint">Se sim, informe quem e o valor. Ex: Cônjuge R$1.200. Se não, deixe em branco.</span></div><input type="text" id="q2b" placeholder="Ex: Cônjuge R$1.200 / Filho adulto R$500" value="'+D.renda_extra_familiar+'"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>3.</span> Você tem outras fontes de renda?<br><span class="hint">Freela, aluguel, bico, investimentos, etc. Se sim, descreva e informe o valor. Se não, deixe em branco.</span></div><input type="text" id="q3b" placeholder="Ex: Aluguel R$800 / Freela R$400" value="'+D.outras_rendas+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>2.</span> Alguém na família contribui com a renda da casa? <span class="hint">Se sim, informe o valor mensal. Se não, deixe em branco.</span></div>' +
+      '<input type="text" id="q2_valor" placeholder="Valor aproximado: R$" style="margin-bottom:8px" value="'+D.renda_extra_valor+'" oninput="mostrarQ2Quem(this.value)">' +
+      '<div id="q2-quem-wrap" style="'+(D.renda_extra_valor?'':'display:none')+'">' +
+      '<input type="text" id="q2_quem" placeholder="Quem contribui? Ex: Cônjuge, filho adulto, aluguel..." value="'+D.renda_extra_quem+'"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>3.</span> Você tem outras fontes de renda além da principal? <span class="hint">Se sim, informe o valor total aproximado. Se não, deixe em branco.</span></div>' +
+      '<input type="text" id="q3_valor" placeholder="Valor aproximado: R$" style="margin-bottom:8px" value="'+D.outras_rendas_valor+'" oninput="mostrarQ3Tipo(this.value)">' +
+      '<div id="q3-tipo-wrap" style="'+(D.outras_rendas_valor?'':'display:none')+'">' +
+      '<input type="text" id="q3_tipo" placeholder="Proveniente de quê? Ex: aluguel, freela, investimentos..." value="'+D.outras_rendas_tipo+'"></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>4.</span> Sua renda é estável ou varia todo mês?</div><div class="opcoes-grid col1">' + opcaoBtn('renda_estavel','Estavel','Estável — recebo praticamente o mesmo todo mês') + opcaoBtn('renda_estavel','Varia','Varia — há meses melhores e piores') + opcaoBtn('renda_estavel','Instavel','Muito instável — não consigo prever') + '</div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco1()">Continuar</button></div>';
@@ -458,8 +476,12 @@ function salvarBloco1() {
   D.renda_liquida = getVal('q1');
   if (!D.renda_liquida) { mostrarErro('Por favor informe sua renda mensal líquida.'); return; }
   if (!D.renda_estavel) { mostrarErro('Por favor selecione a estabilidade da sua renda.'); return; }
-  var q2b = document.getElementById('q2b');
-  if (q2b && q2b.value.trim()) D.renda_extra_familiar = 'Sim — R$ ' + q2b.value.trim();
+  D.renda_extra_valor = getVal('q2_valor');
+  D.renda_extra_quem = getVal('q2_quem');
+  D.renda_extra_familiar = D.renda_extra_valor ? 'R$'+D.renda_extra_valor+(D.renda_extra_quem?' ('+D.renda_extra_quem+')':'') : '';
+  D.outras_rendas_valor = getVal('q3_valor');
+  D.outras_rendas_tipo = getVal('q3_tipo');
+  D.outras_rendas = D.outras_rendas_valor ? 'R$'+D.outras_rendas_valor+(D.outras_rendas_tipo?' ('+D.outras_rendas_tipo+')':'') : '';
   avancar();
 }
 
@@ -701,67 +723,77 @@ function formatarEmprestimos() {
 }
 
 async function gerarAnalise() {
-  var prompt = 'Você é o assistente do Matias Valente, ex-gerente de banco com mais de 25 anos de experiência. Gere uma análise financeira COMPLETA, DETALHADA e EMPÁTICA em português correto com todos os acentos e cedilhas. O cliente pagou por esta análise — ela deve ser cirúrgica e valiosa.' +
+  var prompt = 'Você é Matias Valente, ex-gerente de banco com mais de 25 anos de experiência. O cliente pagou por esta análise financeira completa e espera um diagnóstico PROFUNDO, CIRÚRGICO e DIFERENTE do diagnóstico gratuito. Esta análise deve ser muito superior — com cálculos reais, cruzamento de dados, diagnóstico comportamental e caminhos concretos.' +
 
   ' REGRAS ABSOLUTAS:' +
-  ' Escreva SEMPRE em português correto com acentuação completa.' +
-  ' Use APENAS parágrafos simples separados por linha em branco — SEM títulos, SEM numeração, SEM labels entre parágrafos.' +
-  ' Tom empático, profissional e encorajador — nunca agressivo.' +
+  ' Escreva em português correto com acentuação completa.' +
+  ' Use parágrafos separados por linha em branco. SEM títulos, SEM numeração visível, SEM labels.' +
+  ' Tom empático, profissional e direto. NUNCA seja vago ou genérico.' +
+  ' NUNCA repita o que o diagnóstico gratuito já diz.' +
   ' NUNCA use a palavra simples.' +
-  ' NUNCA faça perguntas diretas ao leitor.' +
-  ' NUNCA mencione prazos em dias ou meses.' +
-  ' Use valores em números: R$3.000, não três mil.' +
-  ' NUNCA repita o mesmo valor como intervalo: escreva R$6.000 e não R$6.000 a R$6.000.' +
-  ' NUNCA invente dados não informados.' +
-  ' ASSINATURA: apenas Matias Valente sem subtítulos.' +
+  ' Use valores em números: R$3.000.' +
+  ' ASSINATURA: apenas Matias Valente.' +
 
-  ' ESTRUTURA OBRIGATÓRIA — EXATAMENTE 9 PARÁGRAFOS, TODOS OBRIGATÓRIOS:' +
-  ' PARÁGRAFO 1: RECONHECIMENTO EMOCIONAL — 3-4 frases empáticas baseadas no sentimento, estresse e impacto nos relacionamentos informados. Alta empatia e identificação.' +
-  ' PARÁGRAFO 2: PERFIL COMPORTAMENTAL — Identifique o perfil (Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador) e explique em profundidade conectando ao comportamento financeiro e decisões informadas.' +
-  ' PARÁGRAFO 3: DIAGNÓSTICO MATEMÁTICO — Some TODAS as despesas informadas: moradia + contas consumo + transporte + alimentação + saúde + educação + gastos ocultos + parcelas de dívidas + renegociações + empréstimos. Subtraia da renda total (líquida + familiar + outras). Mostre o resultado real. Se déficit, aponte claramente. Se sobra, mostre quanto. Destaque os gastos ocultos como onde o dinheiro some sem perceber.' +
-  ' PARÁGRAFO 4: O PADRÃO — Com base no contexto familiar, crenças sobre dinheiro e comportamento emocional, revele o padrão psicológico e comportamental que perpetua a situação. Este é o diferencial da análise.' +
-  ' PARÁGRAFO 5: ESTRATÉGIA PASSO 1 — A ação mais urgente e de maior impacto para esta situação específica. Concreta e realizável.' +
-  ' PARÁGRAFO 6: ESTRATÉGIA PASSO 2 — Segunda ação prioritária complementar à primeira.' +
-  ' PARÁGRAFO 7: ESTRATÉGIA PASSO 3 — Terceira ação focada em construir um novo padrão financeiro sustentável.' +
-  ' PARÁGRAFO 8: MUDANÇAS ESPECÍFICAS — 3 mudanças de comportamento específicas para este perfil, conectadas ao objetivo declarado em 12 meses.' +
-  ' PARÁGRAFO 9: MENSAGEM FINAL — Mensagem direta, calorosa e real. Conecte ao objetivo declarado, ao esforço de responder tudo e ao caminho possível. Esperança genuína ancorada nos dados reais.' +
+  ' ESTRUTURA OBRIGATÓRIA — 9 PARÁGRAFOS COMPLETOS E DENSOS:' +
 
-  ' DADOS COMPLETOS:' +
+  ' PARÁGRAFO 1 — RECONHECIMENTO EMOCIONAL PROFUNDO: Espelhe com precisão o que a pessoa está vivendo emocionalmente. Use o nível de estresse informado, o sentimento declarado e o impacto nos relacionamentos. Não seja genérico — referencie o que ela disse especificamente. 3-4 frases de alta identificação.' +
+
+  ' PARÁGRAFO 2 — PERFIL COMPORTAMENTAL DETALHADO: Identifique o perfil (Trabalhador Exausto, Apagador de Incêndios, Parcelador, Sobrevivente, Quase Organizado ou Cuidador). Explique em profundidade os padrões comportamentais observados — decisão de compra, uso do cartão, hábito de poupar, o que faz quando sobra dinheiro. Conecte esses padrões entre si mostrando como formam um ciclo.' +
+
+  ' PARÁGRAFO 3 — DIAGNÓSTICO MATEMÁTICO COMPLETO: Some TODAS as despesas informadas com os valores exatos: moradia + contas de consumo + transporte + alimentação + saúde + educação + gastos ocultos identificados + todas as parcelas de dívidas + renegociações + empréstimos. Subtraia da renda total (líquida + contribuição familiar + outras rendas). Mostre o número exato que sobra ou o déficit exato. Se houver déficit, calcule quanto falta por mês. Destaque os gastos ocultos como vilões invisíveis. Seja didático como um contador explicando para um cliente.' +
+
+  ' PARÁGRAFO 4 — ANÁLISE DAS DÍVIDAS: Analise cada dívida informada. Calcule o comprometimento total com dívidas em relação à renda. Identifique qual tem maior custo (juros mais altos geralmente são cartão e cheque especial). Estime o custo de arrastar essas dívidas por mais 12 meses sem ação. Mostre o efeito bola de neve se nada mudar.' +
+
+  ' PARÁGRAFO 5 — O PADRÃO PSICOLÓGICO E COMPORTAMENTAL: Com base na relação familiar com dinheiro, crenças informadas, comportamento emocional e eventos de vida, revele o padrão psicológico que está perpetuando a situação. Este é o diferencial da análise paga — o que está por trás dos números. Conecte infância, comportamento atual e ciclo financeiro.' +
+
+  ' PARÁGRAFO 6 — ESTRATÉGIA DE SAÍDA PASSO 1 — AÇÃO IMEDIATA: A ação mais urgente e de maior impacto financeiro para esta situação específica. Seja cirúrgico — qual dívida atacar primeiro e por quê (maior juro, menor saldo, bola de neve). Como negociar. O que fazer na prática.' +
+
+  ' PARÁGRAFO 7 — ESTRATÉGIA DE SAÍDA PASSO 2 — REORGANIZAÇÃO: Como reorganizar o orçamento com os números reais informados. Onde cortar (cite os gastos ocultos específicos que a pessoa marcou). Como criar margem de sobra. Como guardar mesmo com pouco.' +
+
+  ' PARÁGRAFO 8 — ESTRATÉGIA DE SAÍDA PASSO 3 — CONSTRUÇÃO DO NOVO PADRÃO: Como construir um comportamento financeiro sustentável baseado no perfil desta pessoa. Mudanças específicas conectadas ao que ela declarou querer em 12 meses e ao que considera sucesso financeiro. Não genérico — personalizado.' +
+
+  ' PARÁGRAFO 9 — MENSAGEM FINAL PERSONALIZADA: Mensagem direta, calorosa e motivadora. Conecte ao objetivo declarado pela pessoa, ao motivo pelo qual organizar as finanças é importante para ela, e ao caminho que acabou de ser traçado. Mostre que a saída é real e possível — com esperança genuína ancorada nos dados reais que ela forneceu.' +
+
+  ' DADOS COMPLETOS DA PESSOA:' +
   ' Renda líquida mensal: ' + D.renda_liquida +
-  ' Contribuição familiar: ' + (D.renda_extra_familiar || 'Não informado') +
-  ' Outras rendas: ' + (D.outras_rendas || 'Não') +
+  ' Contribuição familiar: ' + (D.renda_extra_familiar || 'Nenhuma') +
+  ' Outras rendas: ' + (D.outras_rendas || 'Nenhuma') +
   ' Estabilidade da renda: ' + D.renda_estavel +
+  ' DESPESAS MENSAIS:' +
   ' Moradia: ' + D.moradia +
   ' Contas de consumo: ' + D.contas_consumo +
   ' Transporte: ' + D.transporte +
   ' Alimentação: ' + D.alimentacao +
   ' Saúde: ' + D.saude +
   ' Educação: ' + D.educacao +
-  ' Gastos ocultos: ' + D.gastos_ocultos +
-  ' Valores dos gastos ocultos: ' + D.gastos_ocultos_valores +
-  ' Dívidas: ' + formatarDividas() +
+  ' Gastos ocultos identificados: ' + (D.gastos_ocultos || 'Nenhum informado') +
+  ' DÍVIDAS: ' + formatarDividas() +
   ' Renegociações: ' + formatarRenegociacoes() +
   ' Empréstimos e financiamentos: ' + formatarEmprestimos() +
-  ' Cheque especial: ' + (D.cheque_especial || 'Não usa') +
-  ' Dívida que mais pesa: ' + D.divida_mais_pesada +
+  ' Cheque especial: ' + (D.cheque_especial && D.cheque_especial !== 'NaoUso' ? D.cheque_especial : 'Não usa') +
+  ' Dívida que mais pesa: ' + (D.divida_mais_pesada || 'Não informado') +
   ' Nome negativado: ' + D.nome_negativado +
   ' Tentou renegociar: ' + D.tentou_negociar +
+  ' COMPORTAMENTO:' +
   ' Decisão de compra: ' + D.decisao_compra +
   ' Gestão do cartão: ' + D.cartao_gestao +
   ' Hábito de poupar: ' + D.habito_poupar +
-  ' Quando sobra: ' + D.sobra_dinheiro +
+  ' Quando sobra dinheiro: ' + D.sobra_dinheiro +
+  ' EMOCIONAL:' +
   ' Como se sente: ' + D.sentimento_financas +
   ' Estresse (1-10): ' + D.nivel_stress +
-  ' Crenças sobre dinheiro: ' + D.evento_vida +
+  ' Crenças e infância sobre dinheiro: ' + (D.evento_vida || 'Não informado') +
   ' Evita olhar as contas: ' + D.evita_contas +
-  ' Impacto relacionamentos: ' + D.dinheiro_relacionamentos +
+  ' Impacto nos relacionamentos: ' + D.dinheiro_relacionamentos +
+  ' CONTEXTO FAMILIAR:' +
   ' Dependentes: ' + D.dependentes +
   ' Compartilha despesas: ' + D.compartilha_despesas +
-  ' Família de origem e dinheiro: ' + D.familia_dinheiro +
+  ' Relação familiar com dinheiro: ' + D.familia_dinheiro +
+  ' OBJETIVOS:' +
   ' Reserva de emergência: ' + D.reserva_emergencia +
-  ' Objetivo em 12 meses: ' + D.objetivo_12meses +
+  ' O que quer mudar em 12 meses: ' + D.objetivo_12meses +
   ' Sucesso financeiro significa: ' + D.sucesso_financeiro +
-  ' Por que agora é importante: ' + D.por_que_agora +
+  ' Por que organizar agora é importante: ' + (D.por_que_agora || 'Não informado') +
   ' O que impede de agir: ' + D.impedimento;
 
   var payload = JSON.stringify({renda:D.renda_liquida,situacao:D.renda_estavel,total:formatarDividas(),percentual:'',tipos:D.divida_mais_pesada,emocional:D.sentimento_financas,preocupacao:D.impedimento,nome:D.nome,prompt:prompt});
