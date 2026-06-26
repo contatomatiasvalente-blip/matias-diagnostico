@@ -186,6 +186,43 @@ function toggleOpcao(el, campo, valor) {
   D[campo] = valor;
 }
 
+function toggleGasto(el, key, label) {
+  el.classList.toggle('on');
+  var campo = document.getElementById('gasto_val_' + key);
+  if (el.classList.contains('on')) {
+    if (campo) campo.style.display = 'block';
+    if (!D.gastos_ocultos_map) D.gastos_ocultos_map = {};
+    D.gastos_ocultos_map[key] = D.gastos_ocultos_map[key] || '';
+  } else {
+    if (campo) campo.style.display = 'none';
+    if (D.gastos_ocultos_map) delete D.gastos_ocultos_map[key];
+  }
+  // Atualizar string de gastos_ocultos para o prompt
+  atualizarStringGastos();
+}
+
+function atualizarGasto(key, valor) {
+  if (!D.gastos_ocultos_map) D.gastos_ocultos_map = {};
+  D.gastos_ocultos_map[key] = valor;
+  atualizarStringGastos();
+}
+
+function atualizarStringGastos() {
+  if (!D.gastos_ocultos_map) return;
+  var partes = [];
+  var labels = {
+    delivery:'Delivery', streaming:'Streaming', celular:'Internet e celular',
+    manutcasa:'Manutenção da casa', manutcarro:'Manutenção do carro',
+    farmacia:'Farmácia', academia:'Academia', pet:'Pet', lazer:'Lazer'
+  };
+  for (var k in D.gastos_ocultos_map) {
+    var v = D.gastos_ocultos_map[k];
+    partes.push((labels[k] || k) + (v ? ': R$' + v : ''));
+  }
+  D.gastos_ocultos = partes.join(', ');
+  D.gastos_ocultos_valores = partes.join(', ');
+}
+
 function toggleTagData(el) {
   var campo = el.dataset.campo;
   toggleTag(el, campo);
@@ -249,8 +286,27 @@ function render() {
 
   if (blocoAtual === 2) {
     setProg(28, 'Bloco 2 de 7 — Despesas');
-    var tagsOcultos = ['Delivery e alimentação fora','Streaming (Netflix, Spotify…)','Internet e celular','Manutenção da casa (diarista, reparos)','Manutenção do carro (seguro, IPVA, revisão)','Farmácia e medicamentos contínuos','Academia ou assinaturas','Pet (ração, veterinário)','Lazer e passeios'];
-    var htmlTags = tagsOcultos.map(function(t){ return '<div class="tag-btn'+(D.gastos_ocultos && D.gastos_ocultos.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="gastos_ocultos"">'+t+'</div>'; }).join('');
+    var tagsOcultos = [
+      {key:'delivery', label:'Delivery e alimentação fora'},
+      {key:'streaming', label:'Streaming (Netflix, Spotify…)'},
+      {key:'celular', label:'Internet e celular'},
+      {key:'manutcasa', label:'Manutenção da casa (diarista, reparos)'},
+      {key:'manutcarro', label:'Manutenção do carro (seguro, IPVA, revisão)'},
+      {key:'farmacia', label:'Farmácia e medicamentos contínuos'},
+      {key:'academia', label:'Academia ou assinaturas'},
+      {key:'pet', label:'Pet (ração, veterinário)'},
+      {key:'lazer', label:'Lazer e passeios'}
+    ];
+    if (!D.gastos_ocultos_map) D.gastos_ocultos_map = {};
+    var htmlTags = tagsOcultos.map(function(t){
+      var on = D.gastos_ocultos_map[t.key] ? ' on' : '';
+      var val = D.gastos_ocultos_map[t.key] || '';
+      var display = on ? 'block' : 'none';
+      return '<div style="margin-bottom:10px">' +
+        '<div class="tag-btn'+on+'" data-key="'+t.key+'" onclick="toggleGasto(this,\''+t.key+'\',\''+t.label+'\')">'+t.label+'</div>' +
+        '<input type="text" id="gasto_val_'+t.key+'" placeholder="Valor aproximado: R$" style="display:'+display+';margin-top:6px;width:200px;padding:8px 12px;border-radius:8px;border:1px solid #7c6fd4;background:#080814;color:#e0e0f0;font-size:12px;font-family:Inter,sans-serif" value="'+val+'" onchange="atualizarGasto(\''+t.key+'\',this.value)">' +
+        '</div>';
+    }).join('');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 2 de 7</div><div class="bloco-titulo">Despesas mensais</div><div class="bloco-sub">O que sai todo mês. Coloque valores aproximados — estimativas são bem-vindas.</div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>5.</span> Moradia — aluguel, financiamento, condomínio, IPTU</div><input type="text" id="q5" placeholder="Ex: R$ 1.200 ou Moro com familiar sem custo" value="'+D.moradia+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>6.</span> Contas de consumo — água, luz, gás, internet, telefone <span class="hint">Some todas essas contas e coloque o total aproximado</span></div><input type="text" id="q6" placeholder="Ex: R$ 450" value="'+D.contas_consumo+'"></div>' +
@@ -258,7 +314,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>8.</span> Alimentação — mercado, feira, refeições no trabalho</div><input type="text" id="q8" placeholder="Ex: R$ 800" value="'+D.alimentacao+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>9.</span> Saúde — plano de saúde, odontológico, consultas particulares</div><input type="text" id="q9" placeholder="Ex: R$ 350 (plano familiar)" value="'+D.saude+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>10.</span> Educação — escola, faculdade, cursos, material, van escolar <span class="hint">Coloque 0 se não tiver este gasto</span></div><input type="text" id="q10" placeholder="Ex: R$ 600" value="'+D.educacao+'"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>11.</span> Quais desses gastos você tem todo mês? <span class="hint">Marque os que se aplicam — ao marcar, coloque o valor aproximado</span></div><div class="tag-wrap">'+htmlTags+'</div><div id="gastos-val-wrap" style="margin-top:10px;'+(D.gastos_ocultos?'':'display:none')+';"><input type="text" id="q11b" placeholder="Ex: delivery R$200, celular R$80, academia R$100" value="'+D.gastos_ocultos_valores+'"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>11.</span> Quais desses gastos você tem todo mês? <span class="hint">Marque e informe o valor aproximado de cada um</span></div>'+htmlTags+'</div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco2()">Continuar</button></div>';
     return;
