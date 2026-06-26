@@ -135,7 +135,15 @@ var blocoAtual = 0;
 
 function opcaoBtn(campo, valor, label) {
   var on = D[campo] === valor ? ' on' : '';
-  return '<div class="opcao-btn' + on + '" data-campo="' + campo + '" data-val="' + valor.replace(/"/g,"'") + '" onclick="toggleOpcaoData(this)">' + label + '</div>';
+  return '<div class="opcao-btn' + on + '" onclick="selecionarOpcao(this,\'' + campo + '\',\'' + valor + '\')">' + label + '</div>';
+}
+
+function selecionarOpcao(el, campo, valor) {
+  var parent = el.parentNode;
+  var btns = parent.querySelectorAll('.opcao-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('on');
+  el.classList.add('on');
+  D[campo] = valor;
 }
 
 function toggleOpcaoData(el) {
