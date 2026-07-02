@@ -118,13 +118,17 @@ function mostrarBonusVIP() {
     '<a href="https://contatomatiasvalente-blip.github.io/matias-diagnostico/livro-numero-da-paz.pdf" download style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#34d399;text-decoration:none;font-size:13px;font-weight:600;margin-bottom:8px">📖 Baixar o livro "O Número da Paz"</a>' +
     '<a href="https://contatomatiasvalente-blip.github.io/matias-diagnostico/planilha-numero-da-paz.xlsx" download style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#34d399;text-decoration:none;font-size:13px;font-weight:600">📊 Baixar sua Planilha Comportamental</a>' +
     '</div>';
+  wrap.style.display = 'block';
+}
+function esconderBonusVIP() {
+  var wrap = document.getElementById('vip-bonus-wrap');
+  if (wrap) wrap.style.display = 'none';
 }
 function verificarSenha() {
   var s = document.getElementById('campo-senha').value.trim();
   if (s === SENHA_CORRETA) {
     document.getElementById('tela-senha').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    mostrarBonusVIP();
     render();
   } else {
     document.getElementById('erro-senha').style.display = 'block';
@@ -380,6 +384,8 @@ document.addEventListener('click', function(e) {
 function render() {
   var tela = document.getElementById('tela');
   tela.innerHTML = '';
+
+  if (isVIP) { if (blocoAtual === 0) { mostrarBonusVIP(); } else { esconderBonusVIP(); } }
 
   if (blocoAtual === 0) {
     setProg(0, 'Introdução');
@@ -867,6 +873,7 @@ async function gerarAnalise() {
 }
 
 function exibirResultado() {
+  mostrarBonusVIP();
   var partes = D.diagnostico.split('\n\n').filter(function(p){ return p.trim(); });
   var txt = partes.map(function(p){ return '<p>'+p.replace(/\n/g,'<br>')+'</p>'; }).join('');
   var tela = document.getElementById('tela');
