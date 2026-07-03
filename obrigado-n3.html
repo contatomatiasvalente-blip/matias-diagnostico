@@ -63,7 +63,7 @@ h1{font-size:clamp(22px,4vw,30px);font-weight:700;color:#fff;margin-bottom:12px;
 
   <div class="bonus-titulo">Seus bônus exclusivos</div>
   <div class="bonus-grid">
-    <a href="https://contatomatiasvalente-blip.github.io/matias-diagnostico/livro-numero-da-paz.pdf" class="btn-bonus" download>
+    <a id="link-livro" href="#" class="btn-bonus" download>
       <span class="icone">📖</span>
       <span class="texto">
         <span class="titulo-bonus">Baixar o livro "O Número da Paz"</span>
@@ -71,7 +71,7 @@ h1{font-size:clamp(22px,4vw,30px);font-weight:700;color:#fff;margin-bottom:12px;
       </span>
       <span class="seta">↓</span>
     </a>
-    <a href="https://contatomatiasvalente-blip.github.io/matias-diagnostico/planilha-numero-da-paz.xlsx" class="btn-bonus" download>
+    <a id="link-planilha" href="#" class="btn-bonus" download>
       <span class="icone">📊</span>
       <span class="texto">
         <span class="titulo-bonus">Baixar sua Planilha Comportamental</span>
@@ -85,6 +85,22 @@ h1{font-size:clamp(22px,4vw,30px);font-weight:700;color:#fff;margin-bottom:12px;
 </div>
 
 <script>
+function montarLinksBonus() {
+  var params = new URLSearchParams(window.location.search);
+  var pedido = params.get('order_code');
+  var base = 'https://matias-entrega-n3.contato-matiasvalente.workers.dev/download';
+  var linkLivro = document.getElementById('link-livro');
+  var linkPlanilha = document.getElementById('link-planilha');
+  if (pedido) {
+    if (linkLivro) linkLivro.href = base + '?pedido=' + encodeURIComponent(pedido) + '&arquivo=livro';
+    if (linkPlanilha) linkPlanilha.href = base + '?pedido=' + encodeURIComponent(pedido) + '&arquivo=planilha';
+  } else {
+    if (linkLivro) linkLivro.href = '#';
+    if (linkPlanilha) linkPlanilha.href = '#';
+  }
+}
+montarLinksBonus();
+
 function copiarSenha() {
   navigator.clipboard.writeText('matias2026').then(function() {
     var btn = document.querySelector('.copiar-btn');
