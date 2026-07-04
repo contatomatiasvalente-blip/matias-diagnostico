@@ -241,9 +241,10 @@ function exibir(){
   const saud = S.nome ? S.nome+', sua análise está pronta' : 'Sua análise está pronta';
   document.getElementById('tela').innerHTML = `
     <div class="card">
-      <div class="step-label">Análise exclusiva</div>
+      <div class="step-label">Análise exclusiva — simplificada</div>
       <div class="step-title">${saud}</div>
       <div style="margin-top:16px" class="diagnostico">${S.diagnostico}</div>
+      <div class="diagnostico" style="margin-top:16px">O que você acabou de ler é verdadeiro, mas é só a superfície. Os números reais da sua situação, o motivo específico por trás desse padrão, e o que fazer com isso a partir de agora — isso pede um olhar mais de perto, com mais tempo e mais profundidade do que uma análise gratuita consegue entregar.</div>
     </div>
 
     <div class="card">
