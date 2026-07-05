@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 var D = {
   nome:'', renda_liquida:'', renda_extra_familiar:'', renda_extra_valor:'', renda_extra_quem:'', outras_rendas:'', outras_rendas_valor:'', outras_rendas_tipo:'', renda_estavel:'',
-  moradia:'', contas_consumo:'', transporte:'', alimentacao:'', saude:'', educacao:'',
+  moradia:'', condominio:'', iptu:'', contas_consumo:'', transporte:'', alimentacao:'', saude:'', educacao:'',
   gastos_ocultos:'', gastos_ocultos_valores:'',
   dividas:[{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''}],
   renegociacoes:[{credor:'',parcela:'',restantes:''},{credor:'',parcela:'',restantes:''},{credor:'',parcela:'',restantes:''}],
@@ -153,7 +153,7 @@ var D = {
   divida_mais_pesada:'', nome_negativado:'', tentou_negociar:'',
   decisao_compra:'', cartao_gestao:'', habito_poupar:'', sobra_dinheiro:'',
   sentimento_financas:'', nivel_stress:5, evento_vida:'', evita_contas:'', dinheiro_relacionamentos:'',
-  dependentes:'', compartilha_despesas:'', familia_dinheiro:'',
+  dependentes:'', compartilha_despesas:'', familia_dinheiro:'', estado_civil:'', dependentes_numero:'', renda_terceiros:'',
   reserva_emergencia:'', objetivo_12meses:'', sucesso_financeiro:'', por_que_agora:'', impedimento:'',
   diagnostico:''
 };
@@ -438,7 +438,7 @@ function render() {
         '</div>';
     }).join('');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 2 de 7</div><div class="bloco-titulo">Despesas mensais</div><div class="bloco-sub">O que sai todo mês. Coloque valores aproximados — estimativas são bem-vindas.</div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>5.</span> Moradia — aluguel, financiamento, condomínio, IPTU</div><input type="text" id="q5" placeholder="Ex: R$ 1.200 ou Moro com familiar sem custo" value="'+D.moradia+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>5.</span> Moradia — aluguel ou financiamento, condomínio e IPTU <span class="hint">Preencha cada um separadamente. Coloque 0 se não tiver o gasto, ou escreva "Moro com familiar sem custo" no primeiro campo.</span></div><input type="text" id="q5" placeholder="Aluguel ou financiamento: Ex: R$ 1.200" style="margin-bottom:8px" value="'+D.moradia+'"><input type="text" id="q5_condominio" placeholder="Condomínio: Ex: R$ 350" style="margin-bottom:8px" value="'+D.condominio+'"><input type="text" id="q5_iptu" placeholder="IPTU (valor mensal ou dividido por 12): Ex: R$ 80" value="'+D.iptu+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>6.</span> Contas de consumo — água, luz, gás, internet, telefone <span class="hint">Some todas essas contas e coloque o total aproximado</span></div><input type="text" id="q6" placeholder="Ex: R$ 450" value="'+D.contas_consumo+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>7.</span> Transporte — financiamento do carro, combustível, Uber, ônibus</div><input type="text" id="q7" placeholder="Ex: R$ 600" value="'+D.transporte+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>8.</span> Alimentação — mercado, feira, refeições no trabalho</div><input type="text" id="q8" placeholder="Ex: R$ 800" value="'+D.alimentacao+'"></div>' +
@@ -537,9 +537,15 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>21.</span> Você tem dependentes financeiros? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlDep+'</div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>22.</span> Alguém compartilha as despesas da casa? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlComp+'</div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>23.</span> Como era a relação com dinheiro na sua família de origem?</div><div id="opcoes-familia" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>24.</span> Qual é o seu estado civil?</div><div id="opcoes-estadocivil" class="opcoes-grid"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>25.</span> Quantas pessoas dependem financeiramente de você hoje? <span class="hint">Considere qualquer pessoa, da família ou não</span></div><div id="opcoes-numdependentes" class="opcoes-grid"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>26.</span> Quanto da sua renda é destinado a ajudar outras pessoas? <span class="hint">Família ou não — considere um valor aproximado por mês</span></div><div id="opcoes-rendaterceiros" class="opcoes-grid col1"></div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco6()">Continuar</button></div>';
     criarOpcoes('opcoes-familia','familia_dinheiro',[['Educacao','Havia educação financeira — aprendi a poupar'],['Apertado','Sempre foi apertado — sobrevivência'],['Gastava','Gastava-se tudo — não havia cultura de poupança'],['Tabu','Nunca falávamos de dinheiro em casa — era tabu']]);
+    criarOpcoes('opcoes-estadocivil','estado_civil',[['Solteiro','Solteiro(a)'],['Casado','Casado(a) ou união estável'],['Divorciado','Divorciado(a) ou separado(a)'],['Viuvo','Viúvo(a)']]);
+    criarOpcoes('opcoes-numdependentes','dependentes_numero',[['Nenhuma','Nenhuma — só eu'],['Uma','1 pessoa'],['Duas','2 pessoas'],['TresOuMais','3 ou mais pessoas']]);
+    criarOpcoes('opcoes-rendaterceiros','renda_terceiros',[['Nada','Não destino nada'],['Ate10','Até 10% da minha renda'],['Entre10e25','Entre 10% e 25%'],['Mais25','Mais de 25%']]);
     return;
   }
 
@@ -548,11 +554,11 @@ function render() {
     var tagsImp = ['Não sei por onde começar','Não sobra nada para mudar','Medo de encarar a situação real','Já tentei antes e não funcionou','Falta de apoio — faço tudo sozinho(a)','Parceiro(a) não colabora','Falta de disciplina ou tempo'];
     var htmlImp = tagsImp.map(function(t){ return '<div class="tag-btn'+(D.impedimento && D.impedimento.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="impedimento">'+t+'</div>'; }).join('');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 7 de 7</div><div class="bloco-titulo">Objetivos e motivação</div><div class="bloco-sub">A última parte — e a mais importante para direcionar sua análise.</div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>24.</span> Você tem reserva de emergência ou investimentos?</div><div id="opcoes-reserva" class="opcoes-grid col1"></div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>25.</span> O que te impede de agir hoje? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlImp+'</div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>26.</span> O que você quer que mude nos próximos 12 meses? <span class="hint">Seja específico</span></div><textarea id="q26" placeholder="Ex: Quitar o cartão, limpar o nome, ter R$500 guardados...">'+D.objetivo_12meses+'</textarea></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>27.</span> O que significa sucesso financeiro para você?</div><div id="opcoes-sucesso" class="opcoes-grid col1"></div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>28.</span> Por que organizar suas finanças é importante para você agora? <span class="hint">O que o dinheiro vai te permitir fazer ou sentir que hoje não consegue?</span></div><textarea id="q28" placeholder="Escreva com suas próprias palavras...">'+D.por_que_agora+'</textarea></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>27.</span> Você tem reserva de emergência ou investimentos?</div><div id="opcoes-reserva" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>28.</span> O que te impede de agir hoje? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlImp+'</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>29.</span> O que você quer que mude nos próximos 12 meses? <span class="hint">Seja específico</span></div><textarea id="q26" placeholder="Ex: Quitar o cartão, limpar o nome, ter R$500 guardados...">'+D.objetivo_12meses+'</textarea></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>30.</span> O que significa sucesso financeiro para você?</div><div id="opcoes-sucesso" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>31.</span> Por que organizar suas finanças é importante para você agora? <span class="hint">O que o dinheiro vai te permitir fazer ou sentir que hoje não consegue?</span></div><textarea id="q28" placeholder="Escreva com suas próprias palavras...">'+D.por_que_agora+'</textarea></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco7()">Gerar minha análise completa</button></div>';
     criarOpcoes('opcoes-reserva','reserva_emergencia',[['Nada','Não tenho nada guardado'],['Menos1mes','Tenho menos de 1 mês de despesas'],['Entre1e3','Tenho entre 1 e 3 meses guardados'],['Mais3','Tenho mais de 3 meses guardados']]);
@@ -589,6 +595,8 @@ function salvarBloco1() {
 function salvarBloco2() {
   esconderErro();
   D.moradia = getVal('q5');
+  D.condominio = getVal('q5_condominio');
+  D.iptu = getVal('q5_iptu');
   D.contas_consumo = getVal('q6');
   D.transporte = getVal('q7');
   D.alimentacao = getVal('q8');
@@ -767,6 +775,9 @@ function salvarBloco5() {
 function salvarBloco6() {
   esconderErro();
   if (!D.familia_dinheiro) { mostrarErro('Por favor responda sobre a relação com dinheiro na sua família de origem.'); return; }
+  if (!D.estado_civil) { mostrarErro('Por favor informe seu estado civil.'); return; }
+  if (!D.dependentes_numero) { mostrarErro('Por favor informe quantas pessoas dependem financeiramente de você.'); return; }
+  if (!D.renda_terceiros) { mostrarErro('Por favor informe quanto da sua renda é destinado a ajudar outras pessoas.'); return; }
   avancar();
 }
 
@@ -829,6 +840,8 @@ async function gerarAnalise() {
     outras_rendas: D.outras_rendas,
     renda_estavel: D.renda_estavel,
     moradia: D.moradia,
+    condominio: D.condominio,
+    iptu: D.iptu,
     contas_consumo: D.contas_consumo,
     transporte: D.transporte,
     alimentacao: D.alimentacao,
@@ -854,6 +867,9 @@ async function gerarAnalise() {
     dependentes: D.dependentes,
     compartilha_despesas: D.compartilha_despesas,
     familia_dinheiro: D.familia_dinheiro,
+    estado_civil: D.estado_civil,
+    dependentes_numero: D.dependentes_numero,
+    renda_terceiros: D.renda_terceiros,
     reserva_emergencia: D.reserva_emergencia,
     objetivo_12meses: D.objetivo_12meses,
     sucesso_financeiro: D.sucesso_financeiro,
