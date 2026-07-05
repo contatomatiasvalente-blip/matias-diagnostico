@@ -14,7 +14,7 @@ body{background:#080814;color:#e0e0f0;font-family:"Inter",sans-serif;min-height:
 .logo-linha{width:40px;height:1px;background:linear-gradient(90deg,transparent,#c9a84a,transparent);margin:0 auto 20px}
 .progress-wrap{height:2px;background:#12122a;border-radius:2px;margin-bottom:8px;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,#6b5fd4,#9b8bff);border-radius:2px;transition:width .5s ease}
-.progress-label{font-size:11px;color:#4a4a7a;text-align:right;margin-bottom:24px}
+.progress-label{font-size:13px;color:#9089c2;text-align:right;margin-bottom:24px;font-weight:500}
 .card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:28px 24px;margin-bottom:16px;box-shadow:0 4px 24px rgba(0,0,0,.4)}
 .bloco-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#a79bef;margin-bottom:8px;font-weight:600}
 .bloco-titulo{font-size:19px;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.4}
@@ -58,17 +58,17 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
 .msg-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-left:3px solid #7c6fd4;border-radius:20px;padding:20px 24px;margin-bottom:16px;opacity:0;transition:opacity 1.2s ease}
 .msg-card p{font-size:14px;color:#b0b0d0;line-height:1.8}
 .resultado-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:32px 28px;margin-bottom:16px}
-.resultado-titulo{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7c6fd4;margin-bottom:10px}
+.resultado-titulo{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#a79bef;margin-bottom:10px;font-weight:600}
 .resultado-nome{font-size:24px;font-weight:600;color:#fff;margin-bottom:24px}
 .diagnostico-texto{font-size:15px;line-height:1.95;color:#c8c8e8}
 .diagnostico-texto p{margin-bottom:18px}
 .oferta-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:28px 24px;margin-bottom:16px}
 .btn-compra{display:block;width:100%;padding:18px;border-radius:14px;font-size:16px;font-weight:700;text-align:center;cursor:pointer;border:none;margin-bottom:12px;transition:all .2s;font-family:"Inter",sans-serif}
 .btn-n3{background:linear-gradient(135deg,#7c6fd4,#b09bff);color:#fff;box-shadow:0 4px 24px rgba(124,111,212,.45)}
-.btn-wa{background:transparent;color:#34d399;border:1px solid #34d39940;font-size:13px}
-.btn-skip{background:transparent;color:#3a3a5a;border:none;font-size:12px;padding:10px;display:block;width:100%;text-align:center;cursor:pointer;font-family:"Inter",sans-serif}
-.rodape{font-size:11px;color:#2a2a4a;text-align:center;margin-top:24px;line-height:1.7}
-.erro-msg{font-size:12px;color:#f87171;margin-top:6px;display:none}
+.btn-wa{background:transparent;color:#34d399;border:1px solid #34d39940;font-size:14px;font-weight:600}
+.btn-skip{background:transparent;color:#8f89c2;border:none;font-size:14px;padding:10px;display:block;width:100%;text-align:center;cursor:pointer;font-family:"Inter",sans-serif}
+.rodape{font-size:13px;color:#726c9e;text-align:center;margin-top:24px;line-height:1.7}
+.erro-msg{font-size:14px;color:#f87171;margin-top:6px;display:none}
 </style>
 </head>
 <body>
@@ -78,11 +78,11 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
     <div style="font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#c9a84a;font-weight:600;margin-bottom:6px">Matias Valente</div>
     <div style="width:40px;height:1px;background:linear-gradient(90deg,transparent,#c9a84a,transparent);margin:0 auto 24px"></div>
     <div style="font-size:20px;font-weight:600;color:#fff;margin-bottom:8px">Análise Financeira Completa</div>
-    <div style="font-size:13px;color:#6060a0;margin-bottom:28px;line-height:1.6">Digite a senha recebida por e-mail após a compra para acessar seu questionário personalizado.</div>
+    <div style="font-size:15px;color:#c2bfe0;margin-bottom:28px;line-height:1.7">Digite a senha recebida por e-mail após a compra para acessar seu questionário personalizado.</div>
     <input type="password" id="campo-senha" placeholder="Digite sua senha de acesso" style="width:100%;padding:14px 16px;border-radius:10px;border:1px solid #1e1e3a;background:#080814;color:#e0e0f0;font-size:14px;font-family:Inter,sans-serif;outline:none;margin-bottom:12px;text-align:center;letter-spacing:2px">
-    <div id="erro-senha" style="display:none;font-size:12px;color:#f87171;margin-bottom:12px">Senha incorreta. Verifique o e-mail recebido após a compra.</div>
+    <div id="erro-senha" style="display:none;font-size:14px;color:#f87171;margin-bottom:12px">Senha incorreta. Verifique o e-mail recebido após a compra.</div>
     <button onclick="verificarSenha()" style="display:block;width:100%;padding:16px;border-radius:12px;border:none;background:linear-gradient(135deg,#7c6fd4,#9b8bff);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Acessar minha análise</button>
-    <div style="margin-top:20px;font-size:12px;color:#3a3a5a">Não recebeu o e-mail? Verifique o spam ou entre em contato.</div>
+    <div style="margin-top:20px;font-size:13px;color:#9089c2">Não recebeu o e-mail? Verifique o spam ou entre em contato.</div>
   </div>
 </div>
 
@@ -115,8 +115,8 @@ function mostrarBonusVIP() {
   wrap.innerHTML = '<div class="card" style="border-color:#34d39940">' +
     '<div class="bloco-label" style="color:#34d399">Seus bônus — Diagnóstico Completo</div>' +
     '<div class="bloco-titulo" style="font-size:15px;margin-bottom:14px">Ficam disponíveis aqui sempre que você entrar com sua senha</div>' +
-    '<a href="https://contatomatiasvalente-blip.github.io/matias-diagnostico/livro-numero-da-paz.pdf" download style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#34d399;text-decoration:none;font-size:13px;font-weight:600;margin-bottom:8px">📖 Baixar o livro "O Número da Paz"</a>' +
-    '<a href="https://contatomatiasvalente-blip.github.io/matias-diagnostico/planilha-numero-da-paz.xlsx" download style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#34d399;text-decoration:none;font-size:13px;font-weight:600">📊 Baixar sua Planilha Comportamental</a>' +
+    '<a href="https://matiasvalente.com.br/livro-numero-da-paz.pdf" download style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#4ade80;text-decoration:none;font-size:15px;font-weight:600;margin-bottom:8px">📖 Baixar o livro "O Número da Paz"</a>' +
+    '<a href="https://matiasvalente.com.br/planilha-numero-da-paz.xlsx" download style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#4ade80;text-decoration:none;font-size:15px;font-weight:600">📊 Baixar sua Planilha Comportamental</a>' +
     '</div>';
   wrap.style.display = 'block';
 }
@@ -434,7 +434,7 @@ function render() {
       var display = on ? 'block' : 'none';
       return '<div style="margin-bottom:10px">' +
         '<div class="tag-btn'+on+'" data-key="'+t.key+'" onclick="toggleGasto(this,\''+t.key+'\',\''+t.label+'\')">'+t.label+'</div>' +
-        '<input type="text" id="gasto_val_'+t.key+'" placeholder="Valor aproximado: R$" style="display:'+display+';margin-top:6px;width:200px;padding:8px 12px;border-radius:8px;border:1px solid #7c6fd4;background:#080814;color:#e0e0f0;font-size:12px;font-family:Inter,sans-serif" value="'+val+'" onchange="atualizarGasto(\''+t.key+'\',this.value)">' +
+        '<input type="text" id="gasto_val_'+t.key+'" placeholder="Valor aproximado: R$" style="display:'+display+';margin-top:6px;width:200px;padding:10px 12px;border-radius:8px;border:1px solid #8b7cf6;background:#080814;color:#e6e4fa;font-size:15px;font-family:Inter,sans-serif" value="'+val+'" onchange="atualizarGasto(\''+t.key+'\',this.value)">' +
         '</div>';
     }).join('');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 2 de 7</div><div class="bloco-titulo">Despesas mensais</div><div class="bloco-sub">O que sai todo mês. Coloque valores aproximados — estimativas são bem-vindas.</div>' +
@@ -468,13 +468,13 @@ function render() {
       empHtml += '<div style="margin-bottom:12px"><div class="linha-num">Empréstimo '+(k+1)+'</div><div class="linha-estruturada col4"><input type="text" id="emp'+k+'_credor" placeholder="Banco/Credor" value="'+(e.credor||'')+'"><input type="text" id="emp'+k+'_total" placeholder="Saldo devedor (R$)" value="'+(e.total||'')+'"><input type="text" id="emp'+k+'_parcela" placeholder="Parcela (R$)" value="'+(e.parcela||'')+'"><input type="text" id="emp'+k+'_restantes" placeholder="Parcelas restantes" value="'+(e.restantes||'')+'"></div></div>';
     }
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 3 de 7</div><div class="bloco-titulo">Dívidas e crédito</div><div class="bloco-sub">Preencha apenas o que se aplica. Deixe em branco o que não tiver.</div>' +
-      '<div class="pergunta"><div class="secao-titulo">Dívidas em atraso ou ativas</div><span class="hint">Preencha a primeira e clique em + para adicionar mais.</span><div id="dividas-wrap">' + gerarLinhaDivida(0) + '</div><button onclick="adicionarDivida()" style="background:transparent;border:1px dashed #3a3a6a;color:#7c6fd4;font-size:12px;padding:8px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar dívida</button></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Dívidas em atraso ou ativas</div><span class="hint">Preencha a primeira e clique em + para adicionar mais.</span><div id="dividas-wrap">' + gerarLinhaDivida(0) + '</div><button onclick="adicionarDivida()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar dívida</button></div>' +
       '<div class="divider"></div>' +
       '<div class="pergunta"><div class="secao-titulo">Cheque especial</div><div id="opcoes-cheque" class="opcoes-grid"></div><div id="cheque-valor-wrap" style="margin-top:8px;display:none"><input type="text" id="q_cheque" placeholder="Valor utilizado: R$ ___ / Limite total: R$ ___" value="" onchange="D.cheque_especial=this.value"></div></div>' +
       '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="secao-titulo">Renegociações em andamento</div><span class="hint">Deixe em branco se não tiver.</span><div id="reneg-wrap">' + gerarLinhaReneg(0) + '</div><button onclick="adicionarReneg()" style="background:transparent;border:1px dashed #3a3a6a;color:#7c6fd4;font-size:12px;padding:8px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Renegociações em andamento</div><span class="hint">Deixe em branco se não tiver.</span><div id="reneg-wrap">' + gerarLinhaReneg(0) + '</div><button onclick="adicionarReneg()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
       '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="secao-titulo">Empréstimos e financiamentos</div><span class="hint">Deixe em branco se não tiver.</span><div id="emp-wrap">' + gerarLinhaEmp(0) + '</div><button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#7c6fd4;font-size:12px;padding:8px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Empréstimos e financiamentos</div><span class="hint">Deixe em branco se não tiver.</span><div id="emp-wrap">' + gerarLinhaEmp(0) + '</div><button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
       '<div class="divider"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Qual dívida pesa mais no seu orçamento hoje? <span class="hint">Opcional</span></div><input type="text" id="q_pesada" placeholder="Ex: Cartão de crédito — juros altos" value="'+D.divida_mais_pesada+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Seu nome está negativado (SPC/Serasa)?</div><div id="opcoes-negativo" class="opcoes-grid"></div></div>' +
@@ -563,7 +563,7 @@ function render() {
 
     if (blocoAtual === 8) {
     setProg(100, 'Gerando sua análise...');
-    tela.innerHTML = '<div class="card loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p style="font-size:15px;font-weight:600;color:#fff;margin-bottom:8px">Processando sua análise completa...</p><p style="font-size:13px;color:#606090">Cruzando todos os seus dados financeiros, comportamentais e emocionais. Isso pode levar até 45 segundos.</p></div>' +
+    tela.innerHTML = '<div class="card loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p style="font-size:15px;font-weight:600;color:#fff;margin-bottom:8px">Processando sua análise completa...</p><p style="font-size:15px;color:#b0acd4">Cruzando todos os seus dados financeiros, comportamentais e emocionais. Isso pode levar até 45 segundos.</p></div>' +
       '<div class="msg-card" id="msg1"><p>Você acabou de fazer algo que a maioria das pessoas nunca faz — parar para olhar com honestidade para a própria situação financeira. Isso já é parte da solução.</p></div>' +
       '<div class="msg-card" id="msg2"><p>Com mais de 25 anos como gerente de banco, vi centenas de perfis. O que separa quem sai do aperto de quem fica é uma coisa só: entender o padrão. É exatamente isso que estamos construindo para você agora.</p></div>';
     setTimeout(function(){ var m=document.getElementById('msg1'); if(m) m.style.opacity='1'; }, 8000);
@@ -886,7 +886,7 @@ function exibirResultado() {
 
   var cardA = document.createElement('div');
   cardA.className = 'oferta-card';
-  cardA.innerHTML = '<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Quer ir ainda mais fundo?</div><div style="font-size:14px;color:#7070a0;line-height:1.8;margin-bottom:20px">O diagnóstico comportamental completo revela o nome do padrão, as 3 mudanças específicas para o seu perfil e inclui a planilha financeira e o livro digital O Número da Paz.</div>';
+  cardA.innerHTML = '<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Quer ir ainda mais fundo?</div><div style="font-size:15px;color:#c2bfe0;line-height:1.8;margin-bottom:20px">O diagnóstico comportamental completo revela o nome do padrão, as 3 mudanças específicas para o seu perfil e inclui a planilha financeira e o livro digital O Número da Paz.</div>';
 
   var bPdf = document.createElement('button');
   bPdf.className = 'btn-compra';
@@ -951,7 +951,7 @@ function salvarWA() {
 
 function fecharOferta() {
   var cards = document.querySelectorAll('.oferta-card');
-  if (cards.length) cards[0].innerHTML = '<p style="font-size:15px;font-weight:600;color:#fff;margin-bottom:10px">Sua análise ficará aqui para consulta.</p><p style="font-size:13px;color:#6060a0;line-height:1.7">Quando quiser dar o próximo passo, o canal do Matias Valente continua te ajudando de graça.</p><p style="font-size:13px;color:#7c6fd4;margin-top:14px;font-style:italic">— Matias Valente</p>';
+  if (cards.length) cards[0].innerHTML = '<p style="font-size:16px;font-weight:600;color:#fff;margin-bottom:10px">Sua análise ficará aqui para consulta.</p><p style="font-size:15px;color:#c2bfe0;line-height:1.7">Quando quiser dar o próximo passo, o canal do Matias Valente continua te ajudando de graça.</p><p style="font-size:15px;color:#d9c48a;margin-top:14px;font-style:italic">— Matias Valente</p>';
 }
 </script>
 </body>
