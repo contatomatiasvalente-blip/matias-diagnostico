@@ -163,7 +163,7 @@ function salvarTexto(){
 
 function escolherUnica(id, val){
   S[id] = val;
-  av();
+  if(S.etapa >= perguntas.length){ gerar(); } else { av(); }
 }
 
 function toggleSel(val, idx){
