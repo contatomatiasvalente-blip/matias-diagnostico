@@ -162,9 +162,8 @@ function salvarTexto(){
 }
 
 function escolherUnica(id, val){
-  console.log('[DEBUG] escolherUnica chamado. id=', id, 'val=', val, 'S.etapa=', S.etapa, 'perguntas.length=', perguntas.length);
   S[id] = val;
-  if(S.etapa >= perguntas.length){ console.log('[DEBUG] chamando gerar()'); gerar(); } else { console.log('[DEBUG] chamando av()'); av(); }
+  if(S.etapa >= perguntas.length){ gerar(); } else { av(); }
 }
 
 function toggleSel(val, idx){
@@ -185,7 +184,6 @@ function confirmarSel(id){
 }
 
 async function gerar(){
-  console.log('[DEBUG] gerar() iniciado');
   prog(98);
   document.getElementById('tela').innerHTML = `
     <div class="card loading">
@@ -236,7 +234,6 @@ async function gerar(){
     clearTimeout(t2);
     exibir();
   } catch(e){
-    console.error('[DEBUG] erro capturado em gerar():', e);
     clearTimeout(t1);
     clearTimeout(t2);
     document.getElementById('tela').innerHTML = `<div class="card"><p style="color:#f87171;margin-bottom:16px">Erro ao gerar diagnóstico.</p><button class="btn btn-primary" onclick="gerar()">Tentar novamente</button></div>`;
@@ -298,7 +295,6 @@ function fechar(){
     <p style="font-size:13px;color:#8b7cf6;margin-top:12px">— Matias Valente</p>`;
 }
 
-console.log('[DEBUG] script carregado, iniciando render()');
 render();
 </script>
 </body>
