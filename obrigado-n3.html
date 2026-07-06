@@ -60,7 +60,7 @@ h1{font-size:clamp(22px,4vw,30px);font-weight:700;color:#fff;margin-bottom:12px;
     Esta senha também foi enviada para o <span>e-mail informado na compra</span>. Verifique sua caixa de entrada (e o spam, caso não encontre).
   </div>
 
-  <a href="https://matiasvalente.com.br/n2.html?vip=1" class="btn-acessar">
+  <a id="link-acessar" href="https://matiasvalente.com.br/n2.html?vip=1" class="btn-acessar">
     Acessar minha análise agora
   </a>
   <p class="nota">Clique no botão acima e use a senha <strong>matias2026</strong> para entrar</p>
@@ -89,9 +89,12 @@ h1{font-size:clamp(22px,4vw,30px);font-weight:700;color:#fff;margin-bottom:12px;
 </div>
 
 <script>
+var pedidoGlobal = '';
+
 function montarLinksBonus() {
   var params = new URLSearchParams(window.location.search);
   var pedido = params.get('order_code');
+  pedidoGlobal = pedido || '';
   var base = 'https://matias-entrega-n3.contato-matiasvalente.workers.dev/download';
   var linkLivro = document.getElementById('link-livro');
   var linkPlanilha = document.getElementById('link-planilha');
@@ -102,6 +105,10 @@ function montarLinksBonus() {
     if (linkLivro) linkLivro.href = '#';
     if (linkPlanilha) linkPlanilha.href = '#';
   }
+
+  var n2Url = 'https://matiasvalente.com.br/n2.html?vip=1' + (pedido ? '&pedido=' + encodeURIComponent(pedido) : '');
+  var linkAcessar = document.getElementById('link-acessar');
+  if (linkAcessar) linkAcessar.href = n2Url;
 }
 montarLinksBonus();
 
@@ -129,7 +136,8 @@ var intervalo = setInterval(function() {
   if (el) el.textContent = seg;
   if (seg <= 0) {
     clearInterval(intervalo);
-    window.location.href = 'https://matiasvalente.com.br/n2.html?vip=1';
+    var n2Url = 'https://matiasvalente.com.br/n2.html?vip=1' + (pedidoGlobal ? '&pedido=' + encodeURIComponent(pedidoGlobal) : '');
+    window.location.href = n2Url;
   }
 }, 1000);
 </script>
