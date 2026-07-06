@@ -40,6 +40,8 @@ body{background:#0f0f1a;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFo
 .transicao{font-size:15px;line-height:1.75;color:#d9c48a;font-style:italic;border-top:1px solid #2a2a4a;padding-top:18px;margin-top:20px}
 .loading-msg{transition:opacity .4s ease;opacity:1}
 .loading-msg.fade{opacity:0}
+.fade-in-box{opacity:0;animation:fadeInBox .6s ease forwards}
+@keyframes fadeInBox{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .divider{border:none;border-top:1px solid #2a2a4a;margin:20px 0}
 .oferta-titulo{font-size:17px;font-weight:600;color:#fff;margin-bottom:6px}
 .oferta-desc{font-size:14px;color:#c2bfe0;margin-bottom:16px;line-height:1.7}
@@ -188,29 +190,27 @@ async function gerar(){
   document.getElementById('tela').innerHTML = `
     <div class="card loading">
       <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-      <p id="msgLoading" class="loading-msg" style="font-size:15px;font-weight:500;color:#fff;margin-bottom:8px">Cruzando suas respostas...</p>
+      <p style="font-size:15px;font-weight:500;color:#fff;margin-bottom:8px">Cruzando suas respostas...</p>
       <p style="font-size:13px;color:#8080b0">Sua análise está sendo preparada. Isso leva alguns instantes.</p>
-    </div>`;
+    </div>
+    <div id="loadingExtra"></div>`;
 
   const mensagens = [
     'Análise Financeira é o caminho para solução. Não existe fórmula mágica, guru financeiro que oferece milagre ou planilha que resolva sozinha. O que existe é entender a sua real situação — e a maioria das pessoas nunca para para fazer uma análise eficiente.',
     'A análise que você vai receber não vai te julgar. Ela foi feita para mostrar o que está acontecendo — não para te culpar pelo que passou. Identificar e nomear o problema já é o primeiro alívio.'
   ];
 
-  function trocarMsg(texto){
-    const el = document.getElementById('msgLoading');
-    if(!el) return;
-    el.classList.add('fade');
-    setTimeout(() => {
-      const el2 = document.getElementById('msgLoading');
-      if(!el2) return;
-      el2.textContent = texto;
-      el2.classList.remove('fade');
-    }, 400);
+  function adicionarCaixa(texto){
+    const wrap = document.getElementById('loadingExtra');
+    if(!wrap) return;
+    const div = document.createElement('div');
+    div.className = 'card fade-in-box';
+    div.innerHTML = `<p style="font-size:15px;line-height:1.7;color:#e0e0f0">${texto}</p>`;
+    wrap.appendChild(div);
   }
 
-  const t1 = setTimeout(() => trocarMsg(mensagens[0]), 8000);
-  const t2 = setTimeout(() => trocarMsg(mensagens[1]), 20000);
+  const t1 = setTimeout(() => adicionarCaixa(mensagens[0]), 8000);
+  const t2 = setTimeout(() => adicionarCaixa(mensagens[1]), 20000);
   const tempoMinimo = new Promise(resolve => setTimeout(resolve, 32000));
 
   try {
