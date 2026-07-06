@@ -99,6 +99,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
 var SENHA_CORRETA = 'matias2026';
 var urlParams = new URLSearchParams(window.location.search);
 var isVIP = urlParams.get('vip') === '1';
+var pedidoVIP = urlParams.get('pedido') || '';
 
 function mostrarQ2Quem(val) {
   var wrap = document.getElementById('q2-quem-wrap');
@@ -112,11 +113,21 @@ function mostrarBonusVIP() {
   if (!isVIP) return;
   var wrap = document.getElementById('vip-bonus-wrap');
   if (!wrap) return;
+  if (!pedidoVIP) {
+    wrap.innerHTML = '<div class="card" style="border-color:#f8717140">' +
+      '<div class="bloco-label" style="color:#f87171">Bônus indisponível nesta página</div>' +
+      '<div class="bloco-titulo" style="font-size:15px;margin-bottom:6px">Não conseguimos confirmar seu pedido por aqui</div>' +
+      '<div class="bloco-sub" style="margin-bottom:0">Acesse o link enviado no e-mail de confirmação da compra para liberar seus bônus com segurança.</div>' +
+      '</div>';
+    wrap.style.display = 'block';
+    return;
+  }
+  var base = 'https://matias-entrega-n3.contato-matiasvalente.workers.dev/download?pedido=' + encodeURIComponent(pedidoVIP) + '&arquivo=';
   wrap.innerHTML = '<div class="card" style="border-color:#34d39940">' +
     '<div class="bloco-label" style="color:#34d399">Seus bônus — Diagnóstico Completo</div>' +
     '<div class="bloco-titulo" style="font-size:15px;margin-bottom:14px">Ficam disponíveis aqui sempre que você entrar com sua senha</div>' +
-    '<a href="https://matiasvalente.com.br/livro-numero-da-paz.pdf" download style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#4ade80;text-decoration:none;font-size:15px;font-weight:600;margin-bottom:8px">📖 Baixar o livro "O Número da Paz"</a>' +
-    '<a href="https://matiasvalente.com.br/planilha-numero-da-paz.xlsx" download style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#4ade80;text-decoration:none;font-size:15px;font-weight:600">📊 Baixar sua Planilha Comportamental</a>' +
+    '<a href="' + base + 'livro" style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#4ade80;text-decoration:none;font-size:15px;font-weight:600;margin-bottom:8px">📖 Baixar o livro "O Número da Paz"</a>' +
+    '<a href="' + base + 'planilha" style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#4ade80;text-decoration:none;font-size:15px;font-weight:600">📊 Baixar sua Planilha Comportamental</a>' +
     '</div>';
   wrap.style.display = 'block';
 }
