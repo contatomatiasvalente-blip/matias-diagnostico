@@ -275,19 +275,16 @@ function exibir(){
         <div class="check-item">O padrão que mantém a situação se repetindo</div>
         <div class="check-item">3 mudanças específicas para o seu perfil</div>
         <div class="check-item">Guia prático + mensagem final personalizada</div>
+        <div class="check-item">Bônus: livro "O Número da Paz"</div>
+        <div class="check-item">Bônus: planilha comportamental completa</div>
       </div>
 
       <button class="btn btn-primary" onclick="window.open('https://pay.kiwify.com.br/aGEzNaU','_blank')">Quero entender o caminho para sair</button>
       <button class="btn btn-outline" onclick="window.open('https://pay.kiwify.com.br/t5H3kAi','_blank')">Quero entender por que se repetiu</button>
-      <button class="btn btn-green" onclick="salvarWA()">📱 Salvar análise no WhatsApp</button>
       <button class="btn btn-muted" onclick="fechar()">Agora não</button>
     </div>
 
     <p class="rodape">Seus dados não são armazenados. Análise gerada de forma anônima.</p>`;
-}
-
-function salvarWA(){
-  window.open('https://wa.me/?text='+encodeURIComponent('Minha análise — Matias Valente:\n\n'+S.diagnostico),'_blank');
 }
 
 function fechar(){
