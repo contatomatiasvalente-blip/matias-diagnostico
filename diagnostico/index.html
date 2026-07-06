@@ -209,11 +209,12 @@ async function gerar(){
     }, 400);
   }
 
-  const t1 = setTimeout(() => trocarMsg(mensagens[0]), 15000);
-  const t2 = setTimeout(() => trocarMsg(mensagens[1]), 30000);
+  const t1 = setTimeout(() => trocarMsg(mensagens[0]), 8000);
+  const t2 = setTimeout(() => trocarMsg(mensagens[1]), 20000);
+  const tempoMinimo = new Promise(resolve => setTimeout(resolve, 32000));
 
   try {
-    const r = await fetch('https://matias-diagnostico.contato-matiasvalente.workers.dev', {
+    const fetchPromise = fetch('https://matias-diagnostico.contato-matiasvalente.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -227,8 +228,9 @@ async function gerar(){
         preocupacao: Array.isArray(S.preocupacao) ? S.preocupacao.join(', ') : S.preocupacao,
         dependentes: S.dependentes
       })
-    });
-    const d = await r.json();
+    }).then(r => r.json());
+
+    const [d] = await Promise.all([fetchPromise, tempoMinimo]);
     S.diagnostico = d.diagnostico || 'Não foi possível gerar o diagnóstico.';
     clearTimeout(t1);
     clearTimeout(t2);
