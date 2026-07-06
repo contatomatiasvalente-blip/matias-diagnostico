@@ -247,12 +247,21 @@ async function gerar(){
 function exibir(){
   prog(100);
   const saud = S.nome ? S.nome+', sua análise está pronta' : 'Sua análise está pronta';
+
+  let arquetipo = '';
+  const match = S.diagnostico.match(/Seu perfil financeiro é o de\s+([^.,\n]+)/i);
+  if(match) arquetipo = match[1].trim();
+
+  const transicaoTexto = arquetipo
+    ? `Você já sabe que é o <strong>${arquetipo}</strong>. O que você leu é verdadeiro, mas é só a superfície — os números reais da sua situação, o motivo específico por trás desse padrão, e o que fazer com isso a partir de agora pedem um detalhamento melhor dos seus gastos e do seu comportamento. Sem esse próximo passo, esse padrão continua se repetindo — só que agora você já sabe que ele existe e tem nome. Posso te entregar uma análise completa, com um diagnóstico comportamental que te dá direção real para organizar sua vida financeira.`
+    : `O que você acabou de ler é verdadeiro, mas é só a superfície. Os números reais da sua situação, o motivo específico por trás desse padrão, e o que fazer com isso a partir de agora pedem um detalhamento melhor dos seus gastos e do seu comportamento. Posso te entregar uma análise completa, com um diagnóstico comportamental que pode te dar direção para organizar sua vida financeira.`;
+
   document.getElementById('tela').innerHTML = `
     <div class="card">
       <div class="step-label">Análise exclusiva — simplificada</div>
       <div class="step-title">${saud}</div>
       <div style="margin-top:16px" class="diagnostico">${S.diagnostico}</div>
-      <div class="transicao">O que você acabou de ler é verdadeiro, mas é só a superfície. Os números reais da sua situação, o motivo específico por trás desse padrão, e o que fazer com isso a partir de agora pedem um detalhamento melhor dos seus gastos e do seu comportamento. Posso te entregar uma análise completa, com um diagnóstico comportamental que pode te dar direção para organizar sua vida financeira.</div>
+      <div class="transicao">${transicaoTexto}</div>
     </div>
 
     <div class="card">
@@ -278,6 +287,8 @@ function exibir(){
         <div class="check-item">Bônus: livro "O Número da Paz"</div>
         <div class="check-item">Bônus: planilha comportamental completa</div>
       </div>
+
+      <p style="font-size:14px;color:#c2bfe0;margin-bottom:16px;line-height:1.6">A Opção 1 resolve o hoje. A Opção 2 resolve o hoje — e o motivo de isso sempre voltar a acontecer.</p>
 
       <button class="btn btn-outline" onclick="window.open('https://pay.kiwify.com.br/aGEzNaU','_blank')">Opção 1 – R$67</button>
       <button class="btn btn-primary" onclick="window.open('https://pay.kiwify.com.br/t5H3kAi','_blank')">Opção 2 – R$97</button>
