@@ -196,19 +196,19 @@ async function gerar(){
     <div id="loadingExtra"></div>`;
 
   const mensagens = [
-    'Análise Financeira é o caminho para solução. Não existe fórmula mágica, guru financeiro que oferece milagre ou planilha que resolva sozinha. O que existe é entender a sua real situação — e a maioria das pessoas nunca para para fazer uma análise eficiente.',
-    'A análise que você vai receber não vai te julgar. Ela foi feita para mostrar o que está acontecendo — não para te culpar pelo que passou. Identificar e nomear o problema já é o primeiro alívio.'
+    { texto: 'Não existe fórmula mágica. Existe entender sua real situação. A maioria nunca chega a fazer essa análise de verdade — e é exatamente isso que muda tudo.', sub: 'Estamos montando seu diagnóstico.' },
+    { texto: 'Essa análise não vai te julgar. Ela mostra o que está acontecendo — não te culpa pelo que passou. Identificar seu padrão já é o primeiro passo pra sair dele.', sub: 'Quase pronto — só mais alguns segundos.' }
   ];
 
-  function adicionarCaixa(texto){
+  function adicionarCaixa(msg){
     const wrap = document.getElementById('loadingExtra');
     if(!wrap) return;
     const div = document.createElement('div');
     div.className = 'card loading fade-in-box';
     div.innerHTML = `
       <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-      <p style="font-size:15px;font-weight:600;color:#fff;margin-bottom:8px">${texto}</p>
-      <p style="font-size:13px;color:#8080b0">Sua análise está sendo preparada. Isso leva alguns instantes.</p>`;
+      <p style="font-size:15px;font-weight:600;color:#fff;margin-bottom:8px">${msg.texto}</p>
+      <p style="font-size:13px;color:#8080b0">${msg.sub}</p>`;
     wrap.appendChild(div);
   }
 
