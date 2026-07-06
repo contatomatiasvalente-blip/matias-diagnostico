@@ -327,6 +327,7 @@ function atualizarStringGastos() {
   var labels = {
     delivery:'Delivery', streaming:'Streaming', celular:'Internet e celular',
     manutcasa:'Manutenção da casa', manutcarro:'Manutenção do carro',
+    segurovida:'Seguro de vida', seguroresid:'Seguro residencial',
     farmacia:'Farmácia', academia:'Academia', pet:'Pet', lazer:'Lazer'
   };
   for (var k in D.gastos_ocultos_map) {
@@ -433,6 +434,8 @@ function render() {
       
       {key:'manutcasa', label:'Manutenção da casa (diarista, reparos)'},
       {key:'manutcarro', label:'Manutenção do carro (seguro, IPVA, revisão)'},
+      {key:'segurovida', label:'Seguro de vida'},
+      {key:'seguroresid', label:'Seguro residencial'},
       {key:'farmacia', label:'Farmácia e medicamentos contínuos'},
       {key:'academia', label:'Academia ou assinaturas'},
       {key:'pet', label:'Pet (ração, veterinário)'},
@@ -485,7 +488,7 @@ function render() {
       '<div class="divider"></div>' +
       '<div class="pergunta"><div class="secao-titulo">Renegociações em andamento</div><span class="hint">Deixe em branco se não tiver.</span><div id="reneg-wrap">' + gerarLinhaReneg(0) + '</div><button onclick="adicionarReneg()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
       '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="secao-titulo">Empréstimos e financiamentos</div><span class="hint">Deixe em branco se não tiver.</span><div id="emp-wrap">' + gerarLinhaEmp(0) + '</div><button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Empréstimos, financiamentos e consórcios</div><span class="hint">Inclua também consórcios (imóvel, veículo etc.) — use o campo "Banco/Credor" para identificar (ex: "Consórcio imóvel Itaú"). Deixe em branco se não tiver.</span><div id="emp-wrap">' + gerarLinhaEmp(0) + '</div><button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
       '<div class="divider"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Qual dívida pesa mais no seu orçamento hoje? <span class="hint">Opcional</span></div><input type="text" id="q_pesada" placeholder="Ex: Cartão de crédito — juros altos" value="'+D.divida_mais_pesada+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Seu nome está negativado (SPC/Serasa)?</div><div id="opcoes-negativo" class="opcoes-grid"></div></div>' +
@@ -635,7 +638,7 @@ function gerarLinhaReneg(idx) {
 
 function gerarLinhaEmp(idx) {
   return '<div class="linha-estruturada col4" id="emp-linha-'+idx+'" style="margin-bottom:8px">' +
-    '<input type="text" id="emp'+idx+'_credor" placeholder="Banco/Credor" onchange="syncEmp('+idx+')">' +
+    '<input type="text" id="emp'+idx+'_credor" placeholder="Banco/Credor (ex: Consórcio Imóvel Itaú)" onchange="syncEmp('+idx+')">' +
     '<input type="text" id="emp'+idx+'_total" placeholder="Saldo devedor (R$)" onchange="syncEmp('+idx+')">' +
     '<input type="text" id="emp'+idx+'_parcela" placeholder="Parcela (R$)" onchange="syncEmp('+idx+')">' +
     '<input type="text" id="emp'+idx+'_restantes" placeholder="Parcelas restantes" onchange="syncEmp('+idx+')"></div>';
