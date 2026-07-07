@@ -1143,48 +1143,48 @@ function gerarPDF() {
   }
 
   var html = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Análise Financeira — Matias Valente</title><style>' +
-    '@page{size:A4;margin:1.8cm}' +
-    '*{margin:0;padding:0;box-sizing:border-box}' +
-    'body{font-family:"Segoe UI",Arial,sans-serif;color:#1a1a2e;font-size:12.5px;line-height:1.7}' +
-    '.header{border-bottom:3px solid #7c6fd4;padding-bottom:18px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end}' +
-    '.h-nome{font-size:22px;font-weight:bold;color:#7c6fd4;letter-spacing:2px}' +
-    '.h-data{font-size:11px;color:#8080a0;text-align:right}' +
-    '.titulo-doc{font-size:19px;font-weight:bold;margin-bottom:4px}' +
-    '.sub-doc{font-size:13px;color:#7c6fd4;margin-bottom:20px;font-style:italic}' +
-    '.resumo-titulo{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7c6fd4;margin-bottom:12px;font-weight:bold}' +
-    '.score-box{display:flex;align-items:center;gap:20px;background:#f7f6ff;border-radius:10px;padding:18px 22px;margin-bottom:18px;border-left:5px solid '+scoreCor+'}' +
-    '.score-num{font-size:38px;font-weight:bold;color:'+scoreCor+'}' +
-    '.score-label{font-size:14px;font-weight:bold;color:#333}' +
-    '.score-sub{font-size:11px;color:#8080a0}' +
-    '.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:20px}' +
-    '.stat-card{background:#f8f8fc;border-radius:8px;padding:12px 10px;text-align:center;border:1px solid #ececf5}' +
-    '.stat-label{font-size:9.5px;color:#8080a0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}' +
-    '.stat-val{font-size:15px;font-weight:bold;color:#2a2a4a}' +
-    '.chart-box{background:#fafafe;border-radius:8px;padding:16px 18px;margin-bottom:14px;border:1px solid #ececf5}' +
-    '.chart-titulo{font-size:11px;font-weight:bold;color:#555;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px}' +
-    '.legenda{display:flex;gap:18px;margin-top:10px;flex-wrap:wrap}' +
-    '.legenda-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#555}' +
-    '.legenda-cor{width:10px;height:10px;border-radius:2px;display:inline-block}' +
-    '.comp-linha{display:flex;align-items:center;gap:10px;margin-bottom:10px}' +
-    '.comp-label{width:80px;font-size:11px;color:#555;flex-shrink:0}' +
-    '.comp-barra-wrap{flex:1;background:#ececf5;border-radius:4px;overflow:hidden;height:20px}' +
-    '.comp-barra{height:20px;border-radius:4px}' +
-    '.comp-valor{width:90px;text-align:right;font-size:11.5px;font-weight:bold;flex-shrink:0}' +
-    '.alerta{padding:12px 16px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:18px}' +
-    '.alerta-critico{background:#fdecec;color:#c23838;border-left:4px solid #e05d5d}' +
-    '.alerta-atencao{background:#fdf4e3;color:#8a5a12;border-left:4px solid #d4b23c}' +
-    '.secao-bloco{margin-bottom:18px;page-break-inside:avoid}' +
-    '.sec-titulo{font-size:13px;font-weight:bold;color:#7c6fd4;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #e0e0f0;padding-bottom:6px;margin-bottom:10px;display:flex;align-items:center;gap:8px}' +
-    '.sec-icone{font-size:15px}' +
-    '.secao-bloco p{margin-bottom:10px;text-align:justify;font-size:12.5px;line-height:1.75}' +
-    '.dividas-tabela{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:11.5px}' +
-    '.dividas-tabela th{background:#7c6fd4;color:#fff;text-align:left;padding:8px 10px;font-size:10.5px;text-transform:uppercase;letter-spacing:0.4px}' +
-    '.dividas-tabela td{padding:7px 10px;border-bottom:1px solid #ececf5}' +
+    '@page{size:A4;margin:2cm 1.8cm}' +
+    '*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+    'body{font-family:"Georgia","Times New Roman",serif;color:#20202e;font-size:15.5px;line-height:1.85}' +
+    '.header{border-bottom:3px solid #7c6fd4;padding-bottom:20px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end}' +
+    '.h-nome{font-family:"Segoe UI",Arial,sans-serif;font-size:27px;font-weight:bold;color:#7c6fd4;letter-spacing:3px}' +
+    '.h-data{font-family:"Segoe UI",Arial,sans-serif;font-size:12.5px;color:#7d7a95;text-align:right;line-height:1.5}' +
+    '.titulo-doc{font-family:"Segoe UI",Arial,sans-serif;font-size:23px;font-weight:bold;margin-bottom:6px;color:#1a1a2e}' +
+    '.sub-doc{font-size:16px;color:#7c6fd4;margin-bottom:26px;font-style:italic}' +
+    '.resumo-titulo{font-family:"Segoe UI",Arial,sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#7c6fd4;margin-bottom:14px;font-weight:bold}' +
+    '.score-box{display:flex;align-items:center;gap:24px;background:#f7f6ff;border-radius:12px;padding:22px 26px;margin-bottom:22px;border-left:6px solid '+scoreCor+'}' +
+    '.score-num{font-family:"Segoe UI",Arial,sans-serif;font-size:48px;font-weight:bold;color:'+scoreCor+'}' +
+    '.score-label{font-family:"Segoe UI",Arial,sans-serif;font-size:17px;font-weight:bold;color:#2a2a3a}' +
+    '.score-sub{font-family:"Segoe UI",Arial,sans-serif;font-size:13px;color:#7d7a95;margin-top:2px}' +
+    '.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:24px}' +
+    '.stat-card{background:#f8f8fc;border-radius:10px;padding:16px 12px;text-align:center;border:1px solid #ececf5}' +
+    '.stat-label{font-family:"Segoe UI",Arial,sans-serif;font-size:10.5px;color:#7d7a95;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;line-height:1.3}' +
+    '.stat-val{font-family:"Segoe UI",Arial,sans-serif;font-size:19px;font-weight:bold;color:#2a2a4a}' +
+    '.chart-box{background:#fafafe;border-radius:10px;padding:20px 22px;margin-bottom:18px;border:1px solid #ececf5;page-break-inside:avoid}' +
+    '.chart-titulo{font-family:"Segoe UI",Arial,sans-serif;font-size:13px;font-weight:bold;color:#555;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px}' +
+    '.legenda{display:flex;gap:22px;margin-top:14px;flex-wrap:wrap}' +
+    '.legenda-item{display:flex;align-items:center;gap:7px;font-family:"Segoe UI",Arial,sans-serif;font-size:12.5px;color:#444}' +
+    '.legenda-cor{width:12px;height:12px;border-radius:3px;display:inline-block;flex-shrink:0}' +
+    '.comp-linha{display:flex;align-items:center;gap:12px;margin-bottom:12px}' +
+    '.comp-label{width:100px;font-family:"Segoe UI",Arial,sans-serif;font-size:13px;color:#444;flex-shrink:0}' +
+    '.comp-barra-wrap{flex:1;background:#ececf5;border-radius:5px;overflow:hidden;height:24px}' +
+    '.comp-barra{height:24px;border-radius:5px}' +
+    '.comp-valor{width:110px;text-align:right;font-family:"Segoe UI",Arial,sans-serif;font-size:13.5px;font-weight:bold;flex-shrink:0}' +
+    '.alerta{font-family:"Segoe UI",Arial,sans-serif;padding:14px 18px;border-radius:10px;font-size:13.5px;font-weight:600;margin-bottom:22px;line-height:1.5}' +
+    '.alerta-critico{background:#fdecec;color:#c23838;border-left:5px solid #e05d5d}' +
+    '.alerta-atencao{background:#fdf4e3;color:#8a5a12;border-left:5px solid #d4b23c}' +
+    '.secao-bloco{margin-bottom:22px;page-break-inside:avoid}' +
+    '.sec-titulo{font-family:"Segoe UI",Arial,sans-serif;font-size:15px;font-weight:bold;color:#7c6fd4;text-transform:uppercase;letter-spacing:1px;border-bottom:1.5px solid #e0e0f0;padding-bottom:8px;margin-bottom:12px;display:flex;align-items:center;gap:9px}' +
+    '.sec-icone{font-size:18px}' +
+    '.secao-bloco p{margin-bottom:13px;text-align:justify;font-size:15px;line-height:1.85}' +
+    '.dividas-tabela{width:100%;border-collapse:collapse;margin-bottom:22px;font-family:"Segoe UI",Arial,sans-serif;font-size:13px}' +
+    '.dividas-tabela th{background:#7c6fd4;color:#fff;text-align:left;padding:10px 12px;font-size:11.5px;text-transform:uppercase;letter-spacing:0.4px}' +
+    '.dividas-tabela td{padding:9px 12px;border-bottom:1px solid #ececf5}' +
     '.dividas-tabela tr:nth-child(even) td{background:#f8f8fc}' +
-    '.objetivo-box{background:#f0eeff;border-left:4px solid #7c6fd4;padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 0 24px}' +
-    '.footer{margin-top:32px;padding-top:16px;border-top:2px solid #7c6fd4;display:flex;justify-content:space-between;align-items:center}' +
-    '.f-nome{font-size:14px;font-weight:bold;color:#7c6fd4;font-style:italic}' +
-    '.f-aviso{font-size:10px;color:#a0a0c0}' +
+    '.objetivo-box{background:#f0eeff;border-left:5px solid #7c6fd4;padding:16px 20px;border-radius:0 10px 10px 0;margin:18px 0 26px;font-size:14.5px}' +
+    '.footer{margin-top:36px;padding-top:18px;border-top:2px solid #7c6fd4;display:flex;justify-content:space-between;align-items:center}' +
+    '.f-nome{font-family:"Segoe UI",Arial,sans-serif;font-size:16px;font-weight:bold;color:#7c6fd4;font-style:italic}' +
+    '.f-aviso{font-family:"Segoe UI",Arial,sans-serif;font-size:11px;color:#a0a0c0;text-align:right;line-height:1.5}' +
     '</style></head><body>' +
 
     '<div class="header"><div><div class="h-nome">MATIAS VALENTE</div></div><div class="h-data">Gerado em: '+dataHoje+'<br>Documento confidencial</div></div>' +
