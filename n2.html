@@ -191,7 +191,7 @@ var D = {
   emprestimos:[{credor:'',total:'',parcela:'',restantes:''},{credor:'',total:'',parcela:'',restantes:''},{credor:'',total:'',parcela:'',restantes:''}],
   cheque_especial:'', consignado_parcela:'', consignado_restantes:'',
   divida_mais_pesada:'', nome_negativado:'', tentou_negociar:'',
-  decisao_compra:'', cartao_gestao:'', habito_poupar:'', sobra_dinheiro:'',
+  decisao_compra:'', cartao_gestao:'', fatura_media:'', parcelas_comprometidas:'', habito_poupar:'', sobra_dinheiro:'',
   sentimento_financas:'', nivel_stress:5, evento_vida:'', evita_contas:'', dinheiro_relacionamentos:'',
   dependentes:'', compartilha_despesas:'', familia_dinheiro:'', estado_civil:'', dependentes_numero:'', renda_terceiros:'',
   reserva_emergencia:'', capacidade_imprevisto:'', objetivo_12meses:'', sucesso_financeiro:'', por_que_agora:'', impedimento:'',
@@ -265,6 +265,10 @@ function criarOpcoes(containerId, campo, pares) {
         D[campo] = valor;
         container.querySelectorAll('.opcao-btn').forEach(function(b){b.classList.remove('on');});
         btn.classList.add('on');
+        if (campo === 'cartao_gestao') {
+          var wrap = document.getElementById('cartao-fatura-wrap');
+          if (wrap) wrap.style.display = (valor !== 'NaoUso') ? 'block' : 'none';
+        }
       };
       container.appendChild(btn);
     })(p[0], p[1]);
@@ -482,7 +486,7 @@ function render() {
         '</div>';
     }).join('');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 2 de 7</div><div class="bloco-titulo">Despesas mensais</div><div class="bloco-sub">O que sai todo mês. Coloque valores aproximados — estimativas são bem-vindas.</div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>5.</span> Moradia — aluguel ou financiamento, condomínio e IPTU <span class="hint">Preencha cada um separadamente. Coloque 0 se não tiver o gasto, ou escreva "Moro com familiar sem custo" no primeiro campo.</span></div><input type="text" id="q5" placeholder="Aluguel ou financiamento: Ex: R$ 1.200" style="margin-bottom:8px" value="'+D.moradia+'"><input type="text" id="q5_condominio" placeholder="Condomínio: Ex: R$ 350" style="margin-bottom:8px" value="'+D.condominio+'"><input type="text" id="q5_iptu" placeholder="IPTU (valor mensal ou dividido por 12): Ex: R$ 80" value="'+D.iptu+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>5.</span> Moradia — aluguel, condomínio e IPTU <span class="hint">Preencha cada um separadamente. Coloque 0 se não tiver o gasto, ou escreva "Moro com familiar sem custo" no primeiro campo. Se você tem financiamento imobiliário, não inclua a parcela aqui — ela entra no Bloco 3 (Dívidas e Crédito), junto com outros financiamentos.</span></div><input type="text" id="q5" placeholder="Aluguel: Ex: R$ 1.200 (deixe 0 se for financiado ou quitado)" style="margin-bottom:8px" value="'+D.moradia+'"><input type="text" id="q5_condominio" placeholder="Condomínio: Ex: R$ 350" style="margin-bottom:8px" value="'+D.condominio+'"><input type="text" id="q5_iptu" placeholder="IPTU (valor mensal ou dividido por 12): Ex: R$ 80" value="'+D.iptu+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>6.</span> Contas de consumo — água, luz, gás, internet, telefone <span class="hint">Some todas essas contas e coloque o total aproximado</span></div><input type="text" id="q6" placeholder="Ex: R$ 450" value="'+D.contas_consumo+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>7.</span> Transporte — combustível, Uber, ônibus, manutenção <span class="hint">Não inclua parcela de financiamento do carro aqui — isso entra no Bloco 3 (Dívidas e Crédito)</span></div><input type="text" id="q7" placeholder="Ex: R$ 600" value="'+D.transporte+'" oninput="mostrarPagamento(\'transporte\',this.value)"><div id="pagamento-transporte-wrap" class="opcoes-grid" style="margin-top:10px;'+(valorPositivo(D.transporte)?'':'display:none')+'">' + gerarOpcoesPagamento('transporte') + '</div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>8.</span> Alimentação — mercado, feira, refeições no trabalho</div><input type="text" id="q8" placeholder="Ex: R$ 800" value="'+D.alimentacao+'" oninput="mostrarPagamento(\'alimentacao\',this.value)"><div id="pagamento-alimentacao-wrap" class="opcoes-grid" style="margin-top:10px;'+(valorPositivo(D.alimentacao)?'':'display:none')+'">' + gerarOpcoesPagamento('alimentacao') + '</div></div>' +
@@ -518,7 +522,7 @@ function render() {
       '<div class="divider"></div>' +
       '<div class="pergunta"><div class="secao-titulo">Renegociações em andamento</div><span class="hint">Deixe em branco se não tiver.</span><div id="reneg-wrap">' + gerarLinhaReneg(0) + '</div><button onclick="adicionarReneg()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
       '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="secao-titulo">Empréstimos, financiamentos e consórcios</div><span class="hint">Inclua também consórcios (imóvel, veículo etc.) — use o campo "Banco/Credor" para identificar (ex: "Consórcio imóvel Itaú"). Deixe em branco se não tiver.</span><div id="emp-wrap">' + gerarLinhaEmp(0) + '</div><button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Empréstimos, financiamentos e consórcios</div><span class="hint">Inclua aqui financiamento imobiliário, financiamento de veículo e consórcios (imóvel, veículo etc.) — use o campo "Banco/Credor" para identificar (ex: "Financiamento imóvel Caixa"). Deixe em branco se não tiver.</span><div id="emp-wrap">' + gerarLinhaEmp(0) + '</div><button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
       '<div class="divider"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Qual dívida pesa mais no seu orçamento hoje? <span class="hint">Opcional</span></div><input type="text" id="q_pesada" placeholder="Ex: Cartão de crédito — juros altos" value="'+D.divida_mais_pesada+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Seu nome está negativado (SPC/Serasa)?</div><div id="opcoes-negativo" class="opcoes-grid"></div></div>' +
@@ -527,7 +531,7 @@ function render() {
       '<button class="btn btn-primary" onclick="salvarBloco3()">Continuar</button></div>';
     criarOpcoesCheque();
     criarOpcoes('opcoes-negativo','nome_negativado',[['Sim','Sim'],['Nao','Não'],['NaoSei','Não sei']]);
-    criarOpcoes('opcoes-reneg','tentou_negociar',[['SimBoas','Sim, consegui boas condições'],['Tentei','Tentei mas não consegui'],['Nunca','Nunca tentei']]);
+    criarOpcoes('opcoes-reneg','tentou_negociar',[['AindaNaoPrecisei','Ainda não precisei'],['SimBoas','Sim, consegui boas condições'],['Tentei','Tentei mas não consegui'],['Nunca','Nunca tentei']]);
     restaurarDividas(); restaurarRenegs(); restaurarEmps();
     return;
   }
@@ -538,7 +542,12 @@ function render() {
     var htmlSobra = tagsSobra.map(function(t){ return '<div class="tag-btn'+(D.sobra_dinheiro && D.sobra_dinheiro.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="sobra_dinheiro">'+t+'</div>'; }).join('');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 4 de 7</div><div class="bloco-titulo">Comportamento com dinheiro</div><div class="bloco-sub">Como você age e decide no dia a dia financeiro.</div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>12.</span> Como você toma decisão de uma compra não essencial?</div><div id="opcoes-decisao" class="opcoes-grid col1"></div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>13.</span> Como você usa o cartão de crédito?</div><div id="opcoes-cartao" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>13.</span> Como você usa o cartão de crédito?</div><div id="opcoes-cartao" class="opcoes-grid col1"></div>' +
+      '<div id="cartao-fatura-wrap" style="display:'+((D.cartao_gestao && D.cartao_gestao!=='NaoUso')?'block':'none')+';margin-top:12px">' +
+      '<input type="text" id="q_fatura_media" placeholder="Valor médio da fatura por mês: Ex: R$ 1.500" style="margin-bottom:8px" value="'+D.fatura_media+'" onchange="D.fatura_media=this.value">' +
+      '<input type="text" id="q_parcelas_comprometidas" placeholder="Quanto já está comprometido em parcelas nas próximas faturas: Ex: R$ 600" value="'+D.parcelas_comprometidas+'" onchange="D.parcelas_comprometidas=this.value">' +
+      '<span class="hint" style="margin-top:6px">Se você parcela compras com frequência, esse valor já compromete faturas futuras — mesmo que a fatura de hoje esteja paga.</span>' +
+      '</div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>14.</span> Você consegue guardar algum valor todo mês?</div><div id="opcoes-poupar" class="opcoes-grid col1"></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>15.</span> Quando sobra dinheiro, o que costuma acontecer? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlSobra+'</div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
@@ -597,18 +606,19 @@ function render() {
     setProg(95, 'Bloco 7 de 7 — Objetivos');
     var tagsImp = ['Não sei por onde começar','Não sobra nada para mudar','Medo de encarar a situação real','Já tentei antes e não funcionou','Falta de apoio — faço tudo sozinho(a)','Parceiro(a) não colabora','Falta de disciplina ou tempo'];
     var htmlImp = tagsImp.map(function(t){ return '<div class="tag-btn'+(D.impedimento && D.impedimento.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="impedimento">'+t+'</div>'; }).join('');
+    var tagsSucesso = ['Ter um valor específico guardado','Liberdade de tempo — trabalhar por escolha','Poder ajudar minha família sem apertar','Aposentar com tranquilidade'];
+    var htmlSucesso = tagsSucesso.map(function(t){ return '<div class="tag-btn'+(D.sucesso_financeiro && D.sucesso_financeiro.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="sucesso_financeiro">'+t+'</div>'; }).join('');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 7 de 7</div><div class="bloco-titulo">Objetivos e motivação</div><div class="bloco-sub">A última parte — e a mais importante para direcionar sua análise.</div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>27.</span> Você tem reserva de emergência ou investimentos?</div><div id="opcoes-reserva" class="opcoes-grid col1"></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>28.</span> Se surgisse um gasto grande e inesperado hoje — um reparo urgente, uma emergência de saúde — você conseguiria cobrir sem parcelar ou pedir emprestado?</div><div id="opcoes-imprevisto" class="opcoes-grid col1"></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>29.</span> O que te impede de agir hoje? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlImp+'</div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>30.</span> O que você quer que mude nos próximos 12 meses? <span class="hint">Seja específico</span></div><textarea id="q26" placeholder="Ex: Quitar o cartão, limpar o nome, ter R$500 guardados...">'+D.objetivo_12meses+'</textarea></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>31.</span> O que significa sucesso financeiro para você?</div><div id="opcoes-sucesso" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>31.</span> O que significa sucesso financeiro para você? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlSucesso+'</div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>32.</span> Por que organizar suas finanças é importante para você agora? <span class="hint">O que o dinheiro vai te permitir fazer ou sentir que hoje não consegue?</span></div><textarea id="q28" placeholder="Escreva com suas próprias palavras...">'+D.por_que_agora+'</textarea></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco7()">Gerar minha análise completa</button></div>';
     criarOpcoes('opcoes-reserva','reserva_emergencia',[['Nada','Não tenho nada guardado'],['Menos1mes','Tenho menos de 1 mês de despesas'],['Entre1e3','Tenho entre 1 e 3 meses guardados'],['Mais3','Tenho mais de 3 meses guardados']]);
     criarOpcoes('opcoes-imprevisto','capacidade_imprevisto',[['Facilmente','Sim, facilmente'],['Apertaria','Sim, mas apertaria bastante'],['Parcelaria','Não, precisaria parcelar ou pedir emprestado'],['NaoSaberia','Não saberia o que fazer']]);
-    criarOpcoes('opcoes-sucesso','sucesso_financeiro',[['ValorGuardado','Ter um valor específico guardado'],['Liberdade','Liberdade de tempo — trabalhar por escolha'],['AjudarFamilia','Poder ajudar minha família sem apertar'],['Aposentar','Aposentar com tranquilidade']]);
     return;
   }
 
@@ -670,7 +680,7 @@ function gerarLinhaReneg(idx) {
 
 function gerarLinhaEmp(idx) {
   return '<div class="linha-estruturada col4" id="emp-linha-'+idx+'" style="margin-bottom:8px">' +
-    '<input type="text" id="emp'+idx+'_credor" placeholder="Banco/Credor (ex: Consórcio Imóvel Itaú)" onchange="syncEmp('+idx+')">' +
+    '<input type="text" id="emp'+idx+'_credor" placeholder="Banco/Credor (ex: Financiamento imóvel Caixa, Consórcio veículo Itaú)" onchange="syncEmp('+idx+')">' +
     '<input type="text" id="emp'+idx+'_total" placeholder="Saldo devedor (R$)" onchange="syncEmp('+idx+')">' +
     '<input type="text" id="emp'+idx+'_parcela" placeholder="Parcela (R$)" onchange="syncEmp('+idx+')">' +
     '<input type="text" id="emp'+idx+'_restantes" placeholder="Parcelas restantes" onchange="syncEmp('+idx+')"></div>';
@@ -906,6 +916,8 @@ async function gerarAnalise() {
     tentou_negociar: D.tentou_negociar,
     decisao_compra: D.decisao_compra,
     cartao_gestao: D.cartao_gestao,
+    fatura_media: D.fatura_media,
+    parcelas_comprometidas: D.parcelas_comprometidas,
     habito_poupar: D.habito_poupar,
     sobra_dinheiro: D.sobra_dinheiro,
     sentimento_financas: D.sentimento_financas,
