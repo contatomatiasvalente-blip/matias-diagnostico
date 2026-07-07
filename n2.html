@@ -194,7 +194,7 @@ var D = {
   decisao_compra:'', cartao_gestao:'', habito_poupar:'', sobra_dinheiro:'',
   sentimento_financas:'', nivel_stress:5, evento_vida:'', evita_contas:'', dinheiro_relacionamentos:'',
   dependentes:'', compartilha_despesas:'', familia_dinheiro:'', estado_civil:'', dependentes_numero:'', renda_terceiros:'',
-  reserva_emergencia:'', objetivo_12meses:'', sucesso_financeiro:'', por_que_agora:'', impedimento:'',
+  reserva_emergencia:'', capacidade_imprevisto:'', objetivo_12meses:'', sucesso_financeiro:'', por_que_agora:'', impedimento:'',
   diagnostico:''
 };
 
@@ -599,13 +599,15 @@ function render() {
     var htmlImp = tagsImp.map(function(t){ return '<div class="tag-btn'+(D.impedimento && D.impedimento.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="impedimento">'+t+'</div>'; }).join('');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 7 de 7</div><div class="bloco-titulo">Objetivos e motivação</div><div class="bloco-sub">A última parte — e a mais importante para direcionar sua análise.</div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>27.</span> Você tem reserva de emergência ou investimentos?</div><div id="opcoes-reserva" class="opcoes-grid col1"></div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>28.</span> O que te impede de agir hoje? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlImp+'</div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>29.</span> O que você quer que mude nos próximos 12 meses? <span class="hint">Seja específico</span></div><textarea id="q26" placeholder="Ex: Quitar o cartão, limpar o nome, ter R$500 guardados...">'+D.objetivo_12meses+'</textarea></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>30.</span> O que significa sucesso financeiro para você?</div><div id="opcoes-sucesso" class="opcoes-grid col1"></div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>31.</span> Por que organizar suas finanças é importante para você agora? <span class="hint">O que o dinheiro vai te permitir fazer ou sentir que hoje não consegue?</span></div><textarea id="q28" placeholder="Escreva com suas próprias palavras...">'+D.por_que_agora+'</textarea></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>28.</span> Se surgisse um gasto grande e inesperado hoje — um reparo urgente, uma emergência de saúde — você conseguiria cobrir sem parcelar ou pedir emprestado?</div><div id="opcoes-imprevisto" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>29.</span> O que te impede de agir hoje? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlImp+'</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>30.</span> O que você quer que mude nos próximos 12 meses? <span class="hint">Seja específico</span></div><textarea id="q26" placeholder="Ex: Quitar o cartão, limpar o nome, ter R$500 guardados...">'+D.objetivo_12meses+'</textarea></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>31.</span> O que significa sucesso financeiro para você?</div><div id="opcoes-sucesso" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>32.</span> Por que organizar suas finanças é importante para você agora? <span class="hint">O que o dinheiro vai te permitir fazer ou sentir que hoje não consegue?</span></div><textarea id="q28" placeholder="Escreva com suas próprias palavras...">'+D.por_que_agora+'</textarea></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
       '<button class="btn btn-primary" onclick="salvarBloco7()">Gerar minha análise completa</button></div>';
     criarOpcoes('opcoes-reserva','reserva_emergencia',[['Nada','Não tenho nada guardado'],['Menos1mes','Tenho menos de 1 mês de despesas'],['Entre1e3','Tenho entre 1 e 3 meses guardados'],['Mais3','Tenho mais de 3 meses guardados']]);
+    criarOpcoes('opcoes-imprevisto','capacidade_imprevisto',[['Facilmente','Sim, facilmente'],['Apertaria','Sim, mas apertaria bastante'],['Parcelaria','Não, precisaria parcelar ou pedir emprestado'],['NaoSaberia','Não saberia o que fazer']]);
     criarOpcoes('opcoes-sucesso','sucesso_financeiro',[['ValorGuardado','Ter um valor específico guardado'],['Liberdade','Liberdade de tempo — trabalhar por escolha'],['AjudarFamilia','Poder ajudar minha família sem apertar'],['Aposentar','Aposentar com tranquilidade']]);
     return;
   }
@@ -830,6 +832,7 @@ function salvarBloco7() {
   D.objetivo_12meses = getVal('q26');
   D.por_que_agora = getVal('q28');
   if (!D.reserva_emergencia) { mostrarErro('Por favor responda sobre reserva de emergência.'); return; }
+  if (!D.capacidade_imprevisto) { mostrarErro('Por favor responda sobre sua capacidade de lidar com um imprevisto financeiro.'); return; }
   if (!D.objetivo_12meses) { mostrarErro('Por favor descreva o que quer mudar nos próximos 12 meses.'); return; }
   if (!D.sucesso_financeiro) { mostrarErro('Por favor responda o que significa sucesso financeiro para você.'); return; }
   blocoAtual = 8;
@@ -917,6 +920,7 @@ async function gerarAnalise() {
     dependentes_numero: D.dependentes_numero,
     renda_terceiros: D.renda_terceiros,
     reserva_emergencia: D.reserva_emergencia,
+    capacidade_imprevisto: D.capacidade_imprevisto,
     objetivo_12meses: D.objetivo_12meses,
     sucesso_financeiro: D.sucesso_financeiro,
     por_que_agora: D.por_que_agora,
