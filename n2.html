@@ -69,6 +69,8 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
 .diagnostico-secao{color:#c9a84a;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;margin-top:32px;margin-bottom:10px;font-family:"Inter",sans-serif;border-bottom:1px solid #2a2a4a;padding-bottom:8px}
 .diagnostico-texto .diagnostico-secao:first-child{margin-top:0}
 .resultado-assinatura{margin-top:28px;padding-top:18px;border-top:1px solid #2a2a4a;font-family:Georgia,'Times New Roman',serif;font-style:italic;color:#c9a84a;font-size:15px}
+.resultado-fechamento{margin-top:28px;padding-top:22px;border-top:1px solid #2a2a4a;font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.9;color:#c8c8e8;text-align:justify}
+.resultado-fechamento p{margin-bottom:14px}
 
 .score-box-tela{display:flex;align-items:center;gap:18px;background:#0d0d1f;border-radius:14px;padding:18px 20px;margin-bottom:18px;border-left:5px solid #8b7cf6}
 .score-num-tela{font-size:38px;font-weight:700;font-family:"Inter",sans-serif}
@@ -447,6 +449,7 @@ function esconderErro() {
 }
 
 function avancar() { blocoAtual++; render(); window.scrollTo(0,0); }
+function voltarBloco() { if (blocoAtual > 0) { blocoAtual--; render(); window.scrollTo(0,0); } }
 
 document.addEventListener('click', function(e) {
   var el = e.target;
@@ -494,7 +497,7 @@ function render() {
       '<div class="opcao-btn" onclick="selOpcao(this,\'renda_estavel\',\'Varia\')">Varia — há meses melhores e piores</div>' +
       '<div class="opcao-btn" onclick="selOpcao(this,\'renda_estavel\',\'Instavel\')">Muito instável — não consigo prever</div>' +
       '</div></div>' +
-      '<button class="btn btn-primary" onclick="salvarBloco1()">Continuar</button></div>';
+      '<button class="btn btn-primary" onclick="salvarBloco1()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
     return;
   }
 
@@ -533,7 +536,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>10.</span> Educação — escola, faculdade, cursos, material, van escolar <span class="hint">Coloque 0 se não tiver este gasto</span></div><input type="text" id="q10" placeholder="Ex: R$ 600" value="'+D.educacao+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>11.</span> Quais desses gastos você tem todo mês? <span class="hint">Marque e informe o valor aproximado de cada um</span></div>'+htmlTags+'</div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
-      '<button class="btn btn-primary" onclick="salvarBloco2()">Continuar</button></div>';
+      '<button class="btn btn-primary" onclick="salvarBloco2()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
     return;
   }
 
@@ -567,7 +570,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Seu nome está negativado (SPC/Serasa)?</div><div id="opcoes-negativo" class="opcoes-grid"></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Você já tentou renegociar alguma dívida?</div><div id="opcoes-reneg" class="opcoes-grid col1"></div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
-      '<button class="btn btn-primary" onclick="salvarBloco3()">Continuar</button></div>';
+      '<button class="btn btn-primary" onclick="salvarBloco3()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
     criarOpcoesCheque();
     criarOpcoes('opcoes-negativo','nome_negativado',[['Sim','Sim'],['Nao','Não'],['NaoSei','Não sei']]);
     criarOpcoes('opcoes-reneg','tentou_negociar',[['AindaNaoPrecisei','Ainda não precisei'],['SimBoas','Sim, consegui boas condições'],['Tentei','Tentei mas não consegui'],['Nunca','Nunca tentei']]);
@@ -591,7 +594,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>14.</span> Você consegue guardar algum valor todo mês?</div><div id="opcoes-poupar" class="opcoes-grid col1"></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>15.</span> Quando sobra dinheiro, o que costuma acontecer? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlSobra+'</div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
-      '<button class="btn btn-primary" onclick="salvarBloco4()">Continuar</button></div>';
+      '<button class="btn btn-primary" onclick="salvarBloco4()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
     criarOpcoes('opcoes-decisao','decisao_compra',[['Planejo','Planejo e pesquiso antes de comprar'],['Parcela','Compro se couber na parcela'],['Impulso','Compro por impulso com frequência'],['Evito','Evito comprar — tenho medo de gastar']]);
     criarOpcoes('opcoes-cartao','cartao_gestao',[['PagoTotal','Pago a fatura total todo mês'],['PagoMinimo','Pago o mínimo ou parcelo a fatura com frequência'],['UsoLimite','Uso o limite todo mês — complemento da minha renda'],['NaoUso','Não uso cartão de crédito']]);
     criarOpcoes('opcoes-poupar','habito_poupar',[['Fixo','Sim — guardo um valor fixo antes de gastar'],['Sobra','Guardo só o que sobra — quando sobra'],['Nada','Não consigo guardar nada']]);
@@ -615,7 +618,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>19.</span> Você tende a evitar olhar suas contas?</div><div id="opcoes-evita" class="opcoes-grid col1"></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>20.</span> A situação financeira afeta seus relacionamentos ou saúde? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlRelac+'</div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
-      '<button class="btn btn-primary" onclick="salvarBloco5()">Continuar</button></div>';
+      '<button class="btn btn-primary" onclick="salvarBloco5()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
     criarOpcoes('opcoes-evita','evita_contas',[['SimEvito','Sim, evito bastante — é muito pesado'],['AsVezes','Às vezes evito'],['NaoEvito','Não, encaro a situação de frente']]);
     return;
   }
@@ -634,7 +637,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>25.</span> Quantas pessoas dependem financeiramente de você hoje? <span class="hint">Considere qualquer pessoa, da família ou não</span></div><div id="opcoes-numdependentes" class="opcoes-grid"></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>26.</span> Quanto da sua renda é destinado a ajudar outras pessoas? <span class="hint">Família ou não — considere um valor aproximado por mês</span></div><div id="opcoes-rendaterceiros" class="opcoes-grid col1"></div></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
-      '<button class="btn btn-primary" onclick="salvarBloco6()">Continuar</button></div>';
+      '<button class="btn btn-primary" onclick="salvarBloco6()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
     criarOpcoes('opcoes-familia','familia_dinheiro',[['Educacao','Havia educação financeira — aprendi a poupar'],['Apertado','Sempre foi apertado — sobrevivência'],['Gastava','Gastava-se tudo — não havia cultura de poupança'],['Tabu','Nunca falávamos de dinheiro em casa — era tabu']]);
     criarOpcoes('opcoes-estadocivil','estado_civil',[['Solteiro','Solteiro(a)'],['Casado','Casado(a) ou união estável'],['Divorciado','Divorciado(a) ou separado(a)'],['Viuvo','Viúvo(a)']]);
     criarOpcoes('opcoes-numdependentes','dependentes_numero',[['Nenhuma','Nenhuma — só eu'],['Uma','1 pessoa'],['Duas','2 pessoas'],['TresOuMais','3 ou mais pessoas']]);
@@ -656,7 +659,7 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>31.</span> O que significa sucesso financeiro para você? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlSucesso+'</div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>32.</span> Por que organizar suas finanças é importante para você agora? <span class="hint">O que o dinheiro vai te permitir fazer ou sentir que hoje não consegue?</span></div><textarea id="q28" placeholder="Escreva com suas próprias palavras...">'+D.por_que_agora+'</textarea></div>' +
       '<div id="erro-bloco" class="erro-msg"></div>' +
-      '<button class="btn btn-primary" onclick="salvarBloco7()">Gerar minha análise completa</button></div>';
+      '<button class="btn btn-primary" onclick="salvarBloco7()">Gerar minha análise completa</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
     criarOpcoes('opcoes-reserva','reserva_emergencia',[['Nada','Não tenho nada guardado'],['Menos1mes','Tenho menos de 1 mês de despesas'],['Entre1e3','Tenho entre 1 e 3 meses guardados'],['Mais3','Tenho mais de 3 meses guardados']]);
     criarOpcoes('opcoes-imprevisto','capacidade_imprevisto',[['Facilmente','Sim, facilmente'],['Apertaria','Sim, mas apertaria bastante'],['Parcelaria','Não, precisaria parcelar ou pedir emprestado'],['NaoSaberia','Não saberia o que fazer']]);
     return;
@@ -1046,6 +1049,7 @@ function exibirResultado() {
     scoreHtml + barraTela +
     '<div class="pdf-aviso"><div class="pdf-aviso-txt">📄 Este é um resumo visual. Logo abaixo está sua análise completa, incluindo o diagnóstico do seu perfil comportamental e emocional. O PDF traz essa mesma análise com gráficos detalhados, tabela de referências e comparação com sua renda.</div><button class="pdf-aviso-btn" onclick="gerarPDF()">Baixar PDF</button></div>' +
     accordionHtml +
+    '<div class="resultado-fechamento"><p>Essa análise foi feita com matemática fria, não para te agradar — para te mostrar a real dimensão da sua situação. Pode não ser o que você esperava ouvir, mas é o ponto de partida mais honesto que você pode ter agora.</p><p>Mudar de verdade exige esforço, e não existe atalho para isso. Mas cada ajuste, por menor que pareça, já é um passo real na direção certa. O caminho é difícil, mas percorrível — e você não precisa fazer tudo de uma vez.</p></div>' +
     '<div class="resultado-assinatura">— Matias Valente</div>';
   tela.appendChild(cardR);
 
@@ -1057,7 +1061,7 @@ function exibirResultado() {
   if (!isVIP) {
     var b1 = document.createElement('button');
     b1.className = 'btn-compra btn-n3';
-    b1.textContent = 'Comprar Livro "O Número da Paz" + Planilha Financeira Completa — R$ 30';
+    b1.textContent = 'Livro "O Número da Paz" + Planilha Financeira Completa — R$ 30';
     b1.onclick = function(){ window.open('https://pay.kiwify.com.br/t5H3kAi','_blank'); };
     cardA.appendChild(b1);
   }
