@@ -1028,9 +1028,9 @@ function exibirResultado() {
   var pctD = (r.dividasTotal/totalBarra*100);
   var barraTela = '<div class="barra-tela"><div style="width:'+pctF+'%;background:#7c6fd4"></div><div style="width:'+pctV+'%;background:#c9a84a"></div><div style="width:'+pctD+'%;background:#e05d5d"></div></div>' +
     '<div class="legenda-tela">' +
-      '<span><span class="legenda-cor-tela" style="background:#7c6fd4"></span>Fixas '+pctF.toFixed(0)+'%</span>' +
-      '<span><span class="legenda-cor-tela" style="background:#c9a84a"></span>Variáveis '+pctV.toFixed(0)+'%</span>' +
-      '<span><span class="legenda-cor-tela" style="background:#e05d5d"></span>Dívidas '+pctD.toFixed(0)+'%</span>' +
+      '<span><span class="legenda-cor-tela" style="background:#7c6fd4"></span>Despesas Fixas '+pctF.toFixed(0)+'%</span>' +
+      '<span><span class="legenda-cor-tela" style="background:#c9a84a"></span>Despesas Variáveis '+pctV.toFixed(0)+'%</span>' +
+      '<span><span class="legenda-cor-tela" style="background:#e05d5d"></span>Dívidas e Compromissos '+pctD.toFixed(0)+'%</span>' +
     '</div>';
 
   var scoreHtml = r.score !== null ? '<div class="score-box-tela" style="border-left-color:'+scoreCor+'"><div class="score-num-tela" style="color:'+scoreCor+'">'+r.score+'</div><div><div class="score-label-tela">'+scoreLabel+'</div><div class="score-sub-tela">Nota de saúde financeira (0-100)</div></div></div>' : '';
@@ -1043,7 +1043,7 @@ function exibirResultado() {
   cardR.className = 'resultado-card';
   cardR.innerHTML = '<div class="resultado-header"><div class="resultado-brand">Matias Valente</div><div class="resultado-data">Gerado em '+dataHoje+'<br>Documento confidencial</div></div><div class="resultado-titulo">Análise completa exclusiva</div><div class="resultado-nome">Sua análise está pronta</div>' +
     scoreHtml + barraTela +
-    '<div class="pdf-aviso"><div class="pdf-aviso-txt">📄 Este é um resumo. O relatório completo em PDF traz gráficos detalhados, tabela de referências e comparação com sua renda.</div><button class="pdf-aviso-btn" onclick="gerarPDF()">Baixar PDF</button></div>' +
+    '<div class="pdf-aviso"><div class="pdf-aviso-txt">📄 Este é um resumo visual. Logo abaixo está sua análise completa, incluindo o diagnóstico do seu perfil comportamental e emocional. O PDF traz essa mesma análise com gráficos detalhados, tabela de referências e comparação com sua renda.</div><button class="pdf-aviso-btn" onclick="gerarPDF()">Baixar PDF</button></div>' +
     accordionHtml +
     '<div class="resultado-assinatura">— Matias Valente</div>';
   tela.appendChild(cardR);
