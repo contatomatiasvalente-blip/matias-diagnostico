@@ -1009,32 +1009,240 @@ function exibirResultado() {
   tela.appendChild(rodape);
 }
 
+function parseValorNumerico(val) {
+  if (!val) return 0;
+  var n = parseFloat(String(val).replace(/[^\d,.-]/g, '').replace(',', '.'));
+  return isNaN(n) ? 0 : n;
+}
+
+function calcularResumoFinanceiro() {
+  var g = D.gastos_ocultos_map || {};
+  var valGasto = function(k) { return parseValorNumerico(g[k]); };
+
+  var rendaLiquida = parseValorNumerico(D.renda_liquida);
+  var rendaExtra = parseValorNumerico(D.renda_extra_valor);
+  var outrasRendas = parseValorNumerico(D.outras_rendas_valor);
+  var rendaTotal = rendaLiquida + rendaExtra + outrasRendas;
+
+  var fixaMoradia = parseValorNumerico(D.moradia) + parseValorNumerico(D.condominio) + parseValorNumerico(D.iptu) + parseValorNumerico(D.contas_consumo) + valGasto('manutcasa');
+  var fixaEducacao = parseValorNumerico(D.educacao);
+  var fixaSaude = parseValorNumerico(D.saude) + valGasto('farmacia');
+  var fixaProtecao = valGasto('segurovida') + valGasto('seguroresid') + valGasto('seguroveiculo');
+  var fixaAssinaturas = valGasto('academia') + valGasto('streaming');
+  var despesasFixas = fixaMoradia + fixaEducacao + fixaSaude + fixaProtecao + fixaAssinaturas;
+
+  var varTransporte = parseValorNumerico(D.transporte) + valGasto('manutcarro');
+  var varAlimentacao = parseValorNumerico(D.alimentacao) + valGasto('delivery');
+  var varLazer = valGasto('pet') + valGasto('lazer');
+  var despesasVariaveis = varTransporte + varAlimentacao + varLazer;
+
+  var parcelasDividas = 0;
+  (D.dividas||[]).forEach(function(d){ parcelasDividas += parseValorNumerico(d.parcela); });
+  (D.renegociacoes||[]).forEach(function(r){ parcelasDividas += parseValorNumerico(r.parcela); });
+  (D.emprestimos||[]).forEach(function(e){ parcelasDividas += parseValorNumerico(e.parcela); });
+  var parcelasCartao = parseValorNumerico(D.parcelas_comprometidas);
+  var dividasTotal = parcelasDividas + parcelasCartao;
+
+  var totalGeral = despesasFixas + despesasVariaveis + dividasTotal;
+  var saldo = rendaTotal - totalGeral;
+  var percentualDividas = rendaTotal > 0 ? (dividasTotal / rendaTotal * 100) : 0;
+
+  var scoreMatch = (D.diagnostico||'').match(/nota de saúde financeira hoje é\s*(\d+)\s*\/?\s*100/i);
+  var score = scoreMatch ? parseInt(scoreMatch[1], 10) : null;
+
+  return {
+    rendaTotal: rendaTotal, despesasFixas: despesasFixas, despesasVariaveis: despesasVariaveis,
+    dividasTotal: dividasTotal, totalGeral: totalGeral, saldo: saldo,
+    percentualDividas: percentualDividas, score: score,
+    categorias: {
+      'Moradia': fixaMoradia, 'Educação': fixaEducacao, 'Saúde': fixaSaude,
+      'Proteção e Seguros': fixaProtecao, 'Assinaturas fixas': fixaAssinaturas,
+      'Transporte': varTransporte, 'Alimentação': varAlimentacao, 'Lazer': varLazer
+    }
+  };
+}
+
+function formatarReal(n) {
+  return 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+
+function corPorScore(score) {
+  if (score === null) return '#7c6fd4';
+  if (score <= 20) return '#e05d5d';
+  if (score <= 40) return '#e08a4f';
+  if (score <= 60) return '#d4b23c';
+  if (score <= 80) return '#7fb86e';
+  return '#4ade80';
+}
+
+function labelPorScore(score) {
+  if (score === null) return '';
+  if (score <= 20) return 'Situação crítica';
+  if (score <= 40) return 'Alto risco';
+  if (score <= 60) return 'Situação instável';
+  if (score <= 80) return 'Em recuperação';
+  return 'Financeiramente saudável';
+}
+
+function parseSecoesDiagnostico(texto) {
+  var partes = texto.split(/\n\n/).map(function(s){return s.trim();}).filter(Boolean);
+  var secoes = [];
+  var atual = null;
+  partes.forEach(function(p){
+    var m = p.match(/^SEÇÃO\s+(\d+)\s*—\s*(.+)$/i);
+    if (m) {
+      if (atual) secoes.push(atual);
+      atual = { numero: m[1], titulo: m[2], paragrafos: [] };
+    } else if (atual) {
+      atual.paragrafos.push(p);
+    } else {
+      if (!secoes.length) secoes.push({ numero:'', titulo:'', paragrafos:[] });
+      secoes[0].paragrafos.push(p);
+    }
+  });
+  if (atual) secoes.push(atual);
+  return secoes;
+}
+
 function gerarPDF() {
   var dataHoje = new Date().toLocaleDateString('pt-BR');
-  var partes = D.diagnostico.split('\n\n').filter(function(p){ return p.trim(); });
-  var txtHtml = partes.map(function(p){ return '<p style="margin-bottom:16px;text-align:justify">'+p+'</p>'; }).join('');
-  var html = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Análise Financeira — Matias Valente</title><style>@page{size:A4;margin:2cm}*{margin:0;padding:0;box-sizing:border-box}body{font-family:Georgia,serif;color:#1a1a2e;font-size:13px;line-height:1.8}.header{border-bottom:3px solid #7c6fd4;padding-bottom:20px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end}.h-nome{font-size:22px;font-weight:bold;color:#7c6fd4;letter-spacing:2px}.h-sub{font-size:11px;color:#8080a0;letter-spacing:1px;margin-top:4px}.h-data{font-size:11px;color:#8080a0;text-align:right}.titulo-doc{font-size:18px;font-weight:bold;margin-bottom:6px}.sub-doc{font-size:13px;color:#7c6fd4;margin-bottom:24px;font-style:italic}.secao{margin-bottom:24px}.secao-t{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7c6fd4;font-family:Arial,sans-serif;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #e0e0f0}.dados-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}.dado{background:#f8f8ff;padding:8px 12px;border-radius:4px;border-left:3px solid #7c6fd450}.dado-l{font-size:10px;color:#8080a0;font-family:Arial;margin-bottom:2px}.dado-v{font-size:12px;font-weight:bold}.footer{margin-top:40px;padding-top:20px;border-top:2px solid #7c6fd4;display:flex;justify-content:space-between;align-items:center}.f-nome{font-size:14px;font-weight:bold;color:#7c6fd4;font-style:italic}.f-aviso{font-size:10px;color:#a0a0c0;font-family:Arial}</style></head><body>' +
-    '<div class="header"><div><div class="h-nome">MATIAS VALENTE</div><div class="h-sub">EX-GERENTE DE BANCO · 25 ANOS DE EXPERIÊNCIA</div></div><div class="h-data">Gerado em: '+dataHoje+'<br>Documento confidencial</div></div>' +
+  var r = calcularResumoFinanceiro();
+  var scoreCor = corPorScore(r.score);
+  var scoreLabel = labelPorScore(r.score);
+
+  var iconesSecao = {'1':'📊','2':'🧠','3':'🧮','4':'🔍','5':'💭','6':'👁️','7':'🔮','8':'🗺️','9':'✉️'};
+  var secoes = parseSecoesDiagnostico(D.diagnostico || '');
+  var secoesHtml = secoes.map(function(s){
+    var icone = iconesSecao[s.numero] || '▸';
+    var tituloHtml = s.titulo ? '<div class="sec-titulo"><span class="sec-icone">'+icone+'</span>'+s.titulo+'</div>' : '';
+    var corpoHtml = s.paragrafos.map(function(p){ return '<p>'+p.replace(/\n/g,'<br>')+'</p>'; }).join('');
+    return '<div class="secao-bloco">'+tituloHtml+corpoHtml+'</div>';
+  }).join('');
+
+  // Gráfico 1: barra empilhada de despesas fixas / variáveis / dívidas
+  var totalBarra = r.totalGeral > 0 ? r.totalGeral : 1;
+  var pctF = (r.despesasFixas/totalBarra*100).toFixed(1);
+  var pctV = (r.despesasVariaveis/totalBarra*100).toFixed(1);
+  var pctD = (r.dividasTotal/totalBarra*100).toFixed(1);
+  var barraEmpilhada = '<svg width="100%" height="36" viewBox="0 0 600 36" style="display:block">' +
+    '<rect x="0" y="0" width="'+(600*pctF/100)+'" height="36" fill="#7c6fd4"/>' +
+    '<rect x="'+(600*pctF/100)+'" y="0" width="'+(600*pctV/100)+'" height="36" fill="#c9a84a"/>' +
+    '<rect x="'+(600*(parseFloat(pctF)+parseFloat(pctV))/100)+'" y="0" width="'+(600*pctD/100)+'" height="36" fill="#e05d5d"/>' +
+    '</svg>';
+
+  // Gráfico 2: renda vs despesas totais (barras horizontais comparativas)
+  var maxComp = Math.max(r.rendaTotal, r.totalGeral, 1);
+  var largRenda = (r.rendaTotal/maxComp*100).toFixed(1);
+  var largDespesa = (r.totalGeral/maxComp*100).toFixed(1);
+
+  var alertaHtml = '';
+  if (r.saldo < 0) {
+    alertaHtml = '<div class="alerta alerta-critico">⚠ Déficit mensal de '+formatarReal(Math.abs(r.saldo))+' — os compromissos superam a renda informada.</div>';
+  } else if (r.percentualDividas > 30) {
+    alertaHtml = '<div class="alerta alerta-atencao">⚠ '+r.percentualDividas.toFixed(0)+'% da renda está comprometida com dívidas — acima do recomendado (até 30%).</div>';
+  }
+
+  var html = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Análise Financeira — Matias Valente</title><style>' +
+    '@page{size:A4;margin:1.8cm}' +
+    '*{margin:0;padding:0;box-sizing:border-box}' +
+    'body{font-family:"Segoe UI",Arial,sans-serif;color:#1a1a2e;font-size:12.5px;line-height:1.7}' +
+    '.header{border-bottom:3px solid #7c6fd4;padding-bottom:18px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end}' +
+    '.h-nome{font-size:22px;font-weight:bold;color:#7c6fd4;letter-spacing:2px}' +
+    '.h-data{font-size:11px;color:#8080a0;text-align:right}' +
+    '.titulo-doc{font-size:19px;font-weight:bold;margin-bottom:4px}' +
+    '.sub-doc{font-size:13px;color:#7c6fd4;margin-bottom:20px;font-style:italic}' +
+    '.resumo-titulo{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7c6fd4;margin-bottom:12px;font-weight:bold}' +
+    '.score-box{display:flex;align-items:center;gap:20px;background:#f7f6ff;border-radius:10px;padding:18px 22px;margin-bottom:18px;border-left:5px solid '+scoreCor+'}' +
+    '.score-num{font-size:38px;font-weight:bold;color:'+scoreCor+'}' +
+    '.score-label{font-size:14px;font-weight:bold;color:#333}' +
+    '.score-sub{font-size:11px;color:#8080a0}' +
+    '.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:20px}' +
+    '.stat-card{background:#f8f8fc;border-radius:8px;padding:12px 10px;text-align:center;border:1px solid #ececf5}' +
+    '.stat-label{font-size:9.5px;color:#8080a0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}' +
+    '.stat-val{font-size:15px;font-weight:bold;color:#2a2a4a}' +
+    '.chart-box{background:#fafafe;border-radius:8px;padding:16px 18px;margin-bottom:14px;border:1px solid #ececf5}' +
+    '.chart-titulo{font-size:11px;font-weight:bold;color:#555;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px}' +
+    '.legenda{display:flex;gap:18px;margin-top:10px;flex-wrap:wrap}' +
+    '.legenda-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#555}' +
+    '.legenda-cor{width:10px;height:10px;border-radius:2px;display:inline-block}' +
+    '.comp-linha{display:flex;align-items:center;gap:10px;margin-bottom:10px}' +
+    '.comp-label{width:80px;font-size:11px;color:#555;flex-shrink:0}' +
+    '.comp-barra-wrap{flex:1;background:#ececf5;border-radius:4px;overflow:hidden;height:20px}' +
+    '.comp-barra{height:20px;border-radius:4px}' +
+    '.comp-valor{width:90px;text-align:right;font-size:11.5px;font-weight:bold;flex-shrink:0}' +
+    '.alerta{padding:12px 16px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:18px}' +
+    '.alerta-critico{background:#fdecec;color:#c23838;border-left:4px solid #e05d5d}' +
+    '.alerta-atencao{background:#fdf4e3;color:#8a5a12;border-left:4px solid #d4b23c}' +
+    '.secao-bloco{margin-bottom:18px;page-break-inside:avoid}' +
+    '.sec-titulo{font-size:13px;font-weight:bold;color:#7c6fd4;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #e0e0f0;padding-bottom:6px;margin-bottom:10px;display:flex;align-items:center;gap:8px}' +
+    '.sec-icone{font-size:15px}' +
+    '.secao-bloco p{margin-bottom:10px;text-align:justify;font-size:12.5px;line-height:1.75}' +
+    '.dividas-tabela{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:11.5px}' +
+    '.dividas-tabela th{background:#7c6fd4;color:#fff;text-align:left;padding:8px 10px;font-size:10.5px;text-transform:uppercase;letter-spacing:0.4px}' +
+    '.dividas-tabela td{padding:7px 10px;border-bottom:1px solid #ececf5}' +
+    '.dividas-tabela tr:nth-child(even) td{background:#f8f8fc}' +
+    '.objetivo-box{background:#f0eeff;border-left:4px solid #7c6fd4;padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 0 24px}' +
+    '.footer{margin-top:32px;padding-top:16px;border-top:2px solid #7c6fd4;display:flex;justify-content:space-between;align-items:center}' +
+    '.f-nome{font-size:14px;font-weight:bold;color:#7c6fd4;font-style:italic}' +
+    '.f-aviso{font-size:10px;color:#a0a0c0}' +
+    '</style></head><body>' +
+
+    '<div class="header"><div><div class="h-nome">MATIAS VALENTE</div></div><div class="h-data">Gerado em: '+dataHoje+'<br>Documento confidencial</div></div>' +
     '<div class="titulo-doc">Relatório de Análise Financeira Completa</div><div class="sub-doc">Diagnóstico exclusivo e personalizado</div>' +
-    '<div class="secao"><div class="secao-t">Dados informados</div><div class="dados-grid">' +
-    '<div class="dado"><div class="dado-l">Renda líquida mensal</div><div class="dado-v">'+(D.renda_liquida||'—')+'</div></div>' +
-    '<div class="dado"><div class="dado-l">Estabilidade</div><div class="dado-v">'+(D.renda_estavel||'—')+'</div></div>' +
-    '<div class="dado"><div class="dado-l">Moradia</div><div class="dado-v">'+(D.moradia||'—')+'</div></div>' +
-    '<div class="dado"><div class="dado-l">Contas de consumo</div><div class="dado-v">'+(D.contas_consumo||'—')+'</div></div>' +
-    '<div class="dado"><div class="dado-l">Transporte</div><div class="dado-v">'+(D.transporte||'—')+'</div></div>' +
-    '<div class="dado"><div class="dado-l">Alimentação</div><div class="dado-v">'+(D.alimentacao||'—')+'</div></div>' +
-    '<div class="dado"><div class="dado-l">Nome negativado</div><div class="dado-v">'+(D.nome_negativado||'—')+'</div></div>' +
-    '<div class="dado"><div class="dado-l">Estresse (1-10)</div><div class="dado-v">'+D.nivel_stress+'</div></div>' +
+
+    (r.score !== null ? '<div class="score-box"><div class="score-num">'+r.score+'</div><div><div class="score-label">'+scoreLabel+'</div><div class="score-sub">Nota de saúde financeira (0-100)</div></div></div>' : '') +
+
+    alertaHtml +
+
+    '<div class="resumo-titulo">Resumo financeiro do mês</div>' +
+    '<div class="stats-grid">' +
+      '<div class="stat-card"><div class="stat-label">Renda total</div><div class="stat-val">'+formatarReal(r.rendaTotal)+'</div></div>' +
+      '<div class="stat-card"><div class="stat-label">Despesas totais</div><div class="stat-val">'+formatarReal(r.totalGeral)+'</div></div>' +
+      '<div class="stat-card"><div class="stat-label">'+(r.saldo>=0?'Sobra mensal':'Déficit mensal')+'</div><div class="stat-val" style="color:'+(r.saldo>=0?'#2e9e4f':'#c23838')+'">'+formatarReal(Math.abs(r.saldo))+'</div></div>' +
+      '<div class="stat-card"><div class="stat-label">% renda em dívidas</div><div class="stat-val" style="color:'+(r.percentualDividas>30?'#c23838':'#2a2a4a')+'">'+r.percentualDividas.toFixed(0)+'%</div></div>' +
+    '</div>' +
+
+    '<div class="chart-box"><div class="chart-titulo">Para onde vai sua renda</div>' + barraEmpilhada +
+    '<div class="legenda">' +
+      '<div class="legenda-item"><span class="legenda-cor" style="background:#7c6fd4"></span>Despesas fixas — '+formatarReal(r.despesasFixas)+' ('+pctF+'%)</div>' +
+      '<div class="legenda-item"><span class="legenda-cor" style="background:#c9a84a"></span>Despesas variáveis — '+formatarReal(r.despesasVariaveis)+' ('+pctV+'%)</div>' +
+      '<div class="legenda-item"><span class="legenda-cor" style="background:#e05d5d"></span>Dívidas e compromissos — '+formatarReal(r.dividasTotal)+' ('+pctD+'%)</div>' +
     '</div></div>' +
-    (formatarDividas() !== 'Não informado' ? '<div class="secao"><div class="secao-t">Dívidas</div><p style="font-size:12px;line-height:1.8">'+formatarDividas().replace(/\/\/\//g,'<br>')+'</p></div>' : '') +
-    '<div class="secao"><div class="secao-t">Análise completa personalizada</div><div style="font-size:13px;line-height:1.85">'+txtHtml+'</div></div>' +
-    (D.objetivo_12meses ? '<div style="background:#f0eeff;border-left:4px solid #7c6fd4;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0"><strong>Objetivo declarado:</strong> '+D.objetivo_12meses+'</div>' : '') +
+
+    '<div class="chart-box"><div class="chart-titulo">Renda vs. compromissos totais</div>' +
+      '<div class="comp-linha"><div class="comp-label">Renda</div><div class="comp-barra-wrap"><div class="comp-barra" style="width:'+largRenda+'%;background:#4ade80"></div></div><div class="comp-valor">'+formatarReal(r.rendaTotal)+'</div></div>' +
+      '<div class="comp-linha"><div class="comp-label">Compromissos</div><div class="comp-barra-wrap"><div class="comp-barra" style="width:'+largDespesa+'%;background:'+(r.saldo<0?'#e05d5d':'#7c6fd4')+'"></div></div><div class="comp-valor">'+formatarReal(r.totalGeral)+'</div></div>' +
+    '</div>' +
+
+    (formatarDividas() !== 'Não informado' ? montarTabelaDividas() : '') +
+
+    secoesHtml +
+
+    (D.objetivo_12meses ? '<div class="objetivo-box"><strong>Objetivo declarado:</strong> '+D.objetivo_12meses+'</div>' : '') +
+
     '<div class="footer"><div class="f-nome">— Matias Valente</div><div class="f-aviso">Relatório gerado de forma exclusiva e anônima.<br>Nenhum dado pessoal é armazenado.</div></div>' +
     '</body></html>';
+
   var janela = window.open('','_blank');
   janela.document.write(html);
   janela.document.close();
   setTimeout(function(){ janela.print(); }, 800);
+}
+
+function montarTabelaDividas() {
+  var linhas = '';
+  (D.dividas||[]).forEach(function(d){
+    if (d.tipo) linhas += '<tr><td>'+d.tipo+'</td><td>'+(d.total?formatarReal(parseValorNumerico(d.total)):'—')+'</td><td>'+(d.parcela?formatarReal(parseValorNumerico(d.parcela)):'—')+'</td></tr>';
+  });
+  (D.emprestimos||[]).forEach(function(e){
+    if (e.credor) linhas += '<tr><td>'+e.credor+'</td><td>'+(e.total?formatarReal(parseValorNumerico(e.total)):'—')+'</td><td>'+(e.parcela?formatarReal(parseValorNumerico(e.parcela)):'—')+'</td></tr>';
+  });
+  (D.renegociacoes||[]).forEach(function(r){
+    if (r.credor) linhas += '<tr><td>'+r.credor+' (renegociado)</td><td>—</td><td>'+(r.parcela?formatarReal(parseValorNumerico(r.parcela)):'—')+'</td></tr>';
+  });
+  if (!linhas) return '';
+  return '<div class="resumo-titulo" style="margin-top:6px">Detalhamento de dívidas</div>' +
+    '<table class="dividas-tabela"><thead><tr><th>Dívida / Credor</th><th>Saldo devedor</th><th>Parcela mensal</th></tr></thead><tbody>'+linhas+'</tbody></table>';
 }
 
 function salvarWA() {
