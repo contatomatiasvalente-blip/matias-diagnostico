@@ -1214,6 +1214,8 @@ function gerarPDF() {
       '<div class="comp-linha"><div class="comp-label">Compromissos</div><div class="comp-barra-wrap"><div class="comp-barra" style="width:'+largDespesa+'%;background:'+(r.saldo<0?'#e05d5d':'#7c6fd4')+'"></div></div><div class="comp-valor">'+formatarReal(r.totalGeral)+'</div></div>' +
     '</div>' +
 
+    montarTabelaReferencias(r) +
+
     (formatarDividas() !== 'Não informado' ? montarTabelaDividas() : '') +
 
     secoesHtml +
@@ -1227,6 +1229,28 @@ function gerarPDF() {
   janela.document.write(html);
   janela.document.close();
   setTimeout(function(){ janela.print(); }, 800);
+}
+
+function montarTabelaReferencias(r) {
+  var linhas = [];
+  function addLinha(nome, valor, limite) {
+    if (valor <= 0) return;
+    var pct = r.rendaTotal > 0 ? (valor / r.rendaTotal * 100) : 0;
+    var dentro = pct <= limite;
+    var status = dentro ? '<span style="color:#2e9e4f;font-weight:bold">✓ Dentro do recomendado</span>' : '<span style="color:#c23838;font-weight:bold">⚠ '+(pct-limite).toFixed(0)+' pontos acima</span>';
+    linhas.push('<tr><td>'+nome+'</td><td>'+pct.toFixed(0)+'%</td><td>até '+limite+'%</td><td>'+status+'</td></tr>');
+  }
+  addLinha('Moradia', r.categorias['Moradia'], 30);
+  addLinha('Alimentação', r.categorias['Alimentação'], 15);
+  addLinha('Transporte', r.categorias['Transporte'], 15);
+  addLinha('Despesas Fixas (total)', r.despesasFixas, 50);
+  addLinha('Despesas Variáveis (total)', r.despesasVariaveis, 30);
+  addLinha('Dívidas e Compromissos', r.dividasTotal, 30);
+  if (!linhas.length) return '';
+  return '<div class="chart-box"><div class="chart-titulo">Comparação com referências de planejamento financeiro</div>' +
+    '<table class="dividas-tabela"><thead><tr><th>Categoria</th><th>Seu %</th><th>Recomendado</th><th>Situação</th></tr></thead><tbody>'+linhas.join('')+'</tbody></table>' +
+    '<div style="font-size:11px;color:#8080a0;margin-top:6px;font-family:\'Segoe UI\',Arial,sans-serif">Referências baseadas na regra 50-30-20 e na regra dos 30% para moradia, usadas por planejadores financeiros e pelo Banco Central do Brasil.</div>' +
+    '</div>';
 }
 
 function montarTabelaDividas() {
