@@ -356,7 +356,7 @@ function atualizarStringGastos() {
   var labels = {
     delivery:'Delivery', streaming:'Streaming', celular:'Internet e celular',
     manutcasa:'Manutenção da casa', manutcarro:'Manutenção do carro',
-    segurovida:'Seguro de vida', seguroresid:'Seguro residencial',
+    segurovida:'Seguro de vida', seguroresid:'Seguro residencial', seguroveiculo:'Seguro do carro',
     farmacia:'Farmácia', academia:'Academia', pet:'Pet', lazer:'Lazer'
   };
   for (var k in D.gastos_ocultos_map) {
@@ -462,9 +462,10 @@ function render() {
       {key:'streaming', label:'Streaming (Netflix, Spotify…)'},
       
       {key:'manutcasa', label:'Manutenção da casa (diarista, reparos)'},
-      {key:'manutcarro', label:'Manutenção do carro (seguro, IPVA, revisão)'},
+      {key:'manutcarro', label:'Manutenção do carro (IPVA, revisão)'},
       {key:'segurovida', label:'Seguro de vida'},
       {key:'seguroresid', label:'Seguro residencial'},
+      {key:'seguroveiculo', label:'Seguro do carro'},
       {key:'farmacia', label:'Farmácia e medicamentos contínuos'},
       {key:'academia', label:'Academia ou assinaturas'},
       {key:'pet', label:'Pet (ração, veterinário)'},
