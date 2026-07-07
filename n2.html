@@ -978,7 +978,7 @@ function exibirResultado() {
 
   var cardA = document.createElement('div');
   cardA.className = 'oferta-card';
-  cardA.innerHTML = '<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Quer ir ainda mais fundo?</div><div style="font-size:15px;color:#c2bfe0;line-height:1.8;margin-bottom:20px">O diagnóstico comportamental completo revela o nome do padrão, as 3 mudanças específicas para o seu perfil e inclui a planilha financeira e o livro digital O Número da Paz.</div>';
+  cardA.innerHTML = '<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Quer colocar o plano em prática?</div><div style="font-size:15px;color:#c2bfe0;line-height:1.8;margin-bottom:20px">Você já recebeu sua análise completa. Com o livro digital "O Número da Paz" e a planilha de controle financeiro, você tem as ferramentas certas pra transformar esse diagnóstico em rotina.</div>';
 
   var bPdf = document.createElement('button');
   bPdf.className = 'btn-compra';
@@ -990,7 +990,7 @@ function exibirResultado() {
   if (!isVIP) {
     var b1 = document.createElement('button');
     b1.className = 'btn-compra btn-n3';
-    b1.textContent = 'Quero o diagnóstico comportamental completo — R$ 97';
+    b1.textContent = 'Quero o livro + planilha — R$ 97';
     b1.onclick = function(){ window.open('https://pay.kiwify.com.br/t5H3kAi','_blank'); };
     cardA.appendChild(b1);
   }
@@ -1232,24 +1232,33 @@ function gerarPDF() {
 }
 
 function montarTabelaReferencias(r) {
-  var linhas = [];
-  function addLinha(nome, valor, limite) {
-    if (valor <= 0) return;
-    var pct = r.rendaTotal > 0 ? (valor / r.rendaTotal * 100) : 0;
-    var dentro = pct <= limite;
-    var status = dentro ? '<span style="color:#2e9e4f;font-weight:bold">✓ Dentro do recomendado</span>' : '<span style="color:#c23838;font-weight:bold">⚠ '+(pct-limite).toFixed(0)+' pontos acima</span>';
-    linhas.push('<tr><td>'+nome+'</td><td>'+pct.toFixed(0)+'%</td><td>até '+limite+'%</td><td>'+status+'</td></tr>');
+  var grupos = [
+    {nome:'Despesas Fixas', valor:r.despesasFixas, limite:45, desc:'Moradia, saúde, educação, seguros, assinaturas'},
+    {nome:'Despesas Variáveis', valor:r.despesasVariaveis, limite:25, desc:'Alimentação, transporte, lazer'},
+    {nome:'Dívidas e Compromissos', valor:r.dividasTotal, limite:30, desc:'Empréstimos, financiamentos, cartão, cheque especial'}
+  ];
+  var linhas = '';
+  var desenquadrados = [];
+  grupos.forEach(function(gr){
+    var pct = r.rendaTotal > 0 ? (gr.valor / r.rendaTotal * 100) : 0;
+    var dentro = pct <= gr.limite;
+    if (!dentro) desenquadrados.push({nome:gr.nome, pct:pct, limite:gr.limite});
+    var status = dentro ? '<span style="color:#2e9e4f;font-weight:bold">✓ Dentro da faixa</span>' : '<span style="color:#c23838;font-weight:bold">⚠ Acima da faixa</span>';
+    linhas += '<tr><td><strong>'+gr.nome+'</strong><br><span style="font-size:11px;color:#8080a0">'+gr.desc+'</span></td><td>'+pct.toFixed(0)+'%</td><td>até '+gr.limite+'%</td><td>'+status+'</td></tr>';
+  });
+
+  var orientacao = '';
+  if (desenquadrados.length) {
+    var d = desenquadrados[0];
+    orientacao = '<div class="alerta alerta-atencao" style="margin-top:14px;margin-bottom:0">⚠ <strong>'+d.nome+'</strong> está em '+d.pct.toFixed(0)+'% da sua renda, acima da faixa de até '+d.limite+'%. Esse é o ponto de maior atenção — veja o Plano de Ação mais adiante para saber por onde começar.</div>';
+  } else {
+    orientacao = '<div class="alerta" style="background:#eafaf0;color:#2e9e4f;border-left:5px solid #4ade80;margin-top:14px;margin-bottom:0">✓ Seus três grupos de gastos estão dentro da faixa saudável — uma base já organizada para os próximos passos.</div>';
   }
-  addLinha('Moradia', r.categorias['Moradia'], 30);
-  addLinha('Alimentação', r.categorias['Alimentação'], 15);
-  addLinha('Transporte', r.categorias['Transporte'], 15);
-  addLinha('Despesas Fixas (total)', r.despesasFixas, 50);
-  addLinha('Despesas Variáveis (total)', r.despesasVariaveis, 30);
-  addLinha('Dívidas e Compromissos', r.dividasTotal, 30);
-  if (!linhas.length) return '';
-  return '<div class="chart-box"><div class="chart-titulo">Comparação com referências de planejamento financeiro</div>' +
-    '<table class="dividas-tabela"><thead><tr><th>Categoria</th><th>Seu %</th><th>Recomendado</th><th>Situação</th></tr></thead><tbody>'+linhas.join('')+'</tbody></table>' +
-    '<div style="font-size:11px;color:#8080a0;margin-top:6px;font-family:\'Segoe UI\',Arial,sans-serif">Referências baseadas na regra 50-30-20 e na regra dos 30% para moradia, usadas por planejadores financeiros e pelo Banco Central do Brasil.</div>' +
+
+  return '<div class="chart-box"><div class="chart-titulo">Como avaliamos sua distribuição de renda</div>' +
+    '<div style="font-size:13px;color:#555;margin-bottom:14px;font-family:\'Segoe UI\',Arial,sans-serif;line-height:1.6">Esta referência foi adaptada para o momento de reorganização financeira — o objetivo aqui não é sobrar dinheiro para investir agora, é reduzir o peso das dívidas até uma faixa administrável. Reserva e investimento entram depois que os compromissos estiverem sob controle.</div>' +
+    '<table class="dividas-tabela"><thead><tr><th>Grupo</th><th>Seu %</th><th>Faixa saudável</th><th>Situação</th></tr></thead><tbody>'+linhas+'</tbody></table>' +
+    orientacao +
     '</div>';
 }
 
