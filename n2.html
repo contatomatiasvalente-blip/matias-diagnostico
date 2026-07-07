@@ -80,6 +80,18 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
 .legenda-tela{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;font-size:12px;color:#b0acd4}
 .legenda-tela span{display:inline-flex;align-items:center;gap:5px}
 .legenda-cor-tela{width:9px;height:9px;border-radius:2px;display:inline-block}
+.ref-box{background:#0d0d1f;border:1px solid #2a2a4a;border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.ref-box-titulo{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#a79bef;font-weight:700;margin-bottom:12px}
+.ref-linha{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1e1e35;font-size:13px}
+.ref-linha:last-child{border-bottom:none}
+.ref-nome{flex:1;color:#e0e0f0;font-weight:600}
+.ref-pct{width:54px;text-align:right;color:#b0acd4}
+.ref-limite{width:80px;text-align:right;color:#726c9e;font-size:11.5px}
+.ref-status-ok{color:#4ade80;font-weight:700;font-size:12px}
+.ref-status-alerta{color:#f87171;font-weight:700;font-size:12px}
+.alerta-tela{padding:13px 16px;border-radius:10px;font-size:13px;font-weight:600;margin-top:12px;line-height:1.6}
+.alerta-tela-atencao{background:#3a1f1f;color:#ff9b9b;border-left:4px solid #f87171}
+.alerta-tela-ok{background:#1a3324;color:#7fd99a;border-left:4px solid #4ade80}
 .pdf-aviso{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#14142a;border:1px solid #3a3a6a;border-radius:12px;padding:14px 18px;margin-bottom:20px;flex-wrap:wrap}
 .pdf-aviso-txt{font-size:13px;color:#c2bfe0;line-height:1.5}
 .pdf-aviso-btn{background:#7c6fd4;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:"Inter",sans-serif}
@@ -1047,7 +1059,8 @@ function exibirResultado() {
   cardR.className = 'resultado-card';
   cardR.innerHTML = '<div class="resultado-header"><div class="resultado-brand">Matias Valente</div><div class="resultado-data">Gerado em '+dataHoje+'<br>Documento confidencial</div></div><div class="resultado-titulo">Análise completa exclusiva</div><div class="resultado-nome">Sua análise está pronta</div>' +
     scoreHtml + barraTela +
-    '<div class="pdf-aviso"><div class="pdf-aviso-txt">📄 Este é um resumo visual. Logo abaixo está sua análise completa, incluindo o diagnóstico do seu perfil comportamental e emocional. O PDF traz essa mesma análise com gráficos detalhados, tabela de referências e comparação com sua renda.</div><button class="pdf-aviso-btn" onclick="gerarPDF()">Baixar PDF</button></div>' +
+    montarReferenciasTela(r) +
+    '<div class="pdf-aviso"><div class="pdf-aviso-txt">📄 Este é um resumo visual. Logo abaixo está sua análise completa, incluindo o diagnóstico do seu perfil comportamental e emocional. O PDF traz essa mesma análise em formato para impressão, com gráficos adicionais.</div><button class="pdf-aviso-btn" onclick="gerarPDF()">Baixar PDF</button></div>' +
     accordionHtml +
     '<div class="resultado-fechamento"><p>Essa análise foi feita com matemática fria, não para te agradar — para te mostrar a real dimensão da sua situação. Pode não ser o que você esperava ouvir, mas é o ponto de partida mais honesto que você pode ter agora.</p><p>Mudar de verdade exige esforço, e não existe atalho para isso. Mas cada ajuste, por menor que pareça, já é um passo real na direção certa. O caminho é difícil, mas percorrível — e você não precisa fazer tudo de uma vez.</p></div>' +
     '<div class="resultado-assinatura">— Matias Valente</div>';
@@ -1301,6 +1314,33 @@ function gerarPDF() {
   janela.document.write(html);
   janela.document.close();
   setTimeout(function(){ janela.print(); }, 800);
+}
+
+function montarReferenciasTela(r) {
+  var grupos = [
+    {nome:'Despesas Fixas', valor:r.despesasFixas, limite:45},
+    {nome:'Despesas Variáveis', valor:r.despesasVariaveis, limite:25},
+    {nome:'Dívidas e Compromissos', valor:r.dividasTotal, limite:30}
+  ];
+  var linhas = '';
+  var desenquadrados = [];
+  grupos.forEach(function(gr){
+    var pct = r.rendaTotal > 0 ? (gr.valor / r.rendaTotal * 100) : 0;
+    var dentro = pct <= gr.limite;
+    if (!dentro) desenquadrados.push({nome:gr.nome, pct:pct, limite:gr.limite});
+    var status = dentro ? '<span class="ref-status-ok">✓ OK</span>' : '<span class="ref-status-alerta">⚠ Acima</span>';
+    linhas += '<div class="ref-linha"><span class="ref-nome">'+gr.nome+'</span><span class="ref-pct">'+pct.toFixed(0)+'%</span><span class="ref-limite">até '+gr.limite+'%</span>'+status+'</div>';
+  });
+
+  var alerta = '';
+  if (desenquadrados.length) {
+    var d = desenquadrados[0];
+    alerta = '<div class="alerta-tela alerta-tela-atencao">⚠ <strong>'+d.nome+'</strong> está em '+d.pct.toFixed(0)+'% da sua renda, acima da faixa de até '+d.limite+'%. Veja no Plano de Ação (Seção 8, abaixo) o que fazer para reorganizar isso primeiro.</div>';
+  } else {
+    alerta = '<div class="alerta-tela alerta-tela-ok">✓ Seus três grupos de gastos estão dentro da faixa saudável — uma base já organizada para os próximos passos.</div>';
+  }
+
+  return '<div class="ref-box"><div class="ref-box-titulo">O que está fora do recomendado — e o que fazer</div>' + linhas + alerta + '</div>';
 }
 
 function montarTabelaReferencias(r) {
