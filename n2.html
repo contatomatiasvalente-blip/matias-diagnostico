@@ -896,7 +896,7 @@ function formatarEmprestimos() {
 }
 
 async function gerarAnalise() {
-  var prompt = 'placeholder';
+  var resumo = calcularResumoFinanceiro();
 
   var payload = JSON.stringify({
     renda_liquida: D.renda_liquida,
@@ -933,6 +933,13 @@ async function gerarAnalise() {
     evita_contas: D.evita_contas,
     dinheiro_relacionamentos: D.dinheiro_relacionamentos,
     dependentes: D.dependentes,
+    resumo_renda_total: resumo.rendaTotal.toFixed(2),
+    resumo_despesas_fixas: resumo.despesasFixas.toFixed(2),
+    resumo_despesas_variaveis: resumo.despesasVariaveis.toFixed(2),
+    resumo_dividas_total: resumo.dividasTotal.toFixed(2),
+    resumo_total_geral: resumo.totalGeral.toFixed(2),
+    resumo_saldo: resumo.saldo.toFixed(2),
+    resumo_percentual_dividas: resumo.percentualDividas.toFixed(1),
     compartilha_despesas: D.compartilha_despesas,
     familia_dinheiro: D.familia_dinheiro,
     estado_civil: D.estado_civil,
