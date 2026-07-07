@@ -69,6 +69,29 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
 .diagnostico-secao{color:#c9a84a;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;margin-top:32px;margin-bottom:10px;font-family:"Inter",sans-serif;border-bottom:1px solid #2a2a4a;padding-bottom:8px}
 .diagnostico-texto .diagnostico-secao:first-child{margin-top:0}
 .resultado-assinatura{margin-top:28px;padding-top:18px;border-top:1px solid #2a2a4a;font-family:Georgia,'Times New Roman',serif;font-style:italic;color:#c9a84a;font-size:15px}
+
+.score-box-tela{display:flex;align-items:center;gap:18px;background:#0d0d1f;border-radius:14px;padding:18px 20px;margin-bottom:18px;border-left:5px solid #8b7cf6}
+.score-num-tela{font-size:38px;font-weight:700;font-family:"Inter",sans-serif}
+.score-label-tela{font-size:15px;font-weight:600;color:#fff}
+.score-sub-tela{font-size:12px;color:#8080a0;margin-top:2px}
+.barra-tela{height:26px;border-radius:6px;overflow:hidden;display:flex;margin-bottom:10px}
+.legenda-tela{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;font-size:12px;color:#b0acd4}
+.legenda-tela span{display:inline-flex;align-items:center;gap:5px}
+.legenda-cor-tela{width:9px;height:9px;border-radius:2px;display:inline-block}
+.pdf-aviso{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#14142a;border:1px solid #3a3a6a;border-radius:12px;padding:14px 18px;margin-bottom:20px;flex-wrap:wrap}
+.pdf-aviso-txt{font-size:13px;color:#c2bfe0;line-height:1.5}
+.pdf-aviso-btn{background:#7c6fd4;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:"Inter",sans-serif}
+.accordion-item{border:1px solid #2a2a4a;border-radius:10px;margin-bottom:10px;overflow:hidden}
+.accordion-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;background:#14142a;transition:background .15s}
+.accordion-header:hover{background:#1a1a35}
+.accordion-icone{font-size:17px}
+.accordion-titulo{flex:1;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#c9a84a}
+.accordion-seta{font-size:13px;color:#8080a0;transition:transform .2s}
+.accordion-seta.aberto{transform:rotate(180deg)}
+.accordion-body{padding:0 18px;max-height:0;overflow:hidden;transition:max-height .25s ease}
+.accordion-body.aberto{padding:16px 18px;max-height:2000px}
+.accordion-body p{font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.9;color:#c8c8e8;text-align:justify;margin-bottom:14px}
+.accordion-body p:last-child{margin-bottom:0}
 .oferta-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:28px 24px;margin-bottom:16px}
 .btn-compra{display:block;width:100%;padding:18px;border-radius:14px;font-size:16px;font-weight:700;text-align:center;cursor:pointer;border:none;margin-bottom:12px;transition:all .2s;font-family:"Inter",sans-serif}
 .btn-n3{background:linear-gradient(135deg,#7c6fd4,#b09bff);color:#fff;box-shadow:0 4px 24px rgba(124,111,212,.45)}
@@ -166,6 +189,15 @@ function mostrarBonusVIP() {
     '</div>';
   wrap.style.display = 'block';
 }
+function toggleAccordion(corpoId, setaId) {
+  var corpo = document.getElementById(corpoId);
+  var seta = document.getElementById(setaId);
+  if (!corpo) return;
+  var abrindo = !corpo.classList.contains('aberto');
+  corpo.classList.toggle('aberto', abrindo);
+  if (seta) seta.classList.toggle('aberto', abrindo);
+}
+
 function esconderBonusVIP() {
   var wrap = document.getElementById('vip-bonus-wrap');
   if (wrap) wrap.style.display = 'none';
@@ -966,26 +998,60 @@ async function gerarAnalise() {
 
 function exibirResultado() {
   mostrarBonusVIP();
-  var partes = D.diagnostico.split('\n\n').filter(function(p){ return p.trim(); });
-  var txt = partes.map(function(p){
-    var limpo = p.trim();
-    if (/^SEÇÃO\s+\d+/i.test(limpo)) {
-      return '<div class="diagnostico-secao">'+limpo+'</div>';
+  var r = calcularResumoFinanceiro();
+  var scoreCor = corPorScore(r.score);
+  var scoreLabel = labelPorScore(r.score);
+  var iconesSecao = {'1':'📊','2':'🧠','3':'🧮','4':'🔍','5':'💭','6':'👁️','7':'🔮','8':'🗺️','9':'✉️'};
+  var secoes = parseSecoesDiagnostico(D.diagnostico || '');
+
+  var accordionHtml = secoes.map(function(s, idx){
+    if (!s.titulo) {
+      return '<div class="accordion-body aberto" style="border:none;padding:0 0 16px">' + s.paragrafos.map(function(p){ return '<p>'+p.replace(/\n/g,'<br>')+'</p>'; }).join('') + '</div>';
     }
-    return '<p>'+limpo.replace(/\n/g,'<br>')+'</p>';
+    var icone = iconesSecao[s.numero] || '▸';
+    var corpoId = 'acc-body-'+idx;
+    var setaId = 'acc-seta-'+idx;
+    var corpo = s.paragrafos.map(function(p){ return '<p>'+p.replace(/\n/g,'<br>')+'</p>'; }).join('');
+    return '<div class="accordion-item">' +
+      '<div class="accordion-header" onclick="toggleAccordion(\''+corpoId+'\',\''+setaId+'\')">' +
+        '<span class="accordion-icone">'+icone+'</span>' +
+        '<span class="accordion-titulo">Seção '+s.numero+' — '+s.titulo+'</span>' +
+        '<span class="accordion-seta" id="'+setaId+'">▾</span>' +
+      '</div>' +
+      '<div class="accordion-body" id="'+corpoId+'">'+corpo+'</div>' +
+    '</div>';
   }).join('');
+
+  var totalBarra = r.totalGeral > 0 ? r.totalGeral : 1;
+  var pctF = (r.despesasFixas/totalBarra*100);
+  var pctV = (r.despesasVariaveis/totalBarra*100);
+  var pctD = (r.dividasTotal/totalBarra*100);
+  var barraTela = '<div class="barra-tela"><div style="width:'+pctF+'%;background:#7c6fd4"></div><div style="width:'+pctV+'%;background:#c9a84a"></div><div style="width:'+pctD+'%;background:#e05d5d"></div></div>' +
+    '<div class="legenda-tela">' +
+      '<span><span class="legenda-cor-tela" style="background:#7c6fd4"></span>Fixas '+pctF.toFixed(0)+'%</span>' +
+      '<span><span class="legenda-cor-tela" style="background:#c9a84a"></span>Variáveis '+pctV.toFixed(0)+'%</span>' +
+      '<span><span class="legenda-cor-tela" style="background:#e05d5d"></span>Dívidas '+pctD.toFixed(0)+'%</span>' +
+    '</div>';
+
+  var scoreHtml = r.score !== null ? '<div class="score-box-tela" style="border-left-color:'+scoreCor+'"><div class="score-num-tela" style="color:'+scoreCor+'">'+r.score+'</div><div><div class="score-label-tela">'+scoreLabel+'</div><div class="score-sub-tela">Nota de saúde financeira (0-100)</div></div></div>' : '';
+
   var dataHoje = new Date().toLocaleDateString('pt-BR');
   var tela = document.getElementById('tela');
   tela.innerHTML = '';
 
   var cardR = document.createElement('div');
   cardR.className = 'resultado-card';
-  cardR.innerHTML = '<div class="resultado-header"><div class="resultado-brand">Matias Valente</div><div class="resultado-data">Gerado em '+dataHoje+'<br>Documento confidencial</div></div><div class="resultado-titulo">Análise completa exclusiva</div><div class="resultado-nome">Sua análise está pronta</div><div class="diagnostico-texto">'+txt+'</div><div class="resultado-assinatura">— Matias Valente</div>';
+  cardR.innerHTML = '<div class="resultado-header"><div class="resultado-brand">Matias Valente</div><div class="resultado-data">Gerado em '+dataHoje+'<br>Documento confidencial</div></div><div class="resultado-titulo">Análise completa exclusiva</div><div class="resultado-nome">Sua análise está pronta</div>' +
+    scoreHtml + barraTela +
+    '<div class="pdf-aviso"><div class="pdf-aviso-txt">📄 Este é um resumo. O relatório completo em PDF traz gráficos detalhados, tabela de referências e comparação com sua renda.</div><button class="pdf-aviso-btn" onclick="gerarPDF()">Baixar PDF</button></div>' +
+    accordionHtml +
+    '<div class="resultado-assinatura">— Matias Valente</div>';
   tela.appendChild(cardR);
 
   var cardA = document.createElement('div');
   cardA.className = 'oferta-card';
   cardA.innerHTML = '<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Quer colocar o plano em prática?</div><div style="font-size:15px;color:#c2bfe0;line-height:1.8;margin-bottom:20px">Você já recebeu sua análise completa. Com o livro digital "O Número da Paz" e a planilha de controle financeiro, você tem as ferramentas certas pra transformar esse diagnóstico em rotina.</div>';
+
 
   var bPdf = document.createElement('button');
   bPdf.className = 'btn-compra';
