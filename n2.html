@@ -583,7 +583,8 @@ function render() {
       '<div class="pergunta"><div class="pergunta-label"><span>12.</span> Como você toma decisão de uma compra não essencial?</div><div id="opcoes-decisao" class="opcoes-grid col1"></div></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>13.</span> Como você usa o cartão de crédito?</div><div id="opcoes-cartao" class="opcoes-grid col1"></div>' +
       '<div id="cartao-fatura-wrap" style="display:'+((D.cartao_gestao && D.cartao_gestao!=='NaoUso')?'block':'none')+';margin-top:12px">' +
-      '<input type="text" id="q_fatura_media" placeholder="Valor médio da fatura por mês: Ex: R$ 1.500" style="margin-bottom:8px" value="'+D.fatura_media+'" onchange="D.fatura_media=this.value">' +
+      '<input type="text" id="q_fatura_media" placeholder="Outras compras no cartão não contadas acima: Ex: R$ 400" style="margin-bottom:8px" value="'+D.fatura_media+'" onchange="D.fatura_media=this.value">' +
+      '<span class="hint" style="display:block;margin-top:-4px;margin-bottom:8px">Não repita aqui nada que já foi contado em outro campo — mesmo que tenha sido pago no cartão: alimentação, transporte, farmácia, streaming, academia, manutenção, delivery, pet, lazer etc. já foram contados nesses campos. Coloque aqui só o que sai na fatura e não se encaixa em nenhum deles (roupas, compras avulsas, imprevistos etc.)</span>' +
       '<input type="text" id="q_parcelas_comprometidas" placeholder="Quanto já está comprometido em parcelas nas próximas faturas: Ex: R$ 600" value="'+D.parcelas_comprometidas+'" onchange="D.parcelas_comprometidas=this.value">' +
       '<span class="hint" style="margin-top:6px">Se você parcela compras com frequência, esse valor já compromete faturas futuras — mesmo que a fatura de hoje esteja paga.</span>' +
       '</div></div>' +
@@ -1100,7 +1101,8 @@ function calcularResumoFinanceiro() {
   var varTransporte = parseValorNumerico(D.transporte) + valGasto('manutcarro');
   var varAlimentacao = parseValorNumerico(D.alimentacao) + valGasto('delivery');
   var varLazer = valGasto('pet') + valGasto('lazer');
-  var despesasVariaveis = varTransporte + varAlimentacao + varLazer;
+  var varOutrasCompras = parseValorNumerico(D.fatura_media);
+  var despesasVariaveis = varTransporte + varAlimentacao + varLazer + varOutrasCompras;
 
   var parcelasDividas = 0;
   (D.dividas||[]).forEach(function(d){ parcelasDividas += parseValorNumerico(d.parcela); });
@@ -1123,7 +1125,7 @@ function calcularResumoFinanceiro() {
     categorias: {
       'Moradia': fixaMoradia, 'Educação': fixaEducacao, 'Saúde': fixaSaude,
       'Proteção e Seguros': fixaProtecao, 'Assinaturas fixas': fixaAssinaturas,
-      'Transporte': varTransporte, 'Alimentação': varAlimentacao, 'Lazer': varLazer
+      'Transporte': varTransporte, 'Alimentação': varAlimentacao, 'Lazer': varLazer, 'Outras compras no cartão': varOutrasCompras
     }
   };
 }
