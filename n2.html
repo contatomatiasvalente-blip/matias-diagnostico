@@ -1053,17 +1053,10 @@ function exibirResultado() {
   cardA.innerHTML = '<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Quer colocar o plano em prática?</div><div style="font-size:15px;color:#c2bfe0;line-height:1.8;margin-bottom:20px">Você já recebeu sua análise completa. Com o livro digital "O Número da Paz" e a planilha de controle financeiro, você tem as ferramentas certas pra transformar esse diagnóstico em rotina.</div>';
 
 
-  var bPdf = document.createElement('button');
-  bPdf.className = 'btn-compra';
-  bPdf.style.cssText = 'background:linear-gradient(135deg,#1a3a2a,#1e4a34);color:#34d399;border:1px solid #34d39940;';
-  bPdf.textContent = 'Baixar relatório em PDF';
-  bPdf.onclick = gerarPDF;
-  cardA.appendChild(bPdf);
-
   if (!isVIP) {
     var b1 = document.createElement('button');
     b1.className = 'btn-compra btn-n3';
-    b1.textContent = 'Quero o livro + planilha — R$ 97';
+    b1.textContent = 'Comprar Livro "O Número da Paz" + Planilha Financeira Completa — R$ 30';
     b1.onclick = function(){ window.open('https://pay.kiwify.com.br/t5H3kAi','_blank'); };
     cardA.appendChild(b1);
   }
