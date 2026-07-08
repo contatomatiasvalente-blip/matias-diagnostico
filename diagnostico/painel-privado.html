@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Privado de Teste — Matias Valente</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f0f1a;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:0}
+#app{max-width:900px;margin:0 auto;padding:32px 20px 60px}
+.logo{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#c9a84a;font-weight:600;text-align:center;margin-bottom:4px}
+.aviso{font-size:12px;color:#726c9e;text-align:center;margin-bottom:28px}
+.card{background:#14142a;border:1px solid #2a2a4a;border-radius:16px;padding:28px 24px;margin-bottom:16px}
+.card-titulo{font-size:15px;font-weight:700;color:#c9a84a;text-transform:uppercase;letter-spacing:1px;margin-bottom:18px}
+.pergunta{margin-bottom:18px}
+.pergunta label{display:block;font-size:14px;color:#c2bfe0;margin-bottom:6px}
+select, input[type=text]{width:100%;padding:12px;border-radius:8px;border:1px solid #2a2a4a;background:#0f0f1a;color:#e0e0f0;font-size:14px;font-family:inherit}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.chk{padding:8px 12px;border-radius:8px;border:1px solid #2a2a4a;background:#0f0f1a;color:#c2bfe0;font-size:13px;cursor:pointer;user-select:none}
+.chk.on{background:#8b7cf6;border-color:#8b7cf6;color:#fff}
+.btn{display:block;width:100%;padding:16px;border-radius:10px;font-size:15px;font-weight:600;text-align:center;cursor:pointer;border:none;background:#8b7cf6;color:#fff;margin-top:8px}
+.btn:hover{background:#7a6be0}
+.resultado-grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:768px){.resultado-grid{grid-template-columns:1fr 1fr}}
+.resp-item{padding:10px 0;border-bottom:1px solid #1e1e35;font-size:13px}
+.resp-item:last-child{border-bottom:none}
+.resp-label{color:#8080b0;text-transform:uppercase;font-size:11px;letter-spacing:0.5px;margin-bottom:3px}
+.resp-valor{color:#ebe9fa}
+.diagnostico-texto{font-size:14px;line-height:1.8;color:#e6e4fa;white-space:pre-wrap}
+.loading{text-align:center;padding:20px;color:#8080b0;font-size:14px}
+.erro{color:#f87171;font-size:14px;padding:10px 0}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="logo">Matias Valente</div>
+  <div class="aviso">🔒 Painel privado de teste — não é parte do funil público</div>
+
+  <div class="card">
+    <div class="card-titulo">Preencher respostas de teste</div>
+
+    <div class="pergunta">
+      <label>Nome (opcional)</label>
+      <input type="text" id="nome" placeholder="Deixe em branco se quiser">
+    </div>
+
+    <div class="pergunta">
+      <label>1. Renda mensal aproximada</label>
+      <select id="renda">
+        <option>Abaixo de R$2.000</option>
+        <option>R$2.000 a R$4.000</option>
+        <option>R$4.000 a R$7.000</option>
+        <option>R$7.000 a R$10.000</option>
+        <option>R$10.000 a R$15.000</option>
+        <option>Acima de R$15.000</option>
+      </select>
+    </div>
+
+    <div class="pergunta">
+      <label>2. Frase que mais parece com sua situação (pode marcar mais de uma)</label>
+      <div class="checks" id="emocional-checks">
+        <div class="chk" data-val="Trabalho muito e nunca sobra nada">Trabalho muito e nunca sobra nada</div>
+        <div class="chk" data-val="Vivo apagando incêndios financeiros todo mês">Vivo apagando incêndios financeiros todo mês</div>
+        <div class="chk" data-val="O cartão de crédito virou um problema">O cartão de crédito virou um problema</div>
+        <div class="chk" data-val="Tenho medo de olhar minhas contas">Tenho medo de olhar minhas contas</div>
+        <div class="chk" data-val="Não sei por onde começar">Não sei por onde começar</div>
+        <div class="chk" data-val="Sinto que nunca vou conseguir sair disso">Sinto que nunca vou conseguir sair disso</div>
+      </div>
+    </div>
+
+    <div class="pergunta">
+      <label>3. Situação com dívidas em atraso</label>
+      <select id="situacao">
+        <option>Várias dívidas em atraso</option>
+        <option>Nome sujo, mas já parei de atrasar</option>
+        <option>Sem atraso, mas no limite todo mês</option>
+        <option>Sem atraso e com alguma folga</option>
+      </select>
+    </div>
+
+    <div class="pergunta">
+      <label>4. Quanto estima dever no total</label>
+      <select id="total">
+        <option>Devo até R$2.000</option>
+        <option>R$2.000 a R$10.000</option>
+        <option>R$10.000 a R$20.000</option>
+        <option>R$20.000 a R$30.000</option>
+        <option>Acima de R$30.000</option>
+      </select>
+    </div>
+
+    <div class="pergunta">
+      <label>5. Percentual do salário comprometido</label>
+      <select id="percentual">
+        <option>Menos de 15%</option>
+        <option>Entre 15% e 30%</option>
+        <option>Entre 30% e 50%</option>
+        <option>Entre 50% e 70%</option>
+        <option>Mais de 70%</option>
+        <option>100% ou mais</option>
+        <option>Não sei calcular</option>
+      </select>
+    </div>
+
+    <div class="pergunta">
+      <label>6. Tipos de dívida em atraso (pode marcar mais de uma)</label>
+      <div class="checks" id="tipos-checks">
+        <div class="chk" data-val="Contas de consumo">Contas de consumo</div>
+        <div class="chk" data-val="Cartão de crédito">Cartão de crédito</div>
+        <div class="chk" data-val="Cheque especial">Cheque especial</div>
+        <div class="chk" data-val="Empréstimo pessoal">Empréstimo pessoal</div>
+        <div class="chk" data-val="Empréstimo com agiota">Empréstimo com agiota</div>
+        <div class="chk" data-val="Financiamento de veículo">Financiamento de veículo</div>
+        <div class="chk" data-val="Financiamento de imóvel">Financiamento de imóvel</div>
+        <div class="chk" data-val="Aluguel">Aluguel</div>
+        <div class="chk" data-val="Mensalidade escolar">Mensalidade escolar</div>
+      </div>
+    </div>
+
+    <div class="pergunta">
+      <label>7. Maior preocupação hoje (pode marcar mais de uma)</label>
+      <div class="checks" id="preocupacao-checks">
+        <div class="chk" data-val="Limpar o nome">Limpar o nome</div>
+        <div class="chk" data-val="Parar de receber cobranças">Parar de receber cobranças</div>
+        <div class="chk" data-val="Não conseguir pagar tudo que precisa">Não conseguir pagar tudo que precisa</div>
+        <div class="chk" data-val="Não poder ajudar minha família">Não poder ajudar minha família</div>
+        <div class="chk" data-val="Nunca conseguir sair dessa situação">Nunca conseguir sair dessa situação</div>
+        <div class="chk" data-val="Ter paz e não pensar mais nisso">Ter paz e não pensar mais nisso</div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="gerar()">Gerar diagnóstico de teste</button>
+  </div>
+
+  <div id="resultado"></div>
+</div>
+
+<script>
+function toggleChk(el) {
+  el.classList.toggle('on');
+}
+document.querySelectorAll('.chk').forEach(function(el){
+  el.addEventListener('click', function(){ toggleChk(el); });
+});
+
+function valoresMarcados(containerId) {
+  var container = document.getElementById(containerId);
+  var marcados = container.querySelectorAll('.chk.on');
+  var vals = [];
+  marcados.forEach(function(el){ vals.push(el.dataset.val); });
+  return vals.join(', ');
+}
+
+async function gerar() {
+  var resultado = document.getElementById('resultado');
+
+  var dados = {
+    nome: document.getElementById('nome').value.trim(),
+    renda: document.getElementById('renda').value,
+    situacao: document.getElementById('situacao').value,
+    total: document.getElementById('total').value,
+    percentual: document.getElementById('percentual').value,
+    tipos: valoresMarcados('tipos-checks'),
+    emocional: valoresMarcados('emocional-checks'),
+    preocupacao: valoresMarcados('preocupacao-checks'),
+  };
+
+  resultado.innerHTML = '<div class="card"><div class="loading">Gerando diagnóstico...</div></div>';
+
+  var respostasHtml = '<div class="card"><div class="card-titulo">Suas respostas</div>' +
+    Object.entries({
+      'Nome': dados.nome || '(não informado)',
+      'Renda mensal': dados.renda,
+      'Situação com dívidas': dados.situacao,
+      'Total estimado de dívidas': dados.total,
+      '% do salário comprometido': dados.percentual,
+      'Tipos de dívida': dados.tipos || '(nenhum marcado)',
+      'Como se sente': dados.emocional || '(nenhum marcado)',
+      'Maior preocupação': dados.preocupacao || '(nenhum marcado)'
+    }).map(function(entry){
+      return '<div class="resp-item"><div class="resp-label">' + entry[0] + '</div><div class="resp-valor">' + entry[1] + '</div></div>';
+    }).join('') + '</div>';
+
+  try {
+    var r = await fetch('https://matias-diagnostico.contato-matiasvalente.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados)
+    });
+    var d = await r.json();
+    var diagnostico = d.diagnostico || 'Não foi possível gerar o diagnóstico.';
+
+    resultado.innerHTML = '<div class="resultado-grid">' +
+      respostasHtml +
+      '<div class="card"><div class="card-titulo">Diagnóstico gerado</div><div class="diagnostico-texto">' + diagnostico + '</div></div>' +
+      '</div>';
+  } catch(e) {
+    resultado.innerHTML = respostasHtml + '<div class="card"><div class="erro">Erro ao gerar diagnóstico: ' + e.message + '</div></div>';
+  }
+}
+</script>
+</body>
+</html>
