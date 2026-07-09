@@ -50,6 +50,8 @@ body{background:#0f0f1a;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFo
 .check-item{display:flex;align-items:flex-start;gap:8px;font-size:14px;color:#b0aed6;margin-bottom:6px;line-height:1.5}
 .check-item::before{content:'✓';color:#4ade80;flex-shrink:0;font-weight:600}
 .rodape{font-size:12px;color:#6e6a95;text-align:center;margin-top:20px}
+.privacidade-link{color:#8080b0;font-size:12px;cursor:pointer;text-decoration:underline}
+.privacidade-info{display:none;font-size:12px;color:#8080b0;margin-top:8px;line-height:1.6;padding:0 20px}
 input[type=text]{width:100%;padding:14px;border-radius:8px;border:1px solid #2a2a4a;background:#0f0f1a;color:#e0e0f0;font-size:16px;font-family:inherit;margin-bottom:10px;outline:none}
 input[type=text]:focus{border-color:#8b7cf6}
 </style>
@@ -86,6 +88,12 @@ let sel = [];
 
 function prog(p){ document.getElementById('prog').style.width = p+'%'; }
 
+function togglePrivacidade(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
 function render(){
   const tela = document.getElementById('tela');
   const i = S.etapa;
@@ -99,7 +107,10 @@ function render(){
         <div class="step-sub" style="margin-top:12px">Você não precisa se identificar — isso é opcional, e nada do que você responder fica guardado.<br><br>Além da análise financeira, vou fazer uma breve leitura emocional e comportamental de como você tem lidado com o dinheiro no dia a dia: na maioria das vezes, a culpa não é da pessoa, são hábitos não percebidos que se repetem e levam ao aperto financeiro.<br><br>Trabalhei mais de 20 anos em instituições financeiras, atendendo pessoas de perto. Conheço diversos perfis financeiros.<br><br>No final, você vai saber qual é o seu principal padrão financeiro — e o que ele revela sobre como você lida com dinheiro hoje.<br><br>Leva menos de 2 minutos. São perguntas objetivas.</div>
         <button class="btn btn-primary" onclick="av()">✅ Sim, quero minha análise</button>
       </div>
-      <p class="rodape">Seus dados não são armazenados.</p>`;
+      <div style="text-align:center;margin-top:8px">
+        <span class="privacidade-link" onclick="togglePrivacidade('privacidade-abertura')">🔒 Página segura — como cuidamos dos seus dados</span>
+        <div id="privacidade-abertura" class="privacidade-info">Ao continuar, você concorda que suas respostas sejam usadas apenas para gerar sua análise personalizada. Seus dados não são armazenados. <a href="privacidade.html" style="color:#8b7cf6">Leia a Política de Privacidade completa</a>.</div>
+      </div>`;
     return;
   }
 
@@ -294,7 +305,10 @@ function exibir(){
       <button class="btn btn-muted" onclick="fechar()">Agora não</button>
     </div>
 
-    <p class="rodape">Seus dados não são armazenados. Análise gerada de forma anônima.</p>`;
+    <div style="text-align:center;margin-top:8px">
+      <span class="privacidade-link" onclick="togglePrivacidade('privacidade-resultado')">🔒 Página segura — como cuidamos dos seus dados</span>
+      <div id="privacidade-resultado" class="privacidade-info">Suas respostas não são armazenadas. Análise gerada de forma anônima. <a href="privacidade.html" style="color:#8b7cf6">Leia a Política de Privacidade completa</a>.</div>
+    </div>`;
 }
 
 function fechar(){
