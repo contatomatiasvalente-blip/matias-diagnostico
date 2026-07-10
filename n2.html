@@ -131,7 +131,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.6}
     <div style="margin-top:20px;font-size:13px;color:#9089c2">Não encontrou? Verifique o spam ou entre em contato.</div>
     <div style="margin-top:16px;text-align:center">
       <span class="privacidade-link" onclick="togglePrivacidade('privacidade-senha')">🔒 Página segura — como cuidamos dos seus dados</span>
-      <div id="privacidade-senha" class="privacidade-info">Suas respostas são usadas apenas para gerar sua análise. <a href="privacidade.html" style="color:#8b7cf6">Política de Privacidade</a> · <a href="termos-de-uso.html" style="color:#8b7cf6">Termos de Uso</a> · <a href="reembolso.html" style="color:#8b7cf6">Reembolso</a></div>
+      <div id="privacidade-senha" class="privacidade-info">Suas respostas são usadas apenas para gerar sua análise. <a href="diagnostico/privacidade.html" style="color:#8b7cf6">Política de Privacidade</a> · <a href="diagnostico/termos-de-uso.html" style="color:#8b7cf6">Termos de Uso</a> · <a href="diagnostico/reembolso.html" style="color:#8b7cf6">Reembolso</a></div>
     </div>
   </div>
 </div>
@@ -370,7 +370,7 @@ function render() {
   if (blocoAtual === 0) {
     setProg(0, 'Introdução');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Análise Completa</div><div class="bloco-titulo">Sua análise aprofundada começa aqui</div><div class="bloco-sub" style="margin-top:12px">Você adquiriu acesso à análise financeira completa do Matias Valente. Isso não é curso — é uma análise personalizada, construída a partir do que você vai responder agora.<br><br>Este questionário mapeia sua situação com precisão — receitas reais, despesas detalhadas, dívidas, comportamento financeiro e o padrão por trás disso tudo.<br><br>São 7 blocos, cerca de 10 minutos. Quanto mais detalhadas as respostas, mais precisa será sua análise.<br><br><strong style="color:#c4baff">Todas as perguntas marcadas são obrigatórias.</strong> Tudo é confidencial e anônimo.</div><button class="btn btn-primary" onclick="avancar()">Começar minha análise completa</button></div>' +
-      '<div style="text-align:center;margin-top:8px"><span class="privacidade-link" onclick="togglePrivacidade(\'privacidade-intro\')">🔒 Página segura — como cuidamos dos seus dados</span><div id="privacidade-intro" class="privacidade-info">Suas respostas são usadas apenas para gerar sua análise. <a href="privacidade.html" style="color:#8b7cf6">Política de Privacidade</a> · <a href="termos-de-uso.html" style="color:#8b7cf6">Termos de Uso</a> · <a href="reembolso.html" style="color:#8b7cf6">Reembolso</a></div></div>';
+      '<div style="text-align:center;margin-top:8px"><span class="privacidade-link" onclick="togglePrivacidade(\'privacidade-intro\')">🔒 Página segura — como cuidamos dos seus dados</span><div id="privacidade-intro" class="privacidade-info">Suas respostas são usadas apenas para gerar sua análise. <a href="diagnostico/privacidade.html" style="color:#8b7cf6">Política de Privacidade</a> · <a href="diagnostico/termos-de-uso.html" style="color:#8b7cf6">Termos de Uso</a> · <a href="diagnostico/reembolso.html" style="color:#8b7cf6">Reembolso</a></div></div>';
     return;
   }
 
@@ -1102,7 +1102,7 @@ function exibirResultado() {
 
   var rodape = document.createElement('p');
   rodape.className = 'rodape';
-  rodape.innerHTML = 'Análise gerada de forma exclusiva e confidencial.<br><span class="privacidade-link" onclick="togglePrivacidade(\'privacidade-resultado-n2\')">🔒 Página segura — como cuidamos dos seus dados</span><div id="privacidade-resultado-n2" class="privacidade-info">Suas respostas são usadas apenas para gerar sua análise. <a href="privacidade.html" style="color:#8b7cf6">Política de Privacidade</a> · <a href="termos-de-uso.html" style="color:#8b7cf6">Termos de Uso</a> · <a href="reembolso.html" style="color:#8b7cf6">Reembolso</a></div>';
+  rodape.innerHTML = 'Análise gerada de forma exclusiva e confidencial.<br><span class="privacidade-link" onclick="togglePrivacidade(\'privacidade-resultado-n2\')">🔒 Página segura — como cuidamos dos seus dados</span><div id="privacidade-resultado-n2" class="privacidade-info">Suas respostas são usadas apenas para gerar sua análise. <a href="diagnostico/privacidade.html" style="color:#8b7cf6">Política de Privacidade</a> · <a href="diagnostico/termos-de-uso.html" style="color:#8b7cf6">Termos de Uso</a> · <a href="diagnostico/reembolso.html" style="color:#8b7cf6">Reembolso</a></div>';
   tela.appendChild(rodape);
 }
 
