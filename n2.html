@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análise Financeira Completa — Matias Valente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080814;color:#e0e0f0;font-family:"Inter",sans-serif;min-height:100vh}
+#app{max-width:600px;margin:0 auto;padding:28px 20px 80px;display:none}
+.logo{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#c9a84a;text-align:center;margin-bottom:6px;font-weight:600}
+.logo-linha{width:40px;height:1px;background:linear-gradient(90deg,transparent,#c9a84a,transparent);margin:0 auto 20px}
+.progress-wrap{height:2px;background:#12122a;border-radius:2px;margin-bottom:8px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#6b5fd4,#9b8bff);border-radius:2px;transition:width .5s ease}
+.progress-label{font-size:13px;color:#9089c2;text-align:right;margin-bottom:24px;font-weight:500}
+.card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:28px 24px;margin-bottom:16px;box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.bloco-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#a79bef;margin-bottom:8px;font-weight:600}
+.bloco-titulo{font-size:19px;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.4}
+.bloco-sub{font-size:15px;color:#c2bfe0;margin-bottom:20px;line-height:1.7}
+.pergunta{margin-bottom:20px}
+.pergunta-label{font-size:15px;font-weight:500;color:#d8d5f5;margin-bottom:10px;line-height:1.6}
+.pergunta-label span{color:#a79bef}
+.hint{font-size:13px;color:#a39cd0;margin-bottom:8px;display:block}
+input[type=text],input[type=number],textarea,select{width:100%;padding:14px;border-radius:10px;border:1px solid #1e1e3a;background:#080814;color:#e6e4fa;font-size:16px;font-family:"Inter",sans-serif;outline:none;transition:border-color .2s}
+input[type=text]:focus,input[type=number]:focus,textarea:focus{border-color:#7c6fd4;box-shadow:0 0 0 3px rgba(124,111,212,.1)}
+input.erro{border-color:#f87171}
+textarea{resize:vertical;min-height:70px;line-height:1.6}
+.linha-estruturada{display:grid;gap:6px;margin-bottom:8px}
+.linha-estruturada.col3{grid-template-columns:2fr 1fr 1fr}
+.linha-estruturada.col4{grid-template-columns:2fr 1fr 1fr 1fr}
+.linha-estruturada input{font-size:12px;padding:10px 12px}
+.linha-num{font-size:12px;color:#8f89c2;margin-bottom:4px;font-weight:600;letter-spacing:1px}
+.opcoes-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opcoes-grid.col1{grid-template-columns:1fr}
+.opcao-btn{padding:13px 16px;border-radius:10px;border:1px solid #1e1e3a;background:#080814;color:#d0cdec;font-size:15px;cursor:pointer;transition:all .2s;text-align:left;font-family:"Inter",sans-serif;line-height:1.5}
+.opcao-btn:hover{border-color:#7c6fd4;color:#fff}
+.opcao-btn.on{border-color:#7c6fd4;background:#7c6fd415;color:#c0b0ff}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tag-btn{padding:10px 16px;border-radius:20px;border:1px solid #1e1e3a;background:#080814;color:#d0cdec;font-size:14px;cursor:pointer;transition:all .2s;font-family:"Inter",sans-serif}
+.tag-btn:hover{border-color:#7c6fd4;color:#fff}
+.tag-btn.on{border-color:#7c6fd4;background:#7c6fd415;color:#c0b0ff}
+.stress-escala{display:flex;gap:6px;flex-wrap:wrap}
+.stress-btn{width:44px;height:44px;border-radius:8px;border:1px solid #1e1e3a;background:#080814;color:#d0cdec;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:"Inter",sans-serif}
+.stress-btn.on{background:linear-gradient(135deg,#7c6fd4,#9b8bff);border-color:transparent;color:#fff}
+.btn{display:block;width:100%;padding:17px 24px;border-radius:12px;font-size:16px;font-weight:600;text-align:center;cursor:pointer;border:none;margin-top:16px;transition:all .2s;font-family:"Inter",sans-serif}
+.btn-primary{background:linear-gradient(135deg,#7c6fd4,#9b8bff);color:#fff;box-shadow:0 4px 20px rgba(124,111,212,.4)}
+.btn-primary:hover{box-shadow:0 6px 28px rgba(124,111,212,.6);transform:translateY(-1px)}
+.divider{border:none;border-top:1px solid #1a1a32;margin:16px 0}
+.secao-titulo{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#a79bef;margin-bottom:12px;font-weight:600}
+.loading{text-align:center;padding:48px 20px}
+.dots{display:inline-flex;gap:8px;margin-bottom:20px}
+.dot{width:9px;height:9px;border-radius:50%;background:#7c6fd4;animation:pulse 1.4s infinite}
+.dot:nth-child(2){animation-delay:.25s}
+.dot:nth-child(3){animation-delay:.5s}
+@keyframes pulse{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+.msg-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-left:3px solid #7c6fd4;border-radius:20px;padding:20px 24px;margin-bottom:16px;opacity:0;transition:opacity 1.2s ease}
+.msg-card p{font-size:14px;color:#b0b0d0;line-height:1.8}
+.resultado-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:32px 28px;margin-bottom:16px}
+.resultado-header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #7c6fd4;padding-bottom:16px;margin-bottom:24px}
+.resultado-brand{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#c9a84a;font-weight:700}
+.resultado-brand-sub{font-size:10px;letter-spacing:1px;color:#726c9e;margin-top:3px}
+.resultado-data{font-size:11px;color:#726c9e;text-align:right}
+.resultado-titulo{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#a79bef;margin-bottom:10px;font-weight:600}
+.resultado-nome{font-size:24px;font-weight:600;color:#fff;margin-bottom:24px;font-family:Georgia,'Times New Roman',serif}
+.diagnostico-texto{font-size:15px;line-height:1.95;color:#c8c8e8;font-family:Georgia,'Times New Roman',serif;text-align:justify}
+.diagnostico-texto p{margin-bottom:18px}
+.diagnostico-secao{color:#c9a84a;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;margin-top:32px;margin-bottom:10px;font-family:"Inter",sans-serif;border-bottom:1px solid #2a2a4a;padding-bottom:8px}
+.diagnostico-texto .diagnostico-secao:first-child{margin-top:0}
+.resultado-assinatura{margin-top:28px;padding-top:18px;border-top:1px solid #2a2a4a;font-family:Georgia,'Times New Roman',serif;font-style:italic;color:#c9a84a;font-size:15px}
+.resultado-fechamento{margin-top:28px;padding-top:22px;border-top:1px solid #2a2a4a;font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.9;color:#c8c8e8;text-align:justify}
+.resultado-fechamento p{margin-bottom:14px}
+.score-box-tela{display:flex;align-items:center;gap:18px;background:#0d0d1f;border-radius:14px;padding:18px 20px;margin-bottom:18px;border-left:5px solid #8b7cf6}
+.score-num-tela{font-size:38px;font-weight:700;font-family:"Inter",sans-serif}
+.score-label-tela{font-size:15px;font-weight:600;color:#fff}
+.score-sub-tela{font-size:12px;color:#8080a0;margin-top:2px}
+.barra-tela{height:26px;border-radius:6px;overflow:hidden;display:flex;margin-bottom:10px}
+.legenda-tela{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;font-size:12px;color:#b0acd4}
+.legenda-tela span{display:inline-flex;align-items:center;gap:5px}
+.legenda-cor-tela{width:9px;height:9px;border-radius:2px;display:inline-block}
+.ref-box{background:#0d0d1f;border:1px solid #2a2a4a;border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.ref-box-titulo{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#a79bef;font-weight:700;margin-bottom:12px}
+.ref-linha{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1e1e35;font-size:13px}
+.ref-linha:last-child{border-bottom:none}
+.ref-nome{flex:1;color:#e0e0f0;font-weight:600}
+.ref-pct{width:54px;text-align:right;color:#b0acd4}
+.ref-limite{width:80px;text-align:right;color:#726c9e;font-size:11.5px}
+.ref-status-ok{color:#4ade80;font-weight:700;font-size:12px}
+.ref-status-alerta{color:#f87171;font-weight:700;font-size:12px}
+.alerta-tela{padding:13px 16px;border-radius:10px;font-size:13px;font-weight:600;margin-top:12px;line-height:1.6}
+.alerta-tela-atencao{background:#3a1f1f;color:#ff9b9b;border-left:4px solid #f87171}
+.alerta-tela-ok{background:#1a3324;color:#7fd99a;border-left:4px solid #4ade80}
+.pdf-aviso{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#14142a;border:1px solid #3a3a6a;border-radius:12px;padding:14px 18px;margin-bottom:20px;flex-wrap:wrap}
+.pdf-aviso-txt{font-size:13px;color:#c2bfe0;line-height:1.5}
+.pdf-aviso-btn{background:#7c6fd4;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:"Inter",sans-serif}
+.accordion-item{border:1px solid #2a2a4a;border-radius:10px;margin-bottom:10px;overflow:hidden}
+.accordion-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;background:#14142a;transition:background .15s}
+.accordion-header:hover{background:#1a1a35}
+.accordion-icone{font-size:17px}
+.accordion-titulo{flex:1;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#c9a84a}
+.accordion-seta{font-size:13px;color:#8080a0;transition:transform .2s}
+.accordion-seta.aberto{transform:rotate(180deg)}
+.accordion-body{padding:0 18px;max-height:0;overflow:hidden;transition:max-height .25s ease}
+.accordion-body.aberto{padding:16px 18px;max-height:2000px}
+.accordion-body p{font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.9;color:#c8c8e8;text-align:justify;margin-bottom:14px}
+.accordion-body p:last-child{margin-bottom:0}
+.oferta-card{background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:28px 24px;margin-bottom:16px}
+.btn-compra{display:block;width:100%;padding:18px;border-radius:14px;font-size:16px;font-weight:700;text-align:center;cursor:pointer;border:none;margin-bottom:12px;transition:all .2s;font-family:"Inter",sans-serif}
+.btn-n3{background:linear-gradient(135deg,#7c6fd4,#b09bff);color:#fff;box-shadow:0 4px 24px rgba(124,111,212,.45)}
+.btn-wa{background:transparent;color:#34d399;border:1px solid #34d39940;font-size:14px;font-weight:600}
+.btn-skip{background:transparent;color:#8f89c2;border:none;font-size:14px;padding:10px;display:block;width:100%;text-align:center;cursor:pointer;font-family:"Inter",sans-serif}
+.rodape{font-size:13px;color:#726c9e;text-align:center;margin-top:24px;line-height:1.7}
+.privacidade-link{color:#8080b0;font-size:12px;cursor:pointer;text-decoration:underline}
+.privacidade-info{display:none;font-size:12px;color:#8080b0;margin-top:8px;line-height:1.6;padding:0 20px}
+.erro-msg{font-size:14px;color:#f87171;margin-top:6px;display:none}
+</style>
+</head>
+<body>
+
+<div id="tela-senha" style="max-width:420px;margin:80px auto;padding:20px">
+  <div style="background:linear-gradient(145deg,#0e0e22,#111128);border:1px solid #1e1e3a;border-radius:20px;padding:36px 28px;text-align:center">
+    <div style="font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#c9a84a;font-weight:600;margin-bottom:6px">Matias Valente</div>
+    <div style="width:40px;height:1px;background:linear-gradient(90deg,transparent,#c9a84a,transparent);margin:0 auto 24px"></div>
+    <div style="font-size:20px;font-weight:600;color:#fff;margin-bottom:8px">Análise Financeira Completa</div>
+    <div style="font-size:15px;color:#c2bfe0;margin-bottom:28px;line-height:1.7">Digite a senha exibida logo após a confirmação do pagamento (e também enviada por e-mail) para acessar seu questionário personalizado.</div>
+    <input type="password" id="campo-senha" placeholder="Digite sua senha de acesso" style="width:100%;padding:14px 16px;border-radius:10px;border:1px solid #1e1e3a;background:#080814;color:#e0e0f0;font-size:14px;font-family:Inter,sans-serif;outline:none;margin-bottom:12px;text-align:center;letter-spacing:2px">
+    <div style="font-size:12px;color:#726c9e;margin-bottom:12px;margin-top:-4px">Dica: a senha é composta apenas por letras minúsculas e números.</div>
+    <div id="erro-senha" style="display:none;font-size:14px;color:#f87171;margin-bottom:12px">Senha incorreta. Verifique a tela de confirmação da compra ou o e-mail recebido.</div>
+    <button onclick="verificarSenha()" style="display:block;width:100%;padding:16px;border-radius:12px;border:none;background:linear-gradient(135deg,#7c6fd4,#9b8bff);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Acessar minha análise</button>
+    <div style="margin-top:20px;font-size:13px;color:#9089c2">Não encontrou? Verifique o spam ou entre em contato.</div>
+    <div style="margin-top:16px;text-align:center">
+      <span class="privacidade-link" onclick="togglePrivacidade('privacidade-senha')">🔒 Página segura — como cuidamos dos seus dados</span>
+      <div id="privacidade-senha" class="privacidade-info">Suas respostas são usadas apenas para gerar sua análise. <a href="privacidade.html" style="color:#8b7cf6">Política de Privacidade</a> · <a href="termos-de-uso.html" style="color:#8b7cf6">Termos de Uso</a> · <a href="reembolso.html" style="color:#8b7cf6">Reembolso</a></div>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="logo">Matias Valente</div>
+  <div class="logo-linha"></div>
+  <div class="progress-wrap"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <div class="progress-label" id="prog-label">Introdução</div>
+  <div id="vip-bonus-wrap"></div>
+  <div id="tela"></div>
+</div>
+
+<script>
+var SENHA_CORRETA = 'matias2026';
+var urlParams = new URLSearchParams(window.location.search);
+var isVIP = urlParams.get('vip') === '1';
+var pedidoVIP = urlParams.get('pedido') || '';
+
+function mostrarQ2Quem(val) {
+  var wrap = document.getElementById('q2-quem-wrap');
+  if (wrap) wrap.style.display = val.trim() ? 'block' : 'none';
+}
+function mostrarQ3Tipo(val) {
+  var wrap = document.getElementById('q3-tipo-wrap');
+  if (wrap) wrap.style.display = val.trim() ? 'block' : 'none';
+}
+function mostrarBonusVIP() {
+  if (!isVIP) return;
+  var wrap = document.getElementById('vip-bonus-wrap');
+  if (!wrap) return;
+  if (!pedidoVIP) {
+    wrap.innerHTML = '<div class="card" style="border-color:#f8717140">' +
+      '<div class="bloco-label" style="color:#f87171">Bônus indisponível nesta página</div>' +
+      '<div class="bloco-titulo" style="font-size:15px;margin-bottom:6px">Não conseguimos confirmar seu pedido por aqui</div>' +
+      '<div class="bloco-sub" style="margin-bottom:0">Acesse o link enviado no e-mail de confirmação da compra para liberar seus bônus com segurança.</div>' +
+      '</div>';
+    wrap.style.display = 'block';
+    return;
+  }
+  var base = 'https://matias-entrega-n3.contato-matiasvalente.workers.dev/download?pedido=' + encodeURIComponent(pedidoVIP) + '&arquivo=';
+  wrap.innerHTML = '<div class="card" style="border-color:#34d39940">' +
+    '<div class="bloco-label" style="color:#34d399">Seus bônus — Diagnóstico Completo</div>' +
+    '<div class="bloco-titulo" style="font-size:15px;margin-bottom:14px">Ficam disponíveis aqui sempre que você entrar com sua senha</div>' +
+    '<a href="' + base + 'livro" style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#4ade80;text-decoration:none;font-size:15px;font-weight:600;margin-bottom:8px">📖 Baixar o livro "O Número da Paz"</a>' +
+    '<a href="' + base + 'planilha" style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:10px;border:1px solid #34d39940;background:#0d1f16;color:#4ade80;text-decoration:none;font-size:15px;font-weight:600">📊 Baixar sua Planilha Comportamental</a>' +
+    '</div>';
+  wrap.style.display = 'block';
+}
+function esconderBonusVIP() {
+  var wrap = document.getElementById('vip-bonus-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+function togglePrivacidade(id){
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+function toggleAccordion(corpoId, setaId) {
+  var corpo = document.getElementById(corpoId);
+  var seta = document.getElementById(setaId);
+  if (!corpo) return;
+  var abrindo = !corpo.classList.contains('aberto');
+  corpo.classList.toggle('aberto', abrindo);
+  if (seta) seta.classList.toggle('aberto', abrindo);
+}
+
+function verificarSenha() {
+  var s = document.getElementById('campo-senha').value.trim().toLowerCase();
+  if (s === SENHA_CORRETA) {
+    document.getElementById('tela-senha').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    render();
+  } else {
+    document.getElementById('erro-senha').style.display = 'block';
+    document.getElementById('campo-senha').value = '';
+    document.getElementById('campo-senha').focus();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var c = document.getElementById('campo-senha');
+  if (c) c.addEventListener('keypress', function(e){ if(e.key==='Enter') verificarSenha(); });
+});
+
+var D = {
+  nome:'', renda_liquida:'', renda_extra_familiar:'', renda_extra_valor:'', renda_extra_quem:'', outras_rendas:'', outras_rendas_valor:'', outras_rendas_tipo:'', renda_estavel:'',
+  moradia:'', condominio:'', iptu:'', contas_consumo:'', transporte:'', alimentacao:'', saude:'', educacao:'',
+  transporte_pagamento:'', alimentacao_pagamento:'',
+  gastos_ocultos:'', gastos_ocultos_valores:'',
+  dividas:[{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''}],
+  renegociacoes:[{credor:'',parcela:'',restantes:''},{credor:'',parcela:'',restantes:''},{credor:'',parcela:'',restantes:''}],
+  emprestimos:[{credor:'',total:'',parcela:'',restantes:''},{credor:'',total:'',parcela:'',restantes:''},{credor:'',total:'',parcela:'',restantes:''}],
+  cheque_especial:'', consignado_parcela:'', consignado_restantes:'',
+  divida_mais_pesada:'', nome_negativado:'', tentou_negociar:'',
+  decisao_compra:'', cartao_gestao:'', fatura_media:'', parcelas_comprometidas:'', habito_poupar:'', sobra_dinheiro:'',
+  sentimento_financas:'', nivel_stress:5, evento_vida:'', evita_contas:'', dinheiro_relacionamentos:'',
+  dependentes:'', compartilha_despesas:'', familia_dinheiro:'', estado_civil:'', dependentes_numero:'', renda_terceiros:'',
+  reserva_emergencia:'', capacidade_imprevisto:'', objetivo_12meses:'', sucesso_financeiro:'', por_que_agora:'', impedimento:'',
+  diagnostico:''
+};
+
+var blocoAtual = 0;
+
+function criarOpcoesCheque() {
+  var container = document.getElementById('opcoes-cheque');
+  if (!container) return;
+  [['NaoUso','Não uso'],['Uso','Uso cheque especial']].forEach(function(p) {
+    (function(valor, label) {
+      var btn = document.createElement('div');
+      btn.className = 'opcao-btn' + (D.cheque_especial === valor ? ' on' : '');
+      btn.textContent = label;
+      btn.onclick = function() {
+        D.cheque_especial = valor;
+        container.querySelectorAll('.opcao-btn').forEach(function(b){b.classList.remove('on');});
+        btn.classList.add('on');
+        var wrap = document.getElementById('cheque-valor-wrap');
+        if (wrap) wrap.style.display = valor !== 'NaoUso' ? 'block' : 'none';
+      };
+      container.appendChild(btn);
+    })(p[0], p[1]);
+  });
+}
+
+function criarOpcoes(containerId, campo, pares) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  pares.forEach(function(p) {
+    (function(valor, label) {
+      var btn = document.createElement('div');
+      btn.className = 'opcao-btn' + (D[campo] === valor ? ' on' : '');
+      btn.textContent = label;
+      btn.onclick = function() {
+        D[campo] = valor;
+        container.querySelectorAll('.opcao-btn').forEach(function(b){b.classList.remove('on');});
+        btn.classList.add('on');
+        if (campo === 'cartao_gestao') {
+          var wrap = document.getElementById('cartao-fatura-wrap');
+          if (wrap) wrap.style.display = (valor !== 'NaoUso') ? 'block' : 'none';
+        }
+      };
+      container.appendChild(btn);
+    })(p[0], p[1]);
+  });
+}
+
+function selOpcao(el, campo, valor) {
+  D[campo] = valor;
+  var parent = el.parentNode;
+  var btns = parent.querySelectorAll('.opcao-btn');
+  for (var k=0; k<btns.length; k++) btns[k].classList.remove('on');
+  el.classList.add('on');
+  if (campo === 'cheque_especial') {
+    var wrap = document.getElementById('cheque-valor-wrap');
+    if (wrap) wrap.style.display = (valor !== 'NaoUso') ? 'block' : 'none';
+  }
+}
+
+function setProg(pct, label) {
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = label;
+}
+
+function getVal(id) {
+  var el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function toggleGasto(el, key, label) {
+  el.classList.toggle('on');
+  var campo = document.getElementById('gasto_val_' + key);
+  if (el.classList.contains('on')) {
+    if (campo) campo.style.display = 'block';
+    if (!D.gastos_ocultos_map) D.gastos_ocultos_map = {};
+    D.gastos_ocultos_map[key] = D.gastos_ocultos_map[key] || '';
+  } else {
+    if (campo) campo.style.display = 'none';
+    if (D.gastos_ocultos_map) delete D.gastos_ocultos_map[key];
+  }
+  atualizarStringGastos();
+}
+
+function atualizarGasto(key, valor) {
+  if (!D.gastos_ocultos_map) D.gastos_ocultos_map = {};
+  D.gastos_ocultos_map[key] = valor;
+  atualizarStringGastos();
+}
+
+function atualizarStringGastos() {
+  if (!D.gastos_ocultos_map) return;
+  var partes = [];
+  var labels = {
+    delivery:'Delivery', streaming:'Streaming', celular:'Internet e celular',
+    manutcasa:'Manutenção da casa', manutcarro:'Manutenção do carro',
+    segurovida:'Seguro de vida', seguroresid:'Seguro residencial', seguroveiculo:'Seguro do carro',
+    farmacia:'Farmácia', academia:'Academia', pet:'Pet', lazer:'Lazer'
+  };
+  for (var k in D.gastos_ocultos_map) {
+    var v = D.gastos_ocultos_map[k];
+    partes.push((labels[k] || k) + (v ? ': R$' + v : ''));
+  }
+  D.gastos_ocultos = partes.join(', ');
+  D.gastos_ocultos_valores = partes.join(', ');
+}
+
+function toggleTagData(el) {
+  var campo = el.dataset.campo;
+  toggleTag(el, campo);
+}
+
+function toggleTag(el, campo) {
+  el.classList.toggle('on');
+  var parent = el.parentNode;
+  var tags = parent.querySelectorAll('.tag-btn.on');
+  var vals = [];
+  for (var i = 0; i < tags.length; i++) vals.push(tags[i].dataset.val);
+  D[campo] = vals.join(', ');
+}
+
+function setStress(val) {
+  D.nivel_stress = val;
+  document.querySelectorAll('.stress-btn').forEach(function(b){
+    b.classList.toggle('on', parseInt(b.dataset.val) === val);
+  });
+}
+
+function avancar() { blocoAtual++; render(); window.scrollTo(0,0); }
+function voltarBloco() { if (blocoAtual > 0) { blocoAtual--; render(); window.scrollTo(0,0); } }
+
+function render() {
+  var tela = document.getElementById('tela');
+  tela.innerHTML = '';
+
+  if (isVIP) { if (blocoAtual === 0) { mostrarBonusVIP(); } else { esconderBonusVIP(); } }
+
+  if (blocoAtual === 0) {
+    setProg(0, 'Introdução');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Análise Completa</div><div class="bloco-titulo">Sua análise aprofundada começa aqui</div><div class="bloco-sub" style="margin-top:12px">Você adquiriu acesso à análise financeira completa do Matias Valente. Isso não é curso — é uma análise personalizada, construída a partir do que você vai responder agora.<br><br>Este questionário mapeia sua situação com precisão — receitas reais, despesas detalhadas, dívidas, comportamento financeiro e o padrão por trás disso tudo.<br><br>São 7 blocos, cerca de 10 minutos. Quanto mais detalhadas as respostas, mais precisa será sua análise.<br><br><strong style="color:#c4baff">Todas as perguntas marcadas são obrigatórias.</strong> Tudo é confidencial e anônimo.</div><button class="btn btn-primary" onclick="avancar()">Começar minha análise completa</button></div>' +
+      '<div style="text-align:center;margin-top:8px"><span class="privacidade-link" onclick="togglePrivacidade(\'privacidade-intro\')">🔒 Página segura — como cuidamos dos seus dados</span><div id="privacidade-intro" class="privacidade-info">Suas respostas são usadas apenas para gerar sua análise. <a href="privacidade.html" style="color:#8b7cf6">Política de Privacidade</a> · <a href="termos-de-uso.html" style="color:#8b7cf6">Termos de Uso</a> · <a href="reembolso.html" style="color:#8b7cf6">Reembolso</a></div></div>';
+    return;
+  }
+
+  if (blocoAtual === 1) {
+    setProg(14, 'Bloco 1 de 7 — Renda');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 1 de 7</div><div class="bloco-titulo">Renda e receitas</div><div class="bloco-sub">Vamos entender tudo que entra todo mês.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>1.</span> Qual é a sua renda mensal líquida? <span class="hint">Valor que cai na conta após descontos — salário, aposentadoria, pensão, etc.</span></div><input type="text" id="q1" placeholder="Ex: R$ 3.500" value="'+D.renda_liquida+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>2.</span> Alguém na família contribui com a renda da casa? <span class="hint">Se sim, informe o valor mensal. Se não, deixe em branco.</span></div>' +
+      '<input type="text" id="q2_valor" placeholder="Valor aproximado: R$" style="margin-bottom:8px" value="'+D.renda_extra_valor+'" oninput="mostrarQ2Quem(this.value)">' +
+      '<div id="q2-quem-wrap" style="'+(D.renda_extra_valor?'':'display:none')+'">' +
+      '<input type="text" id="q2_quem" placeholder="Quem contribui? Ex: Cônjuge, filho adulto, aluguel..." value="'+D.renda_extra_quem+'"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>3.</span> Você tem outras fontes de renda além da principal? <span class="hint">Se sim, informe o valor total aproximado. Se não, deixe em branco.</span></div>' +
+      '<input type="text" id="q3_valor" placeholder="Valor aproximado: R$" style="margin-bottom:8px" value="'+D.outras_rendas_valor+'" oninput="mostrarQ3Tipo(this.value)">' +
+      '<div id="q3-tipo-wrap" style="'+(D.outras_rendas_valor?'':'display:none')+'">' +
+      '<input type="text" id="q3_tipo" placeholder="Proveniente de quê? Ex: aluguel, freela, investimentos..." value="'+D.outras_rendas_tipo+'"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>4.</span> Sua renda é estável ou varia todo mês?</div><div class="opcoes-grid col1">' +
+      '<div class="opcao-btn" onclick="selOpcao(this,\'renda_estavel\',\'Estavel\')">Estável — recebo praticamente o mesmo todo mês</div>' +
+      '<div class="opcao-btn" onclick="selOpcao(this,\'renda_estavel\',\'Varia\')">Varia — há meses melhores e piores</div>' +
+      '<div class="opcao-btn" onclick="selOpcao(this,\'renda_estavel\',\'Instavel\')">Muito instável — não consigo prever</div>' +
+      '</div></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco1()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
+    return;
+  }
+
+  if (blocoAtual === 2) {
+    setProg(28, 'Bloco 2 de 7 — Despesas');
+    var tagsOcultos = [
+      {key:'delivery', label:'Delivery e alimentação fora'},
+      {key:'streaming', label:'Streaming (Netflix, Spotify…)'},
+      {key:'manutcasa', label:'Manutenção da casa (diarista, reparos)'},
+      {key:'manutcarro', label:'Manutenção do carro (IPVA, revisão)'},
+      {key:'segurovida', label:'Seguro de vida'},
+      {key:'seguroresid', label:'Seguro residencial'},
+      {key:'seguroveiculo', label:'Seguro do carro'},
+      {key:'farmacia', label:'Farmácia e medicamentos contínuos'},
+      {key:'academia', label:'Academia ou assinaturas'},
+      {key:'pet', label:'Pet (ração, veterinário)'},
+      {key:'lazer', label:'Lazer e passeios'}
+    ];
+    if (!D.gastos_ocultos_map) D.gastos_ocultos_map = {};
+    var htmlTags = tagsOcultos.map(function(t){
+      var on = D.gastos_ocultos_map[t.key] ? ' on' : '';
+      var val = D.gastos_ocultos_map[t.key] || '';
+      var display = on ? 'block' : 'none';
+      return '<div style="margin-bottom:10px">' +
+        '<div class="tag-btn'+on+'" data-key="'+t.key+'" onclick="toggleGasto(this,\''+t.key+'\',\''+t.label+'\')">'+t.label+'</div>' +
+        '<input type="text" id="gasto_val_'+t.key+'" placeholder="Valor aproximado: R$" style="display:'+display+';margin-top:6px;width:200px;padding:10px 12px;border-radius:8px;border:1px solid #8b7cf6;background:#080814;color:#e6e4fa;font-size:15px;font-family:Inter,sans-serif" value="'+val+'" onchange="atualizarGasto(\''+t.key+'\',this.value)">' +
+        '</div>';
+    }).join('');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 2 de 7</div><div class="bloco-titulo">Despesas mensais</div><div class="bloco-sub">O que sai todo mês. Coloque valores aproximados — estimativas são bem-vindas.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>5.</span> Moradia — aluguel, condomínio e IPTU <span class="hint">Preencha cada um separadamente. Coloque 0 se não tiver o gasto, ou escreva "Moro com familiar sem custo" no primeiro campo. Se você tem financiamento imobiliário, não inclua a parcela aqui — ela entra no Bloco 3 (Dívidas e Crédito), junto com outros financiamentos.</span></div><input type="text" id="q5" placeholder="Aluguel: Ex: R$ 1.200 (deixe 0 se for financiado ou quitado)" style="margin-bottom:8px" value="'+D.moradia+'"><input type="text" id="q5_condominio" placeholder="Condomínio: Ex: R$ 350" style="margin-bottom:8px" value="'+D.condominio+'"><input type="text" id="q5_iptu" placeholder="IPTU (valor mensal ou dividido por 12): Ex: R$ 80" value="'+D.iptu+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>6.</span> Contas de consumo — água, luz, gás, internet, telefone <span class="hint">Some todas essas contas e coloque o total aproximado</span></div><input type="text" id="q6" placeholder="Ex: R$ 450" value="'+D.contas_consumo+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>7.</span> Transporte — combustível, Uber, ônibus, manutenção <span class="hint">Não inclua parcela de financiamento do carro aqui — isso entra no Bloco 3 (Dívidas e Crédito)</span></div><input type="text" id="q7" placeholder="Ex: R$ 600" value="'+D.transporte+'" oninput="mostrarPagamento(\'transporte\',this.value)"><div id="pagamento-transporte-wrap" class="opcoes-grid" style="margin-top:10px;'+(valorPositivo(D.transporte)?'':'display:none')+'">' + gerarOpcoesPagamento('transporte') + '</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>8.</span> Alimentação — mercado, feira, refeições no trabalho</div><input type="text" id="q8" placeholder="Ex: R$ 800" value="'+D.alimentacao+'" oninput="mostrarPagamento(\'alimentacao\',this.value)"><div id="pagamento-alimentacao-wrap" class="opcoes-grid" style="margin-top:10px;'+(valorPositivo(D.alimentacao)?'':'display:none')+'">' + gerarOpcoesPagamento('alimentacao') + '</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>9.</span> Saúde — plano de saúde, odontológico, consultas particulares</div><input type="text" id="q9" placeholder="Ex: R$ 350 (plano familiar)" value="'+D.saude+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>10.</span> Educação — escola, faculdade, cursos, material, van escolar <span class="hint">Coloque 0 se não tiver este gasto</span></div><input type="text" id="q10" placeholder="Ex: R$ 600" value="'+D.educacao+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>11.</span> Quais desses gastos você tem todo mês? <span class="hint">Marque e informe o valor aproximado de cada um</span></div>'+htmlTags+'</div>' +
+      '<div id="erro-bloco" class="erro-msg"></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco2()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
+    return;
+  }
+
+  if (blocoAtual === 3) {
+    setProg(42, 'Bloco 3 de 7 — Dívidas');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 3 de 7</div><div class="bloco-titulo">Dívidas e crédito</div><div class="bloco-sub">Preencha apenas o que se aplica. Deixe em branco o que não tiver.</div>' +
+      '<div class="pergunta"><div class="secao-titulo">Dívidas em atraso ou ativas</div><span class="hint">Preencha a primeira e clique em + para adicionar mais.</span><div id="dividas-wrap">' + gerarLinhaDivida(0) + '</div><button onclick="adicionarDivida()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar dívida</button></div>' +
+      '<div class="divider"></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Cheque especial</div><div id="opcoes-cheque" class="opcoes-grid"></div><div id="cheque-valor-wrap" style="margin-top:8px;display:none"><input type="text" id="q_cheque" placeholder="Valor utilizado: R$ ___ / Limite total: R$ ___" value="" onchange="D.cheque_especial=this.value"></div></div>' +
+      '<div class="divider"></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Empréstimos, financiamentos e consórcios</div><span class="hint">Inclua aqui financiamento imobiliário, financiamento de veículo e consórcios (imóvel, veículo etc.) — use o campo "Banco/Credor" para identificar (ex: "Financiamento imóvel Caixa"). Deixe em branco se não tiver.</span><div id="emp-wrap">' + gerarLinhaEmp(0) + '</div><button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
+      '<div class="divider"></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Renegociações em andamento</div><span class="hint">Deixe em branco se não tiver.</span><div id="reneg-wrap">' + gerarLinhaReneg(0) + '</div><button onclick="adicionarReneg()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
+      '<div class="divider"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Qual dívida pesa mais no seu orçamento hoje? <span class="hint">Opcional</span></div><input type="text" id="q_pesada" placeholder="Ex: Cartão de crédito — juros altos" value="'+D.divida_mais_pesada+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Seu nome está negativado (SPC/Serasa)?</div><div id="opcoes-negativo" class="opcoes-grid"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Você já tentou renegociar alguma dívida?</div><div id="opcoes-reneg" class="opcoes-grid col1"></div></div>' +
+      '<div id="erro-bloco" class="erro-msg"></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco3()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
+    criarOpcoesCheque();
+    criarOpcoes('opcoes-negativo','nome_negativado',[['Sim','Sim'],['Nao','Não'],['NaoSei','Não sei']]);
+    criarOpcoes('opcoes-reneg','tentou_negociar',[['AindaNaoPrecisei','Ainda não precisei'],['SimBoas','Sim, consegui boas condições'],['Tentei','Tentei mas não consegui'],['Nunca','Nunca tentei']]);
+    restaurarDividas(); restaurarRenegs(); restaurarEmps();
+    return;
+  }
+
+  if (blocoAtual === 4) {
+    setProg(56, 'Bloco 4 de 7 — Comportamento');
+    var tagsSobra = ['Pago dívidas','Guardo um pouco','Gasto com lazer','Compro algo que queria','Gasto sem perceber','Ajudo alguém da família','Invisto'];
+    var htmlSobra = tagsSobra.map(function(t){ return '<div class="tag-btn'+(D.sobra_dinheiro && D.sobra_dinheiro.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="sobra_dinheiro">'+t+'</div>'; }).join('');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 4 de 7</div><div class="bloco-titulo">Comportamento com dinheiro</div><div class="bloco-sub">Como você age e decide no dia a dia financeiro.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>12.</span> Como você toma decisão de uma compra não essencial?</div><div id="opcoes-decisao" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>13.</span> Como você usa o cartão de crédito?</div><div id="opcoes-cartao" class="opcoes-grid col1"></div>' +
+      '<div id="cartao-fatura-wrap" style="display:'+((D.cartao_gestao && D.cartao_gestao!=='NaoUso')?'block':'none')+';margin-top:12px">' +
+      '<input type="text" id="q_fatura_media" placeholder="Outras compras no cartão não contadas acima: Ex: R$ 400" style="margin-bottom:8px" value="'+D.fatura_media+'" onchange="D.fatura_media=this.value">' +
+      '<span class="hint" style="display:block;margin-top:-4px;margin-bottom:8px">Não repita aqui nada que já foi contado em outro campo — mesmo que tenha sido pago no cartão: alimentação, transporte, farmácia, streaming, academia, manutenção, delivery, pet, lazer etc. já foram contados nesses campos. Coloque aqui só o que sai na fatura e não se encaixa em nenhum deles (roupas, compras avulsas, imprevistos etc.)</span>' +
+      '<input type="text" id="q_parcelas_comprometidas" placeholder="Quanto já está comprometido em parcelas nas próximas faturas: Ex: R$ 600" value="'+D.parcelas_comprometidas+'" onchange="D.parcelas_comprometidas=this.value">' +
+      '<span class="hint" style="margin-top:6px">Se você parcela compras com frequência, esse valor já compromete faturas futuras — mesmo que a fatura de hoje esteja paga.</span>' +
+      '</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>14.</span> Você consegue guardar algum valor todo mês?</div><div id="opcoes-poupar" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>15.</span> Quando sobra dinheiro, o que costuma acontecer? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlSobra+'</div></div>' +
+      '<div id="erro-bloco" class="erro-msg"></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco4()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
+    criarOpcoes('opcoes-decisao','decisao_compra',[['Planejo','Planejo e pesquiso antes de comprar'],['Parcela','Compro se couber na parcela'],['Impulso','Compro por impulso com frequência'],['Evito','Evito comprar — tenho medo de gastar']]);
+    criarOpcoes('opcoes-cartao','cartao_gestao',[['PagoTotal','Pago a fatura total todo mês'],['PagoMinimo','Pago o mínimo ou parcelo a fatura com frequência'],['UsoLimite','Uso o limite todo mês — complemento da minha renda'],['NaoUso','Não uso cartão de crédito']]);
+    criarOpcoes('opcoes-poupar','habito_poupar',[['Fixo','Sim — guardo um valor fixo antes de gastar'],['Sobra','Guardo só o que sobra — quando sobra'],['Nada','Não consigo guardar nada']]);
+    return;
+  }
+
+  if (blocoAtual === 5) {
+    setProg(70, 'Bloco 5 de 7 — Emocional');
+    var stressBtns = '';
+    for (var s = 1; s <= 10; s++) {
+      stressBtns += '<button class="stress-btn'+(D.nivel_stress===s?' on':'')+'" data-val="'+s+'" onclick="setStress('+s+')">'+s+'</button>';
+    }
+    var tagsSentimento = ['Ansioso e preocupado','Com vergonha ou culpa','Paralisado — não sei o que fazer','Resignado — aceito que é assim','Com raiva da situação','Determinado a mudar'];
+    var htmlSentimento = tagsSentimento.map(function(t){ return '<div class="tag-btn'+(D.sentimento_financas && D.sentimento_financas.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="sentimento_financas">'+t+'</div>'; }).join('');
+    var tagsRelac = ['Gera conflitos em casa com frequência','Afeta meu sono e minha saúde','Evito falar de dinheiro com quem amo','Me afasta de pessoas que quero ver','Não afeta muito meus relacionamentos'];
+    var htmlRelac = tagsRelac.map(function(t){ return '<div class="tag-btn'+(D.dinheiro_relacionamentos && D.dinheiro_relacionamentos.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="dinheiro_relacionamentos">'+t+'</div>'; }).join('');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 5 de 7</div><div class="bloco-titulo">O lado emocional do dinheiro</div><div class="bloco-sub">Responda com honestidade — é aqui que está a chave do padrão.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>16.</span> Como você se sente quando pensa nas suas finanças? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlSentimento+'</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>17.</span> Nível de estresse financeiro hoje (1 a 10):<br><span class="hint">1 = tranquilo &nbsp; 10 = insuportável</span></div><div class="stress-escala">'+stressBtns+'</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>18.</span> O que você ouvia sobre dinheiro quando criança? <span class="hint">Opcional</span></div><textarea id="q18" placeholder="Ex: Dinheiro não dá em árvore...">'+D.evento_vida+'</textarea></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>19.</span> Você tende a evitar olhar suas contas?</div><div id="opcoes-evita" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>20.</span> A situação financeira afeta seus relacionamentos ou saúde? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlRelac+'</div></div>' +
+      '<div id="erro-bloco" class="erro-msg"></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco5()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
+    criarOpcoes('opcoes-evita','evita_contas',[['SimEvito','Sim, evito bastante — é muito pesado'],['AsVezes','Às vezes evito'],['NaoEvito','Não, encaro a situação de frente']]);
+    return;
+  }
+
+  if (blocoAtual === 6) {
+    setProg(84, 'Bloco 6 de 7 — Contexto familiar');
+    var tagsDep = ['Tenho filhos dependentes','Ajudo pais ou familiares','Cônjuge depende de mim','Não tenho dependentes financeiros'];
+    var htmlDep = tagsDep.map(function(t){ return '<div class="tag-btn'+(D.dependentes && D.dependentes.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="dependentes">'+t+'</div>'; }).join('');
+    var tagsComp = ['Cônjuge ou parceiro(a) divide as despesas','Outros familiares contribuem','Filho(a) adulto contribui','Não — arco com tudo sozinho(a)'];
+    var htmlComp = tagsComp.map(function(t){ return '<div class="tag-btn'+(D.compartilha_despesas && D.compartilha_despesas.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="compartilha_despesas">'+t+'</div>'; }).join('');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 6 de 7</div><div class="bloco-titulo">Contexto familiar</div><div class="bloco-sub">O ambiente ao redor influencia muito as finanças.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>21.</span> Você tem dependentes financeiros? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlDep+'</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>22.</span> Alguém compartilha as despesas da casa? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlComp+'</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>23.</span> Como era a relação com dinheiro na sua família de origem?</div><div id="opcoes-familia" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>24.</span> Qual é o seu estado civil?</div><div id="opcoes-estadocivil" class="opcoes-grid"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>25.</span> Quantas pessoas dependem financeiramente de você hoje? <span class="hint">Considere qualquer pessoa, da família ou não</span></div><div id="opcoes-numdependentes" class="opcoes-grid"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>26.</span> Quanto da sua renda é destinado a ajudar outras pessoas? <span class="hint">Família ou não — considere um valor aproximado por mês</span></div><div id="opcoes-rendaterceiros" class="opcoes-grid col1"></div></div>' +
+      '<div id="erro-bloco" class="erro-msg"></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco6()">Continuar</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
+    criarOpcoes('opcoes-familia','familia_dinheiro',[['Educacao','Havia educação financeira — aprendi a poupar'],['Apertado','Sempre foi apertado — sobrevivência'],['Gastava','Gastava-se tudo — não havia cultura de poupança'],['Tabu','Nunca falávamos de dinheiro em casa — era tabu']]);
+    criarOpcoes('opcoes-estadocivil','estado_civil',[['Solteiro','Solteiro(a)'],['Casado','Casado(a) ou união estável'],['Divorciado','Divorciado(a) ou separado(a)'],['Viuvo','Viúvo(a)']]);
+    criarOpcoes('opcoes-numdependentes','dependentes_numero',[['Nenhuma','Nenhuma — só eu'],['Uma','1 pessoa'],['Duas','2 pessoas'],['TresOuMais','3 ou mais pessoas']]);
+    criarOpcoes('opcoes-rendaterceiros','renda_terceiros',[['Nada','Não destino nada'],['Ate10','Até 10% da minha renda'],['Entre10e25','Entre 10% e 25%'],['Mais25','Mais de 25%']]);
+    return;
+  }
+
+  if (blocoAtual === 7) {
+    setProg(95, 'Bloco 7 de 7 — Objetivos');
+    var tagsImp = ['Não sei por onde começar','Não sobra nada para mudar','Medo de encarar a situação real','Já tentei antes e não funcionou','Falta de apoio — faço tudo sozinho(a)','Parceiro(a) não colabora','Falta de disciplina ou tempo'];
+    var htmlImp = tagsImp.map(function(t){ return '<div class="tag-btn'+(D.impedimento && D.impedimento.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="impedimento">'+t+'</div>'; }).join('');
+    var tagsSucesso = ['Ter um valor específico guardado','Liberdade de tempo — trabalhar por escolha','Poder ajudar minha família sem apertar','Aposentar com tranquilidade'];
+    var htmlSucesso = tagsSucesso.map(function(t){ return '<div class="tag-btn'+(D.sucesso_financeiro && D.sucesso_financeiro.indexOf(t)>=0?' on':'')+'" data-val="'+t+'" onclick="toggleTagData(this)" data-campo="sucesso_financeiro">'+t+'</div>'; }).join('');
+    tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 7 de 7</div><div class="bloco-titulo">Objetivos e motivação</div><div class="bloco-sub">A última parte — e a mais importante para direcionar sua análise.</div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>27.</span> Você tem reserva de emergência ou investimentos?</div><div id="opcoes-reserva" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>28.</span> Se surgisse um gasto grande e inesperado hoje — um reparo urgente, uma emergência de saúde — você conseguiria cobrir sem parcelar ou pedir emprestado?</div><div id="opcoes-imprevisto" class="opcoes-grid col1"></div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>29.</span> O que te impede de agir hoje? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlImp+'</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>30.</span> O que você quer que mude nos próximos 12 meses? <span class="hint">Seja específico</span></div><textarea id="q26" placeholder="Ex: Quitar o cartão, limpar o nome, ter R$500 guardados...">'+D.objetivo_12meses+'</textarea></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>31.</span> O que significa sucesso financeiro para você? <span class="hint">Pode marcar mais de uma</span></div><div class="tag-wrap">'+htmlSucesso+'</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>32.</span> Por que organizar suas finanças é importante para você agora? <span class="hint">O que o dinheiro vai te permitir fazer ou sentir que hoje não consegue?</span></div><textarea id="q28" placeholder="Escreva com suas próprias palavras...">'+D.por_que_agora+'</textarea></div>' +
+      '<div id="erro-bloco" class="erro-msg"></div>' +
+      '<button class="btn btn-primary" onclick="salvarBloco7()">Gerar minha análise completa</button><button class="btn btn-outline" onclick="voltarBloco()">Voltar</button></div>';
+    criarOpcoes('opcoes-reserva','reserva_emergencia',[['Nada','Não tenho nada guardado'],['Menos1mes','Tenho menos de 1 mês de despesas'],['Entre1e3','Tenho entre 1 e 3 meses guardados'],['Mais3','Tenho mais de 3 meses guardados']]);
+    criarOpcoes('opcoes-imprevisto','capacidade_imprevisto',[['Facilmente','Sim, facilmente'],['Apertaria','Sim, mas apertaria bastante'],['Parcelaria','Não, precisaria parcelar ou pedir emprestado'],['NaoSaberia','Não saberia o que fazer']]);
+    return;
+  }
+
+  if (blocoAtual === 8) {
+    setProg(100, 'Gerando sua análise...');
+    tela.innerHTML = '<div class="card loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p style="font-size:15px;font-weight:600;color:#fff;margin-bottom:8px">Processando sua análise completa...</p><p style="font-size:15px;color:#b0acd4">Cruzando todos os seus dados financeiros, comportamentais e emocionais. Isso pode levar até 45 segundos.</p></div>' +
+      '<div class="msg-card" id="msg1"><p>Você acabou de fazer algo que a maioria das pessoas nunca faz — parar para olhar com honestidade para a própria situação financeira. Isso já é parte da solução.</p></div>' +
+      '<div class="msg-card" id="msg2"><p>Não existe situação sem solução — existe situação sem clareza. E é isso que estamos organizando agora, com calma, um dado de cada vez.</p></div>';
+    setTimeout(function(){ var m=document.getElementById('msg1'); if(m) m.style.opacity='1'; }, 8000);
+    setTimeout(function(){ var m=document.getElementById('msg2'); if(m) m.style.opacity='1'; }, 20000);
+    gerarAnalise();
+  }
+}
+
+function salvarBloco1() {
+  esconderErro();
+  D.renda_liquida = getVal('q1');
+  if (!D.renda_liquida) { mostrarErro('Por favor informe sua renda mensal líquida.'); return; }
+  if (!D.renda_estavel) { mostrarErro('Por favor selecione a estabilidade da sua renda.'); return; }
+  D.renda_extra_valor = getVal('q2_valor');
+  D.renda_extra_quem = getVal('q2_quem');
+  D.renda_extra_familiar = D.renda_extra_valor ? 'R$'+D.renda_extra_valor+(D.renda_extra_quem?' ('+D.renda_extra_quem+')':'') : '';
+  D.outras_rendas_valor = getVal('q3_valor');
+  D.outras_rendas_tipo = getVal('q3_tipo');
+  D.outras_rendas = D.outras_rendas_valor ? 'R$'+D.outras_rendas_valor+(D.outras_rendas_tipo?' ('+D.outras_rendas_tipo+')':'') : '';
+  avancar();
+}
+
+function salvarBloco2() {
+  esconderErro();
+  D.moradia = getVal('q5');
+  D.condominio = getVal('q5_condominio');
+  D.iptu = getVal('q5_iptu');
+  D.contas_consumo = getVal('q6');
+  D.transporte = getVal('q7');
+  D.alimentacao = getVal('q8');
+  D.saude = getVal('q9');
+  D.educacao = getVal('q10');
+  if (!D.moradia) { mostrarErro('Por favor informe o valor de moradia. Se não tiver custo, escreva 0.'); return; }
+  if (!D.alimentacao) { mostrarErro('Por favor informe o valor gasto com alimentação.'); return; }
+  avancar();
+}
+
+function gerarLinhaDivida(idx) {
+  return '<div class="linha-estruturada col3" id="div-linha-'+idx+'" style="margin-bottom:8px">' +
+    '<input type="text" id="div'+idx+'_tipo" placeholder="Tipo (Ex: Cartão Nubank)" onchange="syncDivida('+idx+')">' +
+    '<input type="text" id="div'+idx+'_total" placeholder="Valor total (R$)" onchange="syncDivida('+idx+')">' +
+    '<input type="text" id="div'+idx+'_parcela" placeholder="Parcela/mês (R$)" onchange="syncDivida('+idx+')"></div>';
+}
+
+function gerarLinhaReneg(idx) {
+  return '<div class="linha-estruturada col3" id="ren-linha-'+idx+'" style="margin-bottom:8px">' +
+    '<input type="text" id="ren'+idx+'_credor" placeholder="Credor" onchange="syncReneg('+idx+')">' +
+    '<input type="text" id="ren'+idx+'_parcela" placeholder="Parcela (R$)" onchange="syncReneg('+idx+')">' +
+    '<input type="text" id="ren'+idx+'_restantes" placeholder="Parcelas restantes" onchange="syncReneg('+idx+')"></div>';
+}
+
+function gerarLinhaEmp(idx) {
+  return '<div class="linha-estruturada col4" id="emp-linha-'+idx+'" style="margin-bottom:8px">' +
+    '<input type="text" id="emp'+idx+'_credor" placeholder="Banco/Credor (ex: Financiamento imóvel Caixa, Consórcio veículo Itaú)" onchange="syncEmp('+idx+')">' +
+    '<input type="text" id="emp'+idx+'_total" placeholder="Saldo devedor (R$)" onchange="syncEmp('+idx+')">' +
+    '<input type="text" id="emp'+idx+'_parcela" placeholder="Parcela (R$)" onchange="syncEmp('+idx+')">' +
+    '<input type="text" id="emp'+idx+'_restantes" placeholder="Parcelas restantes" onchange="syncEmp('+idx+')"></div>';
+}
+
+var numDividas = 1;
+var numRenegs = 1;
+var numEmps = 1;
+
+function adicionarDivida() {
+  if (numDividas >= 5) return;
+  var wrap = document.getElementById('dividas-wrap');
+  if (wrap) {
+    var div = document.createElement('div');
+    div.innerHTML = gerarLinhaDivida(numDividas);
+    wrap.appendChild(div.firstChild);
+    while (D.dividas.length <= numDividas) D.dividas.push({tipo:'',total:'',parcela:''});
+    numDividas++;
+  }
+}
+
+function adicionarReneg() {
+  if (numRenegs >= 5) return;
+  var wrap = document.getElementById('reneg-wrap');
+  if (wrap) {
+    var div = document.createElement('div');
+    div.innerHTML = gerarLinhaReneg(numRenegs);
+    wrap.appendChild(div.firstChild);
+    while (D.renegociacoes.length <= numRenegs) D.renegociacoes.push({credor:'',parcela:'',restantes:''});
+    numRenegs++;
+  }
+}
+
+function adicionarEmp() {
+  if (numEmps >= 5) return;
+  var wrap = document.getElementById('emp-wrap');
+  if (wrap) {
+    var div = document.createElement('div');
+    div.innerHTML = gerarLinhaEmp(numEmps);
+    wrap.appendChild(div.firstChild);
+    while (D.emprestimos.length <= numEmps) D.emprestimos.push({credor:'',total:'',parcela:'',restantes:''});
+    numEmps++;
+  }
+}
+
+function syncDivida(idx) {
+  while (D.dividas.length <= idx) D.dividas.push({tipo:'',total:'',parcela:''});
+  D.dividas[idx].tipo = getVal('div'+idx+'_tipo');
+  D.dividas[idx].total = getVal('div'+idx+'_total');
+  D.dividas[idx].parcela = getVal('div'+idx+'_parcela');
+}
+
+function syncReneg(idx) {
+  while (D.renegociacoes.length <= idx) D.renegociacoes.push({credor:'',parcela:'',restantes:''});
+  D.renegociacoes[idx].credor = getVal('ren'+idx+'_credor');
+  D.renegociacoes[idx].parcela = getVal('ren'+idx+'_parcela');
+  D.renegociacoes[idx].restantes = getVal('ren'+idx+'_restantes');
+}
+
+function syncEmp(idx) {
+  while (D.emprestimos.length <= idx) D.emprestimos.push({credor:'',total:'',parcela:'',restantes:''});
+  D.emprestimos[idx].credor = getVal('emp'+idx+'_credor');
+  D.emprestimos[idx].total = getVal('emp'+idx+'_total');
+  D.emprestimos[idx].parcela = getVal('emp'+idx+'_parcela');
+  D.emprestimos[idx].restantes = getVal('emp'+idx+'_restantes');
+}
+
+function restaurarDividas() {
+  for (var i = 1; i < D.dividas.length; i++) {
+    if (D.dividas[i] && D.dividas[i].tipo) adicionarDivida();
+  }
+  for (var i = 0; i < D.dividas.length; i++) {
+    var el;
+    el = document.getElementById('div'+i+'_tipo'); if(el) el.value = D.dividas[i].tipo||'';
+    el = document.getElementById('div'+i+'_total'); if(el) el.value = D.dividas[i].total||'';
+    el = document.getElementById('div'+i+'_parcela'); if(el) el.value = D.dividas[i].parcela||'';
+  }
+}
+
+function restaurarRenegs() {
+  for (var i = 1; i < D.renegociacoes.length; i++) {
+    if (D.renegociacoes[i] && D.renegociacoes[i].credor) adicionarReneg();
+  }
+  for (var i = 0; i < D.renegociacoes.length; i++) {
+    var el;
+    el = document.getElementById('ren'+i+'_credor'); if(el) el.value = D.renegociacoes[i].credor||'';
+    el = document.getElementById('ren'+i+'_parcela'); if(el) el.value = D.renegociacoes[i].parcela||'';
+    el = document.getElementById('ren'+i+'_restantes'); if(el) el.value = D.renegociacoes[i].restantes||'';
+  }
+}
+
+function restaurarEmps() {
+  for (var i = 1; i < D.emprestimos.length; i++) {
+    if (D.emprestimos[i] && D.emprestimos[i].credor) adicionarEmp();
+  }
+  for (var i = 0; i < D.emprestimos.length; i++) {
+    var el;
+    el = document.getElementById('emp'+i+'_credor'); if(el) el.value = D.emprestimos[i].credor||'';
+    el = document.getElementById('emp'+i+'_total'); if(el) el.value = D.emprestimos[i].total||'';
+    el = document.getElementById('emp'+i+'_parcela'); if(el) el.value = D.emprestimos[i].parcela||'';
+    el = document.getElementById('emp'+i+'_restantes'); if(el) el.value = D.emprestimos[i].restantes||'';
+  }
+}
+
+function salvarBloco3() {
+  esconderErro();
+  for (var i = 0; i < numDividas; i++) {
+    while (D.dividas.length <= i) D.dividas.push({tipo:'',total:'',parcela:''});
+    D.dividas[i].tipo = getVal('div'+i+'_tipo');
+    D.dividas[i].total = getVal('div'+i+'_total');
+    D.dividas[i].parcela = getVal('div'+i+'_parcela');
+  }
+  for (var j = 0; j < numRenegs; j++) {
+    while (D.renegociacoes.length <= j) D.renegociacoes.push({credor:'',parcela:'',restantes:''});
+    D.renegociacoes[j].credor = getVal('ren'+j+'_credor');
+    D.renegociacoes[j].parcela = getVal('ren'+j+'_parcela');
+    D.renegociacoes[j].restantes = getVal('ren'+j+'_restantes');
+  }
+  for (var k = 0; k < numEmps; k++) {
+    while (D.emprestimos.length <= k) D.emprestimos.push({credor:'',total:'',parcela:'',restantes:''});
+    D.emprestimos[k].credor = getVal('emp'+k+'_credor');
+    D.emprestimos[k].total = getVal('emp'+k+'_total');
+    D.emprestimos[k].parcela = getVal('emp'+k+'_parcela');
+    D.emprestimos[k].restantes = getVal('emp'+k+'_restantes');
+  }
+  D.divida_mais_pesada = getVal('q_pesada');
+  if (!D.nome_negativado) { mostrarErro('Por favor informe se seu nome está negativado.'); return; }
+  if (!D.tentou_negociar) { mostrarErro('Por favor informe se já tentou renegociar alguma dívida.'); return; }
+  avancar();
+}
+
+function salvarBloco4() {
+  esconderErro();
+  if (!D.decisao_compra) { mostrarErro('Por favor responda como você toma decisão de compra.'); return; }
+  if (!D.cartao_gestao) { mostrarErro('Por favor responda sobre seu uso do cartão de crédito.'); return; }
+  if (!D.habito_poupar) { mostrarErro('Por favor responda sobre seu hábito de poupar.'); return; }
+  avancar();
+}
+
+function salvarBloco5() {
+  esconderErro();
+  if (!D.sentimento_financas) { mostrarErro('Por favor selecione como você se sente em relação às suas finanças.'); return; }
+  if (!D.evita_contas) { mostrarErro('Por favor responda sobre evitar olhar as contas.'); return; }
+  D.evento_vida = getVal('q18');
+  avancar();
+}
+
+function salvarBloco6() {
+  esconderErro();
+  if (!D.familia_dinheiro) { mostrarErro('Por favor responda sobre a relação com dinheiro na sua família de origem.'); return; }
+  if (!D.estado_civil) { mostrarErro('Por favor informe seu estado civil.'); return; }
+  if (!D.dependentes_numero) { mostrarErro('Por favor informe quantas pessoas dependem financeiramente de você.'); return; }
+  if (!D.renda_terceiros) { mostrarErro('Por favor informe quanto da sua renda é destinado a ajudar outras pessoas.'); return; }
+  avancar();
+}
+
+function salvarBloco7() {
+  esconderErro();
+  D.objetivo_12meses = getVal('q26');
+  D.por_que_agora = getVal('q28');
+  if (!D.reserva_emergencia) { mostrarErro('Por favor responda sobre reserva de emergência.'); return; }
+  if (!D.capacidade_imprevisto) { mostrarErro('Por favor responda sobre sua capacidade de lidar com um imprevisto financeiro.'); return; }
+  if (!D.objetivo_12meses) { mostrarErro('Por favor descreva o que quer mudar nos próximos 12 meses.'); return; }
+  if (!D.sucesso_financeiro) { mostrarErro('Por favor responda o que significa sucesso financeiro para você.'); return; }
+  blocoAtual = 8;
+  render();
+  window.scrollTo(0,0);
+}
+
+function esconderErro() {
+  var el = document.getElementById('erro-bloco');
+  if (el) el.style.display = 'none';
+}
+
+function mostrarErro(msg) {
+  var el = document.getElementById('erro-bloco');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+  setTimeout(function(){ window.scrollTo(0, document.body.scrollHeight); }, 100);
+}
+
+function formatarDividas() {
+  var linhas = [];
+  for (var i = 0; i < 5; i++) {
+    var d = D.dividas[i];
+    if (d.tipo) linhas.push(d.tipo + (d.total?' | Total: R$'+d.total:'') + (d.parcela?' | Parcela: R$'+d.parcela+'/mês':''));
+  }
+  return linhas.length ? linhas.join(' /// ') : 'Não informado';
+}
+
+function formatarRenegociacoes() {
+  var linhas = [];
+  for (var i = 0; i < 3; i++) {
+    var r = D.renegociacoes[i];
+    if (r.credor) linhas.push(r.credor + (r.parcela?' | Parcela: R$'+r.parcela:'') + (r.restantes?' | '+r.restantes+' parcelas restantes':''));
+  }
+  return linhas.length ? linhas.join(' /// ') : 'Nenhuma';
+}
+
+function formatarEmprestimos() {
+  var linhas = [];
+  for (var i = 0; i < 3; i++) {
+    var e = D.emprestimos[i];
+    if (e.credor) linhas.push(e.credor + (e.total?' | Saldo: R$'+e.total:'') + (e.parcela?' | Parcela: R$'+e.parcela+'/mês':'') + (e.restantes?' | '+e.restantes+' parcelas restantes':''));
+  }
+  return linhas.length ? linhas.join(' /// ') : 'Nenhum';
+}
+
+function parseValorNumerico(val) {
+  if (!val) return 0;
+  var n = parseFloat(String(val).replace(/[^\d,.-]/g, '').replace(',', '.'));
+  return isNaN(n) ? 0 : n;
+}
+
+function valorPositivo(val) {
+  if (!val) return false;
+  var n = parseFloat(String(val).replace(/[^\d,.-]/g, '').replace(',', '.'));
+  return !isNaN(n) && n > 0;
+}
+
+function gerarOpcoesPagamento(campo) {
+  var opcoes = ['Cartão de crédito', 'Débito em conta', 'Boleto'];
+  return opcoes.map(function(op) {
+    var on = D[campo + '_pagamento'] === op ? ' on' : '';
+    return '<div class="opcao-btn' + on + '" style="font-size:13px;padding:10px 12px" onclick="selecionarPagamento(this,\'' + campo + '\',\'' + op + '\')">' + op + '</div>';
+  }).join('');
+}
+
+function mostrarPagamento(campo, val) {
+  var wrap = document.getElementById('pagamento-' + campo + '-wrap');
+  if (wrap) wrap.style.display = valorPositivo(val) ? 'grid' : 'none';
+}
+
+function selecionarPagamento(el, campo, valor) {
+  D[campo + '_pagamento'] = valor;
+  var parent = el.parentNode;
+  var btns = parent.querySelectorAll('.opcao-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('on');
+  el.classList.add('on');
+}
+
+function calcularResumoFinanceiro() {
+  var g = D.gastos_ocultos_map || {};
+  var valGasto = function(k) { return parseValorNumerico(g[k]); };
+
+  var rendaLiquida = parseValorNumerico(D.renda_liquida);
+  var rendaExtra = parseValorNumerico(D.renda_extra_valor);
+  var outrasRendas = parseValorNumerico(D.outras_rendas_valor);
+  var rendaTotal = rendaLiquida + rendaExtra + outrasRendas;
+
+  var fixaMoradia = parseValorNumerico(D.moradia) + parseValorNumerico(D.condominio) + parseValorNumerico(D.iptu) + parseValorNumerico(D.contas_consumo) + valGasto('manutcasa');
+  var fixaEducacao = parseValorNumerico(D.educacao);
+  var fixaSaude = parseValorNumerico(D.saude) + valGasto('farmacia');
+  var fixaProtecao = valGasto('segurovida') + valGasto('seguroresid') + valGasto('seguroveiculo');
+  var fixaAssinaturas = valGasto('academia') + valGasto('streaming');
+  var despesasFixas = fixaMoradia + fixaEducacao + fixaSaude + fixaProtecao + fixaAssinaturas;
+
+  var varTransporte = parseValorNumerico(D.transporte) + valGasto('manutcarro');
+  var varAlimentacao = parseValorNumerico(D.alimentacao) + valGasto('delivery');
+  var varLazer = valGasto('pet') + valGasto('lazer');
+  var varOutrasCompras = parseValorNumerico(D.fatura_media);
+  var despesasVariaveis = varTransporte + varAlimentacao + varLazer + varOutrasCompras;
+
+  var parcelasDividas = 0;
+  (D.dividas||[]).forEach(function(d){ parcelasDividas += parseValorNumerico(d.parcela); });
+  (D.renegociacoes||[]).forEach(function(r){ parcelasDividas += parseValorNumerico(r.parcela); });
+  (D.emprestimos||[]).forEach(function(e){ parcelasDividas += parseValorNumerico(e.parcela); });
+  var parcelasCartao = parseValorNumerico(D.parcelas_comprometidas);
+  var dividasTotal = parcelasDividas + parcelasCartao;
+
+  var totalGeral = despesasFixas + despesasVariaveis + dividasTotal;
+  var saldo = rendaTotal - totalGeral;
+  var percentualDividas = rendaTotal > 0 ? (dividasTotal / rendaTotal * 100) : 0;
+
+  var scoreMatch = (D.diagnostico||'').match(/nota de saúde financeira hoje é\s*(\d+)\s*\/?\s*100/i);
+  var score = scoreMatch ? parseInt(scoreMatch[1], 10) : null;
+
+  return {
+    rendaTotal: rendaTotal, despesasFixas: despesasFixas, despesasVariaveis: despesasVariaveis,
+    dividasTotal: dividasTotal, totalGeral: totalGeral, saldo: saldo,
+    percentualDividas: percentualDividas, score: score,
+    categorias: {
+      'Moradia': fixaMoradia, 'Educação': fixaEducacao, 'Saúde': fixaSaude,
+      'Proteção e Seguros': fixaProtecao, 'Assinaturas fixas': fixaAssinaturas,
+      'Transporte': varTransporte, 'Alimentação': varAlimentacao, 'Lazer': varLazer, 'Outras compras no cartão': varOutrasCompras
+    }
+  };
+}
+
+function formatarReal(n) {
+  return 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+
+function corPorScore(score) {
+  if (score === null) return '#7c6fd4';
+  if (score <= 20) return '#e05d5d';
+  if (score <= 40) return '#e08a4f';
+  if (score <= 60) return '#d4b23c';
+  if (score <= 80) return '#7fb86e';
+  return '#4ade80';
+}
+
+function labelPorScore(score) {
+  if (score === null) return '';
+  if (score <= 20) return 'Situação crítica';
+  if (score <= 40) return 'Alto risco';
+  if (score <= 60) return 'Situação instável';
+  if (score <= 80) return 'Em recuperação';
+  return 'Financeiramente saudável';
+}
+
+function parseSecoesDiagnostico(texto) {
+  var partes = texto.split(/\n\n/).map(function(s){return s.trim();}).filter(Boolean);
+  var secoes = [];
+  var atual = null;
+  partes.forEach(function(p){
+    var m = p.match(/^SEÇÃO\s+(\d+)\s*—\s*(.+)$/i);
+    if (m) {
+      if (atual) secoes.push(atual);
+      atual = { numero: m[1], titulo: m[2], paragrafos: [] };
+    } else if (atual) {
+      atual.paragrafos.push(p);
+    } else {
+      if (!secoes.length) secoes.push({ numero:'', titulo:'', paragrafos:[] });
+      secoes[0].paragrafos.push(p);
+    }
+  });
+  if (atual) secoes.push(atual);
+  return secoes;
+}
+
+async function gerarAnalise() {
+  var resumo = calcularResumoFinanceiro();
+
+  var payload = JSON.stringify({
+    renda_liquida: D.renda_liquida,
+    renda_extra_familiar: D.renda_extra_familiar,
+    outras_rendas: D.outras_rendas,
+    renda_estavel: D.renda_estavel,
+    moradia: D.moradia,
+    condominio: D.condominio,
+    iptu: D.iptu,
+    contas_consumo: D.contas_consumo,
+    transporte: D.transporte,
+    transporte_pagamento: D.transporte_pagamento,
+    alimentacao: D.alimentacao,
+    alimentacao_pagamento: D.alimentacao_pagamento,
+    saude: D.saude,
+    educacao: D.educacao,
+    gastos_ocultos: D.gastos_ocultos,
+    dividas: formatarDividas(),
+    renegociacoes: formatarRenegociacoes(),
+    emprestimos: formatarEmprestimos(),
+    cheque_especial: D.cheque_especial,
+    divida_mais_pesada: D.divida_mais_pesada,
+    nome_negativado: D.nome_negativado,
+    tentou_negociar: D.tentou_negociar,
+    decisao_compra: D.decisao_compra,
+    cartao_gestao: D.cartao_gestao,
+    fatura_media: D.fatura_media,
+    parcelas_comprometidas: D.parcelas_comprometidas,
+    habito_poupar: D.habito_poupar,
+    sobra_dinheiro: D.sobra_dinheiro,
+    sentimento_financas: D.sentimento_financas,
+    nivel_stress: D.nivel_stress,
+    evento_vida: D.evento_vida,
+    evita_contas: D.evita_contas,
+    dinheiro_relacionamentos: D.dinheiro_relacionamentos,
+    dependentes: D.dependentes,
+    compartilha_despesas: D.compartilha_despesas,
+    familia_dinheiro: D.familia_dinheiro,
+    estado_civil: D.estado_civil,
+    dependentes_numero: D.dependentes_numero,
+    renda_terceiros: D.renda_terceiros,
+    reserva_emergencia: D.reserva_emergencia,
+    capacidade_imprevisto: D.capacidade_imprevisto,
+    objetivo_12meses: D.objetivo_12meses,
+    sucesso_financeiro: D.sucesso_financeiro,
+    por_que_agora: D.por_que_agora,
+    impedimento: D.impedimento,
+    resumo_renda_total: resumo.rendaTotal.toFixed(2),
+    resumo_despesas_fixas: resumo.despesasFixas.toFixed(2),
+    resumo_despesas_variaveis: resumo.despesasVariaveis.toFixed(2),
+    resumo_dividas_total: resumo.dividasTotal.toFixed(2),
+    resumo_total_geral: resumo.totalGeral.toFixed(2),
+    resumo_saldo: resumo.saldo.toFixed(2),
+    resumo_percentual_dividas: resumo.percentualDividas.toFixed(1)
+  });
+  var esperarTempo = new Promise(function(resolve){setTimeout(resolve,45000);});
+  var chamarAPI = fetch('https://matias-n2.contato-matiasvalente.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:payload});
+  try {
+    var resultados = await Promise.all([chamarAPI, esperarTempo]);
+    var dados_resp = await resultados[0].json();
+    D.diagnostico = dados_resp.diagnostico || 'Não foi possível gerar a análise.';
+    exibirResultado();
+  } catch(e) {
+    document.getElementById('tela').innerHTML = '<div class="card"><p style="color:#f87171;margin-bottom:16px">Erro ao gerar análise. Tente novamente.</p><button class="btn btn-primary" onclick="gerarAnalise()">Tentar novamente</button></div>';
+  }
+}
+
+function montarReferenciasTela(r) {
+  var grupos = [
+    {nome:'Despesas Fixas', valor:r.despesasFixas, limite:45},
+    {nome:'Despesas Variáveis', valor:r.despesasVariaveis, limite:25},
+    {nome:'Dívidas e Compromissos', valor:r.dividasTotal, limite:30}
+  ];
+  var linhas = '';
+  var desenquadrados = [];
+  grupos.forEach(function(gr){
+    var pct = r.rendaTotal > 0 ? (gr.valor / r.rendaTotal * 100) : 0;
+    var dentro = pct <= gr.limite;
+    if (!dentro) desenquadrados.push({nome:gr.nome, pct:pct, limite:gr.limite});
+    var status = dentro ? '<span class="ref-status-ok">✓ OK</span>' : '<span class="ref-status-alerta">⚠ Acima</span>';
+    linhas += '<div class="ref-linha"><span class="ref-nome">'+gr.nome+'</span><span class="ref-pct">'+pct.toFixed(0)+'%</span><span class="ref-limite">até '+gr.limite+'%</span>'+status+'</div>';
+  });
+
+  var alerta = '';
+  if (desenquadrados.length) {
+    var d = desenquadrados[0];
+    alerta = '<div class="alerta-tela alerta-tela-atencao">⚠ <strong>'+d.nome+'</strong> está em '+d.pct.toFixed(0)+'% da sua renda, acima da faixa de até '+d.limite+'%. Veja no Plano de Ação (Seção 8, abaixo) o que fazer para reorganizar isso primeiro.</div>';
+  } else {
+    alerta = '<div class="alerta-tela alerta-tela-ok">✓ Seus três grupos de gastos estão dentro da faixa saudável — uma base já organizada para os próximos passos.</div>';
+  }
+
+  return '<div class="ref-box"><div class="ref-box-titulo">O que está fora do recomendado — e o que fazer</div>' + linhas + alerta + '</div>';
+}
+
+function exibirResultado() {
+  mostrarBonusVIP();
+  var r = calcularResumoFinanceiro();
+  var scoreCor = corPorScore(r.score);
+  var scoreLabel = labelPorScore(r.score);
+  var iconesSecao = {'1':'📊','2':'🧠','3':'🧮','4':'🔍','5':'💭','6':'👁️','7':'🔮','8':'🗺️','9':'✉️'};
+  var secoes = parseSecoesDiagnostico(D.diagnostico || '');
+
+  var accordionHtml = secoes.map(function(s, idx){
+    if (!s.titulo) {
+      return '<div class="accordion-body aberto" style="border:none;padding:0 0 16px">' + s.paragrafos.map(function(p){ return '<p>'+p.replace(/\n/g,'<br>')+'</p>'; }).join('') + '</div>';
+    }
+    var icone = iconesSecao[s.numero] || '▸';
+    var corpoId = 'acc-body-'+idx;
+    var setaId = 'acc-seta-'+idx;
+    var corpo = s.paragrafos.map(function(p){ return '<p>'+p.replace(/\n/g,'<br>')+'</p>'; }).join('');
+    return '<div class="accordion-item">' +
+      '<div class="accordion-header" onclick="toggleAccordion(\''+corpoId+'\',\''+setaId+'\')">' +
+        '<span class="accordion-icone">'+icone+'</span>' +
+        '<span class="accordion-titulo">Seção '+s.numero+' — '+s.titulo+'</span>' +
+        '<span class="accordion-seta" id="'+setaId+'">▾</span>' +
+      '</div>' +
+      '<div class="accordion-body" id="'+corpoId+'">'+corpo+'</div>' +
+    '</div>';
+  }).join('');
+
+  var totalBarra = r.totalGeral > 0 ? r.totalGeral : 1;
+  var pctF = (r.despesasFixas/totalBarra*100);
+  var pctV = (r.despesasVariaveis/totalBarra*100);
+  var pctD = (r.dividasTotal/totalBarra*100);
+  var barraTela = '<div class="barra-tela"><div style="width:'+pctF+'%;background:#7c6fd4"></div><div style="width:'+pctV+'%;background:#c9a84a"></div><div style="width:'+pctD+'%;background:#e05d5d"></div></div>' +
+    '<div class="legenda-tela">' +
+      '<span><span class="legenda-cor-tela" style="background:#7c6fd4"></span>Despesas Fixas '+pctF.toFixed(0)+'%</span>' +
+      '<span><span class="legenda-cor-tela" style="background:#c9a84a"></span>Despesas Variáveis '+pctV.toFixed(0)+'%</span>' +
+      '<span><span class="legenda-cor-tela" style="background:#e05d5d"></span>Dívidas e Compromissos '+pctD.toFixed(0)+'%</span>' +
+    '</div>';
+
+  var scoreHtml = r.score !== null ? '<div class="score-box-tela" style="border-left-color:'+scoreCor+'"><div class="score-num-tela" style="color:'+scoreCor+'">'+r.score+'</div><div><div class="score-label-tela">'+scoreLabel+'</div><div class="score-sub-tela">Nota de saúde financeira (0-100)</div></div></div>' : '';
+
+  var dataHoje = new Date().toLocaleDateString('pt-BR');
+  var tela = document.getElementById('tela');
+  tela.innerHTML = '';
+
+  var cardR = document.createElement('div');
+  cardR.className = 'resultado-card';
+  cardR.innerHTML = '<div class="resultado-header"><div class="resultado-brand">Matias Valente</div><div class="resultado-data">Gerado em '+dataHoje+'<br>Documento confidencial</div></div><div class="resultado-titulo">Análise completa exclusiva</div><div class="resultado-nome">Sua análise está pronta</div>' +
+    scoreHtml + barraTela +
+    montarReferenciasTela(r) +
+    '<div class="pdf-aviso"><div class="pdf-aviso-txt">📄 Este é um resumo visual. Logo abaixo está sua análise completa, incluindo o diagnóstico do seu perfil comportamental e emocional. O PDF traz essa mesma análise em formato para impressão, com gráficos adicionais.</div><button class="pdf-aviso-btn" onclick="gerarPDF()">Baixar PDF</button></div>' +
+    accordionHtml +
+    '<div class="resultado-fechamento"><p>Essa análise foi feita com matemática fria, não para te agradar — para te mostrar a real dimensão da sua situação. Pode não ser o que você esperava ouvir, mas é o ponto de partida mais honesto que você pode ter agora.</p><p>Mudar de verdade exige esforço, e não existe atalho para isso. Mas cada ajuste, por menor que pareça, já é um passo real na direção certa. O caminho é difícil, mas percorrível — e você não precisa fazer tudo de uma vez.</p></div>' +
+    '<div class="resultado-assinatura">— Matias Valente</div>';
+  tela.appendChild(cardR);
+
+  var cardA = document.createElement('div');
+  cardA.className = 'oferta-card';
+  cardA.innerHTML = '<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Quer colocar o plano em prática?</div><div style="font-size:15px;color:#c2bfe0;line-height:1.8;margin-bottom:20px">Você já recebeu sua análise completa. Com o livro digital "O Número da Paz" e a planilha de controle financeiro, você tem as ferramentas certas pra transformar esse diagnóstico em rotina.</div>';
+
+  if (!isVIP) {
+    var b1 = document.createElement('button');
+    b1.className = 'btn-compra btn-n3';
+    b1.textContent = 'Livro "O Número da Paz" + Planilha Financeira Completa — R$ 30';
+    b1.onclick = function(){ window.open('https://pay.kiwify.com.br/A3Dxdgl','_blank'); };
+    cardA.appendChild(b1);
+  }
+
+  var b3 = document.createElement('button');
+  b3.className = 'btn-skip';
+  b3.textContent = 'Já estou satisfeito com esta análise';
+  b3.onclick = fecharOferta;
+  cardA.appendChild(b3);
+
+  tela.appendChild(cardA);
+
+  var rodape = document.createElement('p');
+  rodape.className = 'rodape';
+  rodape.innerHTML = 'Análise gerada de forma exclusiva e confidencial.<br><span class="privacidade-link" onclick="togglePrivacidade(\'privacidade-resultado-n2\')">🔒 Página segura — como cuidamos dos seus dados</span><div id="privacidade-resultado-n2" class="privacidade-info">Suas respostas são usadas apenas para gerar sua análise. <a href="privacidade.html" style="color:#8b7cf6">Política de Privacidade</a> · <a href="termos-de-uso.html" style="color:#8b7cf6">Termos de Uso</a> · <a href="reembolso.html" style="color:#8b7cf6">Reembolso</a></div>';
+  tela.appendChild(rodape);
+}
+
+function montarTabelaReferencias(r) {
+  var grupos = [
+    {nome:'Despesas Fixas', valor:r.despesasFixas, limite:45, desc:'Moradia, saúde, educação, seguros, assinaturas'},
+    {nome:'Despesas Variáveis', valor:r.despesasVariaveis, limite:25, desc:'Alimentação, transporte, lazer'},
+    {nome:'Dívidas e Compromissos', valor:r.dividasTotal, limite:30, desc:'Empréstimos, financiamentos, cartão, cheque especial'}
+  ];
+  var linhas = '';
+  var desenquadrados = [];
+  grupos.forEach(function(gr){
+    var pct = r.rendaTotal > 0 ? (gr.valor / r.rendaTotal * 100) : 0;
+    var dentro = pct <= gr.limite;
+    if (!dentro) desenquadrados.push({nome:gr.nome, pct:pct, limite:gr.limite});
+    var status = dentro ? '<span style="color:#2e9e4f;font-weight:bold">✓ Dentro da faixa</span>' : '<span style="color:#c23838;font-weight:bold">⚠ Acima da faixa</span>';
+    linhas += '<tr><td><strong>'+gr.nome+'</strong><br><span style="font-size:11px;color:#8080a0">'+gr.desc+'</span></td><td>'+pct.toFixed(0)+'%</td><td>até '+gr.limite+'%</td><td>'+status+'</td></tr>';
+  });
+
+  var orientacao = '';
+  if (desenquadrados.length) {
+    var d = desenquadrados[0];
+    orientacao = '<div class="alerta alerta-atencao" style="margin-top:14px;margin-bottom:0">⚠ <strong>'+d.nome+'</strong> está em '+d.pct.toFixed(0)+'% da sua renda, acima da faixa de até '+d.limite+'%. Esse é o ponto de maior atenção — veja o Plano de Ação mais adiante para saber por onde começar.</div>';
+  } else {
+    orientacao = '<div class="alerta" style="background:#eafaf0;color:#2e9e4f;border-left:5px solid #4ade80;margin-top:14px;margin-bottom:0">✓ Seus três grupos de gastos estão dentro da faixa saudável — uma base já organizada para os próximos passos.</div>';
+  }
+
+  return '<div class="chart-box"><div class="chart-titulo">Como avaliamos sua distribuição de renda</div>' +
+    '<div style="font-size:13px;color:#555;margin-bottom:14px;font-family:\'Segoe UI\',Arial,sans-serif;line-height:1.6">Esta referência foi adaptada para o momento de reorganização financeira — o objetivo aqui não é sobrar dinheiro para investir agora, é reduzir o peso das dívidas até uma faixa administrável. Reserva e investimento entram depois que os compromissos estiverem sob controle.</div>' +
+    '<table class="dividas-tabela"><thead><tr><th>Grupo</th><th>Seu %</th><th>Faixa saudável</th><th>Situação</th></tr></thead><tbody>'+linhas+'</tbody></table>' +
+    orientacao +
+    '</div>';
+}
+
+function gerarPDF() {
+  var dataHoje = new Date().toLocaleDateString('pt-BR');
+  var r = calcularResumoFinanceiro();
+  var scoreCor = corPorScore(r.score);
+  var scoreLabel = labelPorScore(r.score);
+
+  var iconesSecao = {'1':'📊','2':'🧠','3':'🧮','4':'🔍','5':'💭','6':'👁️','7':'🔮','8':'🗺️','9':'✉️'};
+  var secoes = parseSecoesDiagnostico(D.diagnostico || '');
+  var secoesHtml = secoes.map(function(s){
+    var icone = iconesSecao[s.numero] || '▸';
+    var tituloHtml = s.titulo ? '<div class="sec-titulo"><span class="sec-icone">'+icone+'</span>'+s.titulo+'</div>' : '';
+    var corpoHtml = s.paragrafos.map(function(p){ return '<p>'+p.replace(/\n/g,'<br>')+'</p>'; }).join('');
+    return '<div class="secao-bloco">'+tituloHtml+corpoHtml+'</div>';
+  }).join('');
+
+  var totalBarra = r.totalGeral > 0 ? r.totalGeral : 1;
+  var pctF = (r.despesasFixas/totalBarra*100).toFixed(1);
+  var pctV = (r.despesasVariaveis/totalBarra*100).toFixed(1);
+  var pctD = (r.dividasTotal/totalBarra*100).toFixed(1);
+  var barraEmpilhada = '<svg width="100%" height="36" viewBox="0 0 600 36" style="display:block">' +
+    '<rect x="0" y="0" width="'+(600*pctF/100)+'" height="36" fill="#7c6fd4"/>' +
+    '<rect x="'+(600*pctF/100)+'" y="0" width="'+(600*pctV/100)+'" height="36" fill="#c9a84a"/>' +
+    '<rect x="'+(600*(parseFloat(pctF)+parseFloat(pctV))/100)+'" y="0" width="'+(600*pctD/100)+'" height="36" fill="#e05d5d"/>' +
+    '</svg>';
+
+  var maxComp = Math.max(r.rendaTotal, r.totalGeral, 1);
+  var largRenda = (r.rendaTotal/maxComp*100).toFixed(1);
+  var largDespesa = (r.totalGeral/maxComp*100).toFixed(1);
+
+  var alertaHtml = '';
+  if (r.saldo < 0) {
+    alertaHtml = '<div class="alerta alerta-critico">⚠ Déficit mensal de '+formatarReal(Math.abs(r.saldo))+' — os compromissos superam a renda informada.</div>';
+  } else if (r.percentualDividas > 30) {
+    alertaHtml = '<div class="alerta alerta-atencao">⚠ '+r.percentualDividas.toFixed(0)+'% da renda está comprometida com dívidas — acima do recomendado (até 30%).</div>';
+  }
+
+  var html = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Análise Financeira — Matias Valente</title><style>' +
+    '@page{size:A4;margin:2cm 1.8cm}' +
+    '*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+    'body{font-family:"Georgia","Times New Roman",serif;color:#20202e;font-size:15.5px;line-height:1.85}' +
+    '.header{border-bottom:3px solid #7c6fd4;padding-bottom:20px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end}' +
+    '.h-nome{font-family:"Segoe UI",Arial,sans-serif;font-size:27px;font-weight:bold;color:#7c6fd4;letter-spacing:3px}' +
+    '.h-data{font-family:"Segoe UI",Arial,sans-serif;font-size:12.5px;color:#7d7a95;text-align:right;line-height:1.5}' +
+    '.titulo-doc{font-family:"Segoe UI",Arial,sans-serif;font-size:23px;font-weight:bold;margin-bottom:6px;color:#1a1a2e}' +
+    '.sub-doc{font-size:16px;color:#7c6fd4;margin-bottom:26px;font-style:italic}' +
+    '.resumo-titulo{font-family:"Segoe UI",Arial,sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#7c6fd4;margin-bottom:14px;font-weight:bold}' +
+    '.score-box{display:flex;align-items:center;gap:24px;background:#f7f6ff;border-radius:12px;padding:22px 26px;margin-bottom:22px;border-left:6px solid '+scoreCor+'}' +
+    '.score-num{font-family:"Segoe UI",Arial,sans-serif;font-size:48px;font-weight:bold;color:'+scoreCor+'}' +
+    '.score-label{font-family:"Segoe UI",Arial,sans-serif;font-size:17px;font-weight:bold;color:#2a2a3a}' +
+    '.score-sub{font-family:"Segoe UI",Arial,sans-serif;font-size:13px;color:#7d7a95;margin-top:2px}' +
+    '.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:24px}' +
+    '.stat-card{background:#f8f8fc;border-radius:10px;padding:16px 12px;text-align:center;border:1px solid #ececf5}' +
+    '.stat-label{font-family:"Segoe UI",Arial,sans-serif;font-size:10.5px;color:#7d7a95;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;line-height:1.3}' +
+    '.stat-val{font-family:"Segoe UI",Arial,sans-serif;font-size:19px;font-weight:bold;color:#2a2a4a}' +
+    '.chart-box{background:#fafafe;border-radius:10px;padding:20px 22px;margin-bottom:18px;border:1px solid #ececf5;page-break-inside:avoid}' +
+    '.chart-titulo{font-family:"Segoe UI",Arial,sans-serif;font-size:13px;font-weight:bold;color:#555;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px}' +
+    '.legenda{display:flex;gap:22px;margin-top:14px;flex-wrap:wrap}' +
+    '.legenda-item{display:flex;align-items:center;gap:7px;font-family:"Segoe UI",Arial,sans-serif;font-size:12.5px;color:#444}' +
+    '.legenda-cor{width:12px;height:12px;border-radius:3px;display:inline-block;flex-shrink:0}' +
+    '.comp-linha{display:flex;align-items:center;gap:12px;margin-bottom:12px}' +
+    '.comp-label{width:100px;font-family:"Segoe UI",Arial,sans-serif;font-size:13px;color:#444;flex-shrink:0}' +
+    '.comp-barra-wrap{flex:1;background:#ececf5;border-radius:5px;overflow:hidden;height:24px}' +
+    '.comp-barra{height:24px;border-radius:5px}' +
+    '.comp-valor{width:110px;text-align:right;font-family:"Segoe UI",Arial,sans-serif;font-size:13.5px;font-weight:bold;flex-shrink:0}' +
+    '.alerta{font-family:"Segoe UI",Arial,sans-serif;padding:14px 18px;border-radius:10px;font-size:13.5px;font-weight:600;margin-bottom:22px;line-height:1.5}' +
+    '.alerta-critico{background:#fdecec;color:#c23838;border-left:5px solid #e05d5d}' +
+    '.alerta-atencao{background:#fdf4e3;color:#8a5a12;border-left:5px solid #d4b23c}' +
+    '.secao-bloco{margin-bottom:22px;page-break-inside:avoid}' +
+    '.sec-titulo{font-family:"Segoe UI",Arial,sans-serif;font-size:15px;font-weight:bold;color:#7c6fd4;text-transform:uppercase;letter-spacing:1px;border-bottom:1.5px solid #e0e0f0;padding-bottom:8px;margin-bottom:12px;display:flex;align-items:center;gap:9px}' +
+    '.sec-icone{font-size:18px}' +
+    '.secao-bloco p{margin-bottom:13px;text-align:justify;font-size:15px;line-height:1.85}' +
+    '.dividas-tabela{width:100%;border-collapse:collapse;margin-bottom:22px;font-family:"Segoe UI",Arial,sans-serif;font-size:13px}' +
+    '.dividas-tabela th{background:#7c6fd4;color:#fff;text-align:left;padding:10px 12px;font-size:11.5px;text-transform:uppercase;letter-spacing:0.4px}' +
+    '.dividas-tabela td{padding:9px 12px;border-bottom:1px solid #ececf5}' +
+    '.dividas-tabela tr:nth-child(even) td{background:#f8f8fc}' +
+    '.objetivo-box{background:#f0eeff;border-left:5px solid #7c6fd4;padding:16px 20px;border-radius:0 10px 10px 0;margin:18px 0 26px;font-size:14.5px}' +
+    '.footer{margin-top:36px;padding-top:18px;border-top:2px solid #7c6fd4;display:flex;justify-content:space-between;align-items:center}' +
+    '.f-nome{font-family:"Segoe UI",Arial,sans-serif;font-size:16px;font-weight:bold;color:#7c6fd4;font-style:italic}' +
+    '.f-aviso{font-family:"Segoe UI",Arial,sans-serif;font-size:11px;color:#a0a0c0;text-align:right;line-height:1.5}' +
+    '</style></head><body>' +
+
+    '<div class="header"><div><div class="h-nome">MATIAS VALENTE</div></div><div class="h-data">Gerado em: '+dataHoje+'<br>Documento confidencial</div></div>' +
+    '<div class="titulo-doc">Relatório de Análise Financeira Completa</div><div class="sub-doc">Diagnóstico exclusivo e personalizado</div>' +
+
+    (r.score !== null ? '<div class="score-box"><div class="score-num">'+r.score+'</div><div><div class="score-label">'+scoreLabel+'</div><div class="score-sub">Nota de saúde financeira (0-100)</div></div></div>' : '') +
+
+    alertaHtml +
+
+    '<div class="resumo-titulo">Resumo financeiro do mês</div>' +
+    '<div class="stats-grid">' +
+      '<div class="stat-card"><div class="stat-label">Renda total</div><div class="stat-val">'+formatarReal(r.rendaTotal)+'</div></div>' +
+      '<div class="stat-card"><div class="stat-label">Despesas totais</div><div class="stat-val">'+formatarReal(r.totalGeral)+'</div></div>' +
+      '<div class="stat-card"><div class="stat-label">'+(r.saldo>=0?'Sobra mensal':'Déficit mensal')+'</div><div class="stat-val" style="color:'+(r.saldo>=0?'#2e9e4f':'#c23838')+'">'+formatarReal(Math.abs(r.saldo))+'</div></div>' +
+      '<div class="stat-card"><div class="stat-label">% renda em dívidas</div><div class="stat-val" style="color:'+(r.percentualDividas>30?'#c23838':'#2a2a4a')+'">'+r.percentualDividas.toFixed(0)+'%</div></div>' +
+    '</div>' +
+
+    '<div class="chart-box"><div class="chart-titulo">Para onde vai sua renda</div>' + barraEmpilhada +
+    '<div class="legenda">' +
+      '<div class="legenda-item"><span class="legenda-cor" style="background:#7c6fd4"></span>Despesas fixas — '+formatarReal(r.despesasFixas)+' ('+pctF+'%)</div>' +
+      '<div class="legenda-item"><span class="legenda-cor" style="background:#c9a84a"></span>Despesas variáveis — '+formatarReal(r.despesasVariaveis)+' ('+pctV+'%)</div>' +
+      '<div class="legenda-item"><span class="legenda-cor" style="background:#e05d5d"></span>Dívidas e compromissos — '+formatarReal(r.dividasTotal)+' ('+pctD+'%)</div>' +
+    '</div></div>' +
+
+    '<div class="chart-box"><div class="chart-titulo">Renda vs. compromissos totais</div>' +
+      '<div class="comp-linha"><div class="comp-label">Renda</div><div class="comp-barra-wrap"><div class="comp-barra" style="width:'+largRenda+'%;background:#4ade80"></div></div><div class="comp-valor">'+formatarReal(r.rendaTotal)+'</div></div>' +
+      '<div class="comp-linha"><div class="comp-label">Compromissos</div><div class="comp-barra-wrap"><div class="comp-barra" style="width:'+largDespesa+'%;background:'+(r.saldo<0?'#e05d5d':'#7c6fd4')+'"></div></div><div class="comp-valor">'+formatarReal(r.totalGeral)+'</div></div>' +
+    '</div>' +
+
+    montarTabelaReferencias(r) +
+
+    (formatarDividas() !== 'Não informado' ? montarTabelaDividas() : '') +
+
+    secoesHtml +
+
+    (D.objetivo_12meses ? '<div class="objetivo-box"><strong>Objetivo declarado:</strong> '+D.objetivo_12meses+'</div>' : '') +
+
+    '<div class="footer"><div class="f-nome">— Matias Valente</div><div class="f-aviso">Relatório gerado de forma exclusiva e anônima.<br>Nenhum dado pessoal é armazenado.</div></div>' +
+    '</body></html>';
+
+  var janela = window.open('','_blank');
+  janela.document.write(html);
+  janela.document.close();
+  setTimeout(function(){ janela.print(); }, 800);
+}
+
+function montarTabelaDividas() {
+  var linhas = '';
+  (D.dividas||[]).forEach(function(d){
+    if (d.tipo) linhas += '<tr><td>'+d.tipo+'</td><td>'+(d.total?formatarReal(parseValorNumerico(d.total)):'—')+'</td><td>'+(d.parcela?formatarReal(parseValorNumerico(d.parcela)):'—')+'</td></tr>';
+  });
+  (D.emprestimos||[]).forEach(function(e){
+    if (e.credor) linhas += '<tr><td>'+e.credor+'</td><td>'+(e.total?formatarReal(parseValorNumerico(e.total)):'—')+'</td><td>'+(e.parcela?formatarReal(parseValorNumerico(e.parcela)):'—')+'</td></tr>';
+  });
+  (D.renegociacoes||[]).forEach(function(r){
+    if (r.credor) linhas += '<tr><td>'+r.credor+' (renegociado)</td><td>—</td><td>'+(r.parcela?formatarReal(parseValorNumerico(r.parcela)):'—')+'</td></tr>';
+  });
+  if (!linhas) return '';
+  return '<div class="resumo-titulo" style="margin-top:6px">Detalhamento de dívidas</div>' +
+    '<table class="dividas-tabela"><thead><tr><th>Dívida / Credor</th><th>Saldo devedor</th><th>Parcela mensal</th></tr></thead><tbody>'+linhas+'</tbody></table>';
+}
+
+function fecharOferta() {
+  var cards = document.querySelectorAll('.oferta-card');
+  if (cards.length) cards[0].innerHTML = '<p style="font-size:16px;font-weight:600;color:#fff;margin-bottom:10px">Sua análise ficará aqui para consulta.</p><p style="font-size:15px;color:#c2bfe0;line-height:1.7">Quando quiser dar o próximo passo, o canal do Matias Valente continua te ajudando de graça.</p><p style="font-size:15px;color:#d9c48a;margin-top:14px;font-style:italic">— Matias Valente</p>';
+}
+</script>
+</body>
+</html>
