@@ -261,8 +261,11 @@ function exibir(){
   prog(100);
   const saud = S.nome ? S.nome+', sua análise está pronta' : 'Sua análise está pronta';
 
+  // CORRIGIDO: captura só o nome exato de um dos 6 arquétipos válidos,
+  // ignorando qualquer texto extra (ex: menção à geração sanduíche) que
+  // a IA eventualmente emende na mesma frase.
   let arquetipo = '';
-  const match = S.diagnostico.match(/Seu perfil financeiro é o de\s+([^.,\n]+)/i);
+  const match = S.diagnostico.match(/Seu perfil financeiro é o de\s+(?:um |uma )?(Trabalhador Exausto|Apagador de Incêndios|Parcelador|Sobrevivente|Quase Organizado|Cuidador)/i);
   if(match) arquetipo = match[1].trim();
 
   const transicaoTexto = arquetipo
