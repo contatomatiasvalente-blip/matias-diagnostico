@@ -36,7 +36,9 @@ body{background:#0f0f1a;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFo
 .dot:nth-child(2){animation-delay:.2s}
 .dot:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
-.diagnostico{font-size:16px;line-height:1.85;color:#e6e4fa;white-space:pre-wrap}
+.diagnostico{font-size:16px;line-height:1.85;color:#e6e4fa}
+.diagnostico-bloco{background:#181832;border-left:3px solid #6f66a8;border-radius:8px;padding:16px 18px;margin-bottom:12px}
+.diagnostico-bloco:last-child{margin-bottom:0}
 .transicao{font-size:15px;line-height:1.75;color:#d9c48a;font-style:italic;border-top:1px solid #2a2a4a;padding-top:18px;margin-top:20px}
 .loading-msg{transition:opacity .4s ease;opacity:1}
 .loading-msg.fade{opacity:0}
@@ -267,11 +269,14 @@ function exibir(){
     ? `Você já sabe que é o <strong>${arquetipo}</strong>. Isso já é a primeira peça do quebra-cabeça — mas sozinha, ela não muda nada. Um estudo financeiro mais profundo é o que transforma esse padrão em direção real, em vez de ele continuar se repetindo. É justamente isso que vem a seguir: entender esse padrão a fundo e saber exatamente o que fazer com ele.`
     : `O que você acabou de ler é verdadeiro, mas é só a superfície. Um estudo financeiro mais profundo é o que revela o que está por trás desse padrão, para que ele pare de se repetir. É justamente isso que vem a seguir: entender esse padrão a fundo e saber exatamente o que fazer com ele.`;
 
+  const paragrafosDiagnostico = S.diagnostico.split(/\n\n+/).filter(p => p.trim());
+  const diagnosticoHtml = paragrafosDiagnostico.map(p => `<div class="diagnostico-bloco">${p.trim()}</div>`).join('');
+
   document.getElementById('tela').innerHTML = `
     <div class="card">
       <div class="step-label">Análise exclusiva — simplificada</div>
       <div class="step-title">${saud}</div>
-      <div style="margin-top:16px" class="diagnostico">${S.diagnostico}</div>
+      <div style="margin-top:16px" class="diagnostico">${diagnosticoHtml}</div>
       <div class="transicao">${transicaoTexto}</div>
     </div>
 
