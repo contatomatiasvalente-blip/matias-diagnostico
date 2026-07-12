@@ -1091,6 +1091,11 @@ function exibirResultado() {
     '<div class="resultado-assinatura">— Matias Valente</div>';
   tela.appendChild(cardR);
 
+  var cardSuporte = document.createElement('div');
+  cardSuporte.className = 'resultado-card';
+  cardSuporte.innerHTML = montarSuporteBox(false);
+  tela.appendChild(cardSuporte);
+
   var cardA = document.createElement('div');
   cardA.className = 'oferta-card';
   cardA.innerHTML = '<div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Quer colocar o plano em prática?</div><div style="font-size:15px;color:#c2bfe0;line-height:1.8;margin-bottom:20px">Você já recebeu sua análise completa. Com o livro digital "O Número da Paz" e a planilha de controle financeiro, você tem as ferramentas certas pra transformar esse diagnóstico em rotina.</div>';
@@ -1146,6 +1151,60 @@ function montarTabelaReferencias(r) {
     '<table class="dividas-tabela"><thead><tr><th>Grupo</th><th>Seu %</th><th>Faixa saudável</th><th>Situação</th></tr></thead><tbody>'+linhas+'</tbody></table>' +
     orientacao +
     '</div>';
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, function(c) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+  });
+}
+
+function montarRespostasCompletas() {
+  var labels = {
+    renda_liquida: 'Renda mensal líquida', renda_extra_familiar: 'Renda extra familiar', outras_rendas: 'Outras rendas', renda_estavel: 'Estabilidade da renda',
+    moradia: 'Moradia (aluguel)', condominio: 'Condomínio', iptu: 'IPTU', contas_consumo: 'Contas de consumo',
+    transporte: 'Transporte', alimentacao: 'Alimentação', saude: 'Saúde', educacao: 'Educação',
+    gastos_ocultos: 'Gastos ocultos', dividas: 'Dívidas', renegociacoes: 'Renegociações', emprestimos: 'Empréstimos/financiamentos',
+    cheque_especial: 'Cheque especial', divida_mais_pesada: 'Dívida mais pesada', nome_negativado: 'Nome negativado', tentou_negociar: 'Já tentou renegociar',
+    decisao_compra: 'Decisão de compra', cartao_gestao: 'Uso do cartão', fatura_media: 'Outras compras no cartão', parcelas_comprometidas: 'Parcelas futuras comprometidas',
+    habito_poupar: 'Hábito de poupar', sobra_dinheiro: 'Quando sobra dinheiro',
+    sentimento_financas: 'Sentimento sobre finanças', nivel_stress: 'Nível de estresse (1-10)', evento_vida: 'O que ouvia sobre dinheiro', evita_contas: 'Evita olhar contas', dinheiro_relacionamentos: 'Afeta relacionamentos',
+    dependentes: 'Dependentes', compartilha_despesas: 'Compartilha despesas', familia_dinheiro: 'Relação familiar com dinheiro', estado_civil: 'Estado civil', dependentes_numero: 'Número de dependentes', renda_terceiros: 'Renda destinada a terceiros',
+    reserva_emergencia: 'Reserva de emergência', capacidade_imprevisto: 'Capacidade p/ imprevisto', objetivo_12meses: 'Objetivo em 12 meses', sucesso_financeiro: 'Sucesso financeiro', por_que_agora: 'Por que agora', impedimento: 'O que impede'
+  };
+  var valores = {
+    renda_liquida: D.renda_liquida, renda_extra_familiar: D.renda_extra_familiar, outras_rendas: D.outras_rendas, renda_estavel: D.renda_estavel,
+    moradia: D.moradia, condominio: D.condominio, iptu: D.iptu, contas_consumo: D.contas_consumo,
+    transporte: D.transporte, alimentacao: D.alimentacao, saude: D.saude, educacao: D.educacao,
+    gastos_ocultos: D.gastos_ocultos, dividas: formatarDividas(), renegociacoes: formatarRenegociacoes(), emprestimos: formatarEmprestimos(),
+    cheque_especial: D.cheque_especial, divida_mais_pesada: D.divida_mais_pesada, nome_negativado: D.nome_negativado, tentou_negociar: D.tentou_negociar,
+    decisao_compra: D.decisao_compra, cartao_gestao: D.cartao_gestao, fatura_media: D.fatura_media, parcelas_comprometidas: D.parcelas_comprometidas,
+    habito_poupar: D.habito_poupar, sobra_dinheiro: D.sobra_dinheiro,
+    sentimento_financas: D.sentimento_financas, nivel_stress: D.nivel_stress, evento_vida: D.evento_vida, evita_contas: D.evita_contas, dinheiro_relacionamentos: D.dinheiro_relacionamentos,
+    dependentes: D.dependentes, compartilha_despesas: D.compartilha_despesas, familia_dinheiro: D.familia_dinheiro, estado_civil: D.estado_civil, dependentes_numero: D.dependentes_numero, renda_terceiros: D.renda_terceiros,
+    reserva_emergencia: D.reserva_emergencia, capacidade_imprevisto: D.capacidade_imprevisto, objetivo_12meses: D.objetivo_12meses, sucesso_financeiro: D.sucesso_financeiro, por_que_agora: D.por_que_agora, impedimento: D.impedimento
+  };
+  var linhas = '';
+  for (var key in labels) {
+    var v = valores[key];
+    if (v === undefined || v === null || v === '') continue;
+    linhas += '<tr><td style="width:38%"><strong>'+escapeHtml(labels[key])+'</strong></td><td>'+escapeHtml(v)+'</td></tr>';
+  }
+  return '<div class="resumo-titulo" style="margin-top:36px">Anexo — Suas Respostas Completas</div>' +
+    '<div style="font-size:12.5px;color:#666;margin-bottom:14px;font-family:\'Segoe UI\',Arial,sans-serif">Use este anexo como referência caso queira esclarecer alguma dúvida sobre um número específico desta análise com nosso suporte.</div>' +
+    '<table class="dividas-tabela"><tbody>'+linhas+'</tbody></table>';
+}
+
+function montarSuporteBox(paraPdf) {
+  var msg = encodeURIComponent('Olá! Fiz minha Análise Financeira Completa com o Matias Valente e tenho uma dúvida sobre um dos resultados.');
+  var link = 'https://wa.me/5521972896024?text=' + msg;
+  if (paraPdf) {
+    return '<div class="resumo-titulo" style="margin-top:30px">Dúvidas sobre esta análise?</div>' +
+      '<div style="font-size:14px;color:#333;font-family:\'Segoe UI\',Arial,sans-serif;line-height:1.6;margin-bottom:20px">Se algum número ou informação desta análise não bater com o que você preencheu, fale com nosso suporte pelo WhatsApp: <strong>(21) 97289-6024</strong>. Tenha este PDF em mãos (com o anexo de respostas acima) para agilizar o atendimento.</div>';
+  }
+  return '<div class="ref-box"><div class="ref-box-titulo">Alguma dúvida sobre os números desta análise?</div>' +
+    '<div style="font-size:14px;color:#c2bfe0;line-height:1.7;margin-bottom:14px">Se algo não bater com o que você respondeu, fale com nosso suporte — é rápido.</div>' +
+    '<a href="'+link+'" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;text-decoration:none;padding:13px 18px;border-radius:10px;font-weight:600;font-size:15px">📱 Falar no WhatsApp — (21) 97289-6024</a></div>';
 }
 
 function gerarPDF() {
@@ -1263,6 +1322,9 @@ function gerarPDF() {
     secoesHtml +
 
     (D.objetivo_12meses ? '<div class="objetivo-box"><strong>Objetivo declarado:</strong> '+D.objetivo_12meses+'</div>' : '') +
+
+    montarSuporteBox(true) +
+    montarRespostasCompletas() +
 
     '<div class="footer"><div class="f-nome">— Matias Valente</div><div class="f-aviso">Relatório gerado de forma exclusiva e anônima.<br>Nenhum dado pessoal é armazenado.</div></div>' +
     '</body></html>';
