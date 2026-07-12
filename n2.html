@@ -233,8 +233,17 @@ function montarRespostasAcordeaoTela() {
       '<span class="accordion-titulo">Ver minhas respostas (' + total + ')</span>' +
       '<span class="accordion-seta" id="acc-respostas-seta">▾</span>' +
     '</div>' +
-    '<div class="accordion-body" id="acc-respostas-body" style="padding:0 18px">' + linhas + '</div>' +
+    '<div class="accordion-body" id="acc-respostas-body" style="padding:0 18px">' + linhas +
+      '<button class="btn btn-outline" style="margin:16px 0 4px" onclick="editarRespostas()">✏️ Editar minhas respostas</button>' +
+    '</div>' +
   '</div>';
+}
+
+function editarRespostas() {
+  blocoAtual = 1;
+  esconderBonusVIP();
+  render();
+  window.scrollTo(0, 0);
 }
 
 function toggleAccordion(corpoId, setaId) {
