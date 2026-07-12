@@ -1242,14 +1242,14 @@ function montarRespostasCompletas() {
 }
 
 function montarSuporteBox(paraPdf) {
-  var msg = encodeURIComponent('Olá! Fiz minha Análise Financeira Completa com o Matias Valente e tenho uma dúvida sobre um dos resultados.');
+  var msg = encodeURIComponent('Olá! Estou enviando o PDF da minha Análise Financeira Completa feita com o Matias Valente, pois identifiquei uma dúvida sobre um dos resultados apresentados.');
   var link = 'https://wa.me/5521972896024?text=' + msg;
   if (paraPdf) {
-    return '<div class="resumo-titulo" style="margin-top:30px">Dúvidas sobre esta análise?</div>' +
-      '<div style="font-size:14px;color:#333;font-family:\'Segoe UI\',Arial,sans-serif;line-height:1.6;margin-bottom:20px">Se algum número ou informação desta análise não bater com o que você preencheu, fale com nosso suporte pelo WhatsApp: <strong>(21) 97289-6024</strong>. Tenha este PDF em mãos (com o anexo de respostas acima) para agilizar o atendimento.</div>';
+    return '<div class="resumo-titulo" style="margin-top:30px">Encontrou alguma divergência nesta análise?</div>' +
+      '<div style="font-size:14px;color:#333;font-family:\'Segoe UI\',Arial,sans-serif;line-height:1.7;margin-bottom:20px">Caso identifique alguma informação que não corresponda ao que foi respondido no questionário, nossa equipe de suporte está à disposição para esclarecimentos pelo WhatsApp: <strong>(21) 97289-6024</strong>. Para agilizar o atendimento, é necessário enviar este PDF completo (com o anexo de respostas na página anterior) junto com sua mensagem.</div>';
   }
-  return '<div class="ref-box"><div class="ref-box-titulo">Alguma dúvida sobre os números desta análise?</div>' +
-    '<div style="font-size:14px;color:#c2bfe0;line-height:1.7;margin-bottom:14px">Se algo não bater com o que você respondeu, fale com nosso suporte — é rápido.</div>' +
+  return '<div class="ref-box"><div class="ref-box-titulo">Encontrou alguma divergência nesta análise?</div>' +
+    '<div style="font-size:14px;color:#c2bfe0;line-height:1.7;margin-bottom:14px">Caso identifique alguma informação que não corresponda ao que você respondeu, nossa equipe de suporte está à disposição para esclarecimentos. Baixe o PDF desta análise (botão acima) e envie o arquivo completo junto com sua mensagem — isso agiliza bastante o atendimento.</div>' +
     '<a href="'+link+'" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;text-decoration:none;padding:13px 18px;border-radius:10px;font-weight:600;font-size:15px">📱 Falar no WhatsApp — (21) 97289-6024</a></div>';
 }
 
