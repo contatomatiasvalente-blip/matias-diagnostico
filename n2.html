@@ -999,6 +999,9 @@ function montarReferenciasTela(r) {
 function exibirResultado() {
   mostrarBonusVIP();
   var r = calcularResumoFinanceiro();
+  try {
+    localStorage.setItem('matias_ultima_analise', JSON.stringify({ respostas: D, resumo: r, quando: new Date().toISOString() }));
+  } catch (e) {}
   var scoreCor = corPorScore(r.score);
   var scoreLabel = labelPorScore(r.score);
   var iconesSecao = {'1':'📊','2':'🧠','3':'🧮','4':'🔍','5':'💭','6':'👁️','7':'🔮','8':'🗺️','9':'✉️'};
