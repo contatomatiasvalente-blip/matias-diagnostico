@@ -956,6 +956,7 @@ async function gerarAnalise() {
     saude: D.saude,
     educacao: D.educacao,
     gastos_ocultos: D.gastos_ocultos,
+    gastos_ocultos_detalhado: JSON.stringify(D.gastos_ocultos_map || {}),
     dividas: formatarDividas(),
     renegociacoes: formatarRenegociacoes(),
     emprestimos: formatarEmprestimos(),
