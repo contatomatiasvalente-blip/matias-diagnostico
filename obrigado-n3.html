@@ -16,18 +16,24 @@ body{background:#06060f;color:#f0ede6;font-family:'Inter',sans-serif;min-height:
 .check{width:72px;height:72px;background:rgba(34,197,94,.15);border:2px solid rgba(34,197,94,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;font-size:32px}
 h1{font-size:clamp(22px,4vw,30px);font-weight:700;color:#fff;margin-bottom:12px;line-height:1.2}
 .sub{font-size:16px;color:#c9c5e0;margin-bottom:36px;line-height:1.7}
-.senha-bloco{background:#080814;border:2px solid rgba(107,95,212,.5);border-radius:14px;padding:28px 24px;margin-bottom:28px}
+.senha-bloco{background:#080814;border:2px solid rgba(107,95,212,.5);border-radius:14px;padding:28px 24px;margin-bottom:24px}
 .senha-label{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#c4baff;margin-bottom:12px;font-weight:600}
 .senha-valor{font-size:clamp(22px,7vw,36px);font-weight:700;color:#fff;letter-spacing:clamp(1px,1vw,6px);margin-bottom:16px;font-family:monospace;word-break:break-all}
 .copiar-btn{background:rgba(107,95,212,.25);border:1px solid rgba(107,95,212,.5);color:#d6cfff;padding:10px 24px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
 .copiar-btn:hover{background:rgba(107,95,212,.35);color:#fff}
-.email-aviso{font-size:15px;color:#d6d3ec;margin-bottom:32px;line-height:1.7;background:rgba(255,255,255,.03);border-radius:10px;padding:16px 18px}
+.email-aviso{font-size:15px;color:#d6d3ec;margin-bottom:24px;line-height:1.7;background:rgba(255,255,255,.03);border-radius:10px;padding:16px 18px}
 .email-aviso span{color:#b3a8ff;font-weight:600}
+.bonus-callout{display:flex;align-items:center;gap:14px;background:rgba(197,168,74,.1);border:1.5px solid rgba(201,168,74,.5);border-radius:12px;padding:16px 18px;margin-bottom:28px;text-decoration:none;text-align:left;transition:all .2s}
+.bonus-callout:hover{background:rgba(201,168,74,.18);border-color:rgba(201,168,74,.75)}
+.bonus-callout .icone{font-size:24px;flex-shrink:0}
+.bonus-callout .texto{flex:1;font-size:14.5px;color:#f0ede6;line-height:1.5}
+.bonus-callout .texto strong{color:#e6cd7a}
+.bonus-callout .seta{font-size:18px;color:#e6cd7a;flex-shrink:0}
 .btn-acessar{display:block;background:linear-gradient(135deg,#6b5fd4,#9b8bff);color:#fff;padding:18px 40px;border-radius:10px;font-size:17px;font-weight:700;text-decoration:none;box-shadow:0 8px 32px rgba(107,95,212,.45);transition:all .25s;margin-bottom:16px}
 .btn-acessar:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(107,95,212,.6)}
 .nota{font-size:15px;color:#b8b4d9;margin-bottom:32px}
 
-.bonus-titulo{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#c4baff;margin-bottom:16px;font-weight:600;display:flex;align-items:center;gap:10px}
+.bonus-titulo{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#c4baff;margin-bottom:16px;font-weight:600;display:flex;align-items:center;gap:10px;scroll-margin-top:24px}
 .bonus-titulo::before,.bonus-titulo::after{content:'';flex:1;height:1px;background:rgba(107,95,212,.3)}
 .bonus-grid{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
 .btn-bonus{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.03);border:1px solid rgba(107,95,212,.35);color:#f0ede6;padding:16px 20px;border-radius:12px;text-decoration:none;text-align:left;transition:all .2s}
@@ -60,12 +66,18 @@ h1{font-size:clamp(22px,4vw,30px);font-weight:700;color:#fff;margin-bottom:12px;
     Esta senha também foi enviada para o <span>e-mail informado na compra</span>. Verifique sua caixa de entrada (e o spam, caso não encontre).
   </div>
 
+  <a href="#bonus" class="bonus-callout">
+    <span class="icone">🎁</span>
+    <span class="texto">Você também recebeu <strong>2 bônus exclusivos</strong> — o livro "O Número da Paz" e a planilha de controle financeiro. Estão logo abaixo nesta página.</span>
+    <span class="seta">↓</span>
+  </a>
+
   <a id="link-acessar" href="https://matiasvalente.com.br/n2.html?vip=1" class="btn-acessar">
     Acessar minha análise agora
   </a>
   <p class="nota">Clique no botão acima e use a senha <strong>matias2026</strong> para entrar</p>
 
-  <div class="bonus-titulo">Seus bônus exclusivos</div>
+  <div class="bonus-titulo" id="bonus">Seus bônus exclusivos</div>
   <div class="bonus-grid">
     <a id="link-livro" href="#" class="btn-bonus" download>
       <span class="icone">📖</span>
