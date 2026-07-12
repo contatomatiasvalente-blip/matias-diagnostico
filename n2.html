@@ -926,7 +926,17 @@ function parseSecoesDiagnostico(texto) {
     }
   });
   if (atual) secoes.push(atual);
-  return secoes;
+
+  // Rede de segurança: se a IA repetir uma seção (mesmo número aparecendo mais de uma vez),
+  // mantém só a ÚLTIMA ocorrência de cada número — evita mostrar duplicata pro cliente.
+  var porNumero = {};
+  var ordem = [];
+  secoes.forEach(function(s){
+    var chave = s.numero || ('_sem_numero_' + ordem.length);
+    if (!(chave in porNumero)) ordem.push(chave);
+    porNumero[chave] = s;
+  });
+  return ordem.map(function(chave){ return porNumero[chave]; });
 }
 
 async function gerarAnalise() {
