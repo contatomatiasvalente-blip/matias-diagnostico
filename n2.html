@@ -28,9 +28,13 @@ input[type=text]:focus,input[type=number]:focus,textarea:focus{border-color:#7c6
 input.erro{border-color:#f87171}
 textarea{resize:vertical;min-height:70px;line-height:1.6}
 .linha-estruturada{display:grid;gap:6px;margin-bottom:8px}
+.linha-estruturada.col2{grid-template-columns:1fr 1fr}
 .linha-estruturada.col3{grid-template-columns:2fr 1fr 1fr}
 .linha-estruturada.col4{grid-template-columns:2fr 1fr 1fr 1fr}
 .linha-estruturada input{font-size:12px;padding:10px 12px}
+.linha-cabecalho{font-size:11px;color:#8f89c2;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.categorias-aviso{font-size:13.5px;color:#c2bfe0;line-height:1.7;background:#0d0d1f;border:1px solid #2a2a4a;border-radius:10px;padding:14px 16px;margin-bottom:20px}
+.categorias-aviso strong{color:#d8d5f5}
 .linha-num{font-size:12px;color:#8f89c2;margin-bottom:4px;font-weight:600;letter-spacing:1px}
 .opcoes-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .opcoes-grid.col1{grid-template-columns:1fr}
@@ -224,7 +228,7 @@ var D = {
   dividas:[{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''}],
   renegociacoes:[{credor:'',parcela:'',restantes:''},{credor:'',parcela:'',restantes:''},{credor:'',parcela:'',restantes:''}],
   emprestimos:[{credor:'',total:'',parcela:'',restantes:''},{credor:'',total:'',parcela:'',restantes:''},{credor:'',total:'',parcela:'',restantes:''}],
-  cheque_especial:'', consignado_parcela:'', consignado_restantes:'',
+  cheque_especial:'', cheque_uso:'', cheque_valor_utilizado:'', cheque_limite_total:'', consignado_parcela:'', consignado_restantes:'',
   divida_mais_pesada:'', nome_negativado:'', tentou_negociar:'',
   decisao_compra:'', cartao_gestao:'', fatura_media:'', parcelas_comprometidas:'', habito_poupar:'', sobra_dinheiro:'',
   sentimento_financas:'', nivel_stress:5, evento_vida:'', evita_contas:'', dinheiro_relacionamentos:'',
@@ -241,18 +245,24 @@ function criarOpcoesCheque() {
   [['NaoUso','Não uso'],['Uso','Uso cheque especial']].forEach(function(p) {
     (function(valor, label) {
       var btn = document.createElement('div');
-      btn.className = 'opcao-btn' + (D.cheque_especial === valor ? ' on' : '');
+      btn.className = 'opcao-btn' + (D.cheque_uso === valor ? ' on' : '');
       btn.textContent = label;
       btn.onclick = function() {
-        D.cheque_especial = valor;
+        D.cheque_uso = valor;
         container.querySelectorAll('.opcao-btn').forEach(function(b){b.classList.remove('on');});
         btn.classList.add('on');
         var wrap = document.getElementById('cheque-valor-wrap');
-        if (wrap) wrap.style.display = valor !== 'NaoUso' ? 'block' : 'none';
+        if (wrap) wrap.style.display = valor !== 'NaoUso' ? 'grid' : 'none';
       };
       container.appendChild(btn);
     })(p[0], p[1]);
   });
+  var wrapInicial = document.getElementById('cheque-valor-wrap');
+  if (wrapInicial) wrapInicial.style.display = (D.cheque_uso && D.cheque_uso !== 'NaoUso') ? 'grid' : 'none';
+  var elValor = document.getElementById('q_cheque_valor');
+  var elLimite = document.getElementById('q_cheque_limite');
+  if (elValor) elValor.value = D.cheque_valor_utilizado || '';
+  if (elLimite) elLimite.value = D.cheque_limite_total || '';
 }
 
 function criarOpcoes(containerId, campo, pares) {
@@ -283,10 +293,6 @@ function selOpcao(el, campo, valor) {
   var btns = parent.querySelectorAll('.opcao-btn');
   for (var k=0; k<btns.length; k++) btns[k].classList.remove('on');
   el.classList.add('on');
-  if (campo === 'cheque_especial') {
-    var wrap = document.getElementById('cheque-valor-wrap');
-    if (wrap) wrap.style.display = (valor !== 'NaoUso') ? 'block' : 'none';
-  }
 }
 
 function setProg(pct, label) {
@@ -435,13 +441,27 @@ function render() {
   if (blocoAtual === 3) {
     setProg(42, 'Bloco 3 de 7 — Dívidas');
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 3 de 7</div><div class="bloco-titulo">Dívidas e crédito</div><div class="bloco-sub">Preencha apenas o que se aplica. Deixe em branco o que não tiver.</div>' +
-      '<div class="pergunta"><div class="secao-titulo">Dívidas em atraso ou ativas</div><span class="hint">Preencha a primeira e clique em + para adicionar mais.</span><div id="dividas-wrap">' + gerarLinhaDivida(0) + '</div><button onclick="adicionarDivida()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar dívida</button></div>' +
+      '<div class="categorias-aviso">Este bloco tem 3 categorias diferentes — se não tiver certeza de onde encaixar algo, use este guia:<br><br>' +
+      '<strong>Dívidas em atraso ou ativas</strong> — cartão de crédito, contas atrasadas, dívidas soltas que ainda não têm parcela fixa combinada.<br>' +
+      '<strong>Empréstimos, financiamentos e consórcios</strong> — qualquer coisa com parcela fixa e credor definido: financiamento de imóvel/veículo, empréstimo pessoal, consórcio.<br>' +
+      '<strong>Renegociações</strong> — dívidas antigas que você já renegociou e está pagando em parcelas novas, combinadas com o credor.</div>' +
+      '<div class="pergunta"><div class="secao-titulo">Dívidas em atraso ou ativas</div><span class="hint">Preencha a primeira e clique em + para adicionar mais.</span>' +
+      '<div class="linha-estruturada col3"><span class="linha-cabecalho">Tipo</span><span class="linha-cabecalho">Valor total</span><span class="linha-cabecalho">Parcela/mês</span></div>' +
+      '<div id="dividas-wrap">' + gerarLinhaDivida(0) + '</div><button onclick="adicionarDivida()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar dívida</button></div>' +
       '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="secao-titulo">Cheque especial</div><div id="opcoes-cheque" class="opcoes-grid"></div><div id="cheque-valor-wrap" style="margin-top:8px;display:none"><input type="text" id="q_cheque" placeholder="Valor utilizado: R$ ___ / Limite total: R$ ___" value="" onchange="D.cheque_especial=this.value"></div></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Cheque especial</div><div id="opcoes-cheque" class="opcoes-grid"></div>' +
+      '<div id="cheque-valor-wrap" class="linha-estruturada col2" style="margin-top:10px;display:none">' +
+      '<div><span class="linha-cabecalho">Valor utilizado (R$)</span><input type="text" id="q_cheque_valor" placeholder="Ex: 800" onchange="D.cheque_valor_utilizado=this.value"></div>' +
+      '<div><span class="linha-cabecalho">Limite total (R$)</span><input type="text" id="q_cheque_limite" placeholder="Ex: 1500" onchange="D.cheque_limite_total=this.value"></div>' +
+      '</div></div>' +
       '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="secao-titulo">Empréstimos, financiamentos e consórcios</div><span class="hint">Inclua aqui financiamento imobiliário, financiamento de veículo e consórcios (imóvel, veículo etc.) — use o campo "Banco/Credor" para identificar (ex: "Financiamento imóvel Caixa"). Deixe em branco se não tiver.</span><div id="emp-wrap">' + gerarLinhaEmp(0) + '</div><button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Empréstimos, financiamentos e consórcios</div><span class="hint">Inclua aqui financiamento imobiliário, financiamento de veículo e consórcios (imóvel, veículo etc.) — use o campo "Banco/Credor" para identificar (ex: "Financiamento imóvel Caixa"). Deixe em branco se não tiver.</span>' +
+      '<div class="linha-estruturada col4"><span class="linha-cabecalho">Banco/Credor</span><span class="linha-cabecalho">Saldo devedor</span><span class="linha-cabecalho">Parcela</span><span class="linha-cabecalho">Restantes</span></div>' +
+      '<div id="emp-wrap">' + gerarLinhaEmp(0) + '</div><button onclick="adicionarEmp()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
       '<div class="divider"></div>' +
-      '<div class="pergunta"><div class="secao-titulo">Renegociações em andamento</div><span class="hint">Deixe em branco se não tiver.</span><div id="reneg-wrap">' + gerarLinhaReneg(0) + '</div><button onclick="adicionarReneg()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
+      '<div class="pergunta"><div class="secao-titulo">Renegociações em andamento</div><span class="hint">Deixe em branco se não tiver.</span>' +
+      '<div class="linha-estruturada col3"><span class="linha-cabecalho">Credor</span><span class="linha-cabecalho">Parcela</span><span class="linha-cabecalho">Restantes</span></div>' +
+      '<div id="reneg-wrap">' + gerarLinhaReneg(0) + '</div><button onclick="adicionarReneg()" style="background:transparent;border:1px dashed #3a3a6a;color:#b3a8ff;font-size:14px;padding:10px 16px;border-radius:8px;cursor:pointer;margin-top:6px;font-family:Inter,sans-serif">+ Adicionar</button></div>' +
       '<div class="divider"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Qual dívida pesa mais no seu orçamento hoje? <span class="hint">Opcional</span></div><input type="text" id="q_pesada" placeholder="Ex: Cartão de crédito — juros altos" value="'+D.divida_mais_pesada+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>▸</span> Seu nome está negativado (SPC/Serasa)?</div><div id="opcoes-negativo" class="opcoes-grid"></div></div>' +
@@ -725,6 +745,13 @@ function salvarBloco3() {
     D.emprestimos[k].restantes = getVal('emp'+k+'_restantes');
   }
   D.divida_mais_pesada = getVal('q_pesada');
+  D.cheque_valor_utilizado = getVal('q_cheque_valor');
+  D.cheque_limite_total = getVal('q_cheque_limite');
+  if (!D.cheque_uso || D.cheque_uso === 'NaoUso') {
+    D.cheque_especial = 'Não uso';
+  } else {
+    D.cheque_especial = 'Uso cheque especial' + (D.cheque_valor_utilizado ? ' — Valor utilizado: R$' + D.cheque_valor_utilizado : '') + (D.cheque_limite_total ? ' / Limite total: R$' + D.cheque_limite_total : '');
+  }
   if (!D.nome_negativado) { mostrarErro('Por favor informe se seu nome está negativado.'); return; }
   if (!D.tentou_negociar) { mostrarErro('Por favor informe se já tentou renegociar alguma dívida.'); return; }
   avancar();
