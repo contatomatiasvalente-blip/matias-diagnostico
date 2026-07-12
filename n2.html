@@ -1232,11 +1232,13 @@ function montarRespostasCompletas() {
   for (var key in labels) {
     var v = valores[key];
     if (v === undefined || v === null || v === '') continue;
-    linhas += '<tr><td style="width:38%"><strong>'+escapeHtml(labels[key])+'</strong></td><td>'+escapeHtml(v)+'</td></tr>';
+    linhas += '<tr><td style="width:40%;font-size:12.5px"><strong>'+escapeHtml(labels[key])+'</strong></td><td style="font-size:12.5px">'+escapeHtml(v)+'</td></tr>';
   }
-  return '<div class="resumo-titulo" style="margin-top:36px">Anexo — Suas Respostas Completas</div>' +
-    '<div style="font-size:12.5px;color:#666;margin-bottom:14px;font-family:\'Segoe UI\',Arial,sans-serif">Use este anexo como referência caso queira esclarecer alguma dúvida sobre um número específico desta análise com nosso suporte.</div>' +
-    '<table class="dividas-tabela"><tbody>'+linhas+'</tbody></table>';
+  return '<div class="chart-box" style="border:2px solid #7c6fd4;background:#f7f6ff">' +
+    '<div class="chart-titulo" style="color:#4a3f9e">📋 Suas respostas — conferência dos dados usados nesta análise</div>' +
+    '<div style="font-size:12.5px;color:#555;margin-bottom:14px;font-family:\'Segoe UI\',Arial,sans-serif;line-height:1.6">Confira abaixo exatamente o que foi informado no questionário. Se algo não bater com o que você preencheu, use este anexo para esclarecer a dúvida com nosso suporte.</div>' +
+    '<table class="dividas-tabela"><tbody>'+linhas+'</tbody></table>' +
+    '</div>';
 }
 
 function montarSuporteBox(paraPdf) {
@@ -1335,6 +1337,8 @@ function gerarPDF() {
     '<div class="header"><div><div class="h-nome">MATIAS VALENTE</div></div><div class="h-data">Gerado em: '+dataHoje+'<br>Documento confidencial</div></div>' +
     '<div class="titulo-doc">Relatório de Análise Financeira Completa</div><div class="sub-doc">Diagnóstico exclusivo e personalizado</div>' +
 
+    montarRespostasCompletas() +
+
     (r.score !== null ? '<div class="score-box"><div class="score-num">'+r.score+'</div><div><div class="score-label">'+scoreLabel+'</div><div class="score-sub">Nota de saúde financeira (0-100)</div></div></div>' : '') +
 
     alertaHtml +
@@ -1368,7 +1372,6 @@ function gerarPDF() {
     (D.objetivo_12meses ? '<div class="objetivo-box"><strong>Objetivo declarado:</strong> '+D.objetivo_12meses+'</div>' : '') +
 
     montarSuporteBox(true) +
-    montarRespostasCompletas() +
 
     '<div class="footer"><div class="f-nome">— Matias Valente</div><div class="f-aviso">Relatório gerado de forma exclusiva e anônima.<br>Nenhum dado pessoal é armazenado.</div></div>' +
     '</body></html>';
