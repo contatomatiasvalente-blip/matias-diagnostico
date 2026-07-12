@@ -220,7 +220,6 @@ document.addEventListener('DOMContentLoaded', function() {
 var D = {
   nome:'', renda_liquida:'', renda_extra_familiar:'', renda_extra_valor:'', renda_extra_quem:'', outras_rendas:'', outras_rendas_valor:'', outras_rendas_tipo:'', renda_estavel:'',
   moradia:'', condominio:'', iptu:'', contas_consumo:'', transporte:'', alimentacao:'', saude:'', educacao:'',
-  transporte_pagamento:'', alimentacao_pagamento:'',
   gastos_ocultos:'', gastos_ocultos_valores:'',
   dividas:[{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''},{tipo:'',total:'',parcela:''}],
   renegociacoes:[{credor:'',parcela:'',restantes:''},{credor:'',parcela:'',restantes:''},{credor:'',parcela:'',restantes:''}],
@@ -423,8 +422,8 @@ function render() {
     tela.innerHTML = '<div class="card"><div class="bloco-label">Bloco 2 de 7</div><div class="bloco-titulo">Despesas mensais</div><div class="bloco-sub">O que sai todo mês. Coloque valores aproximados — estimativas são bem-vindas.</div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>5.</span> Moradia — aluguel, condomínio e IPTU <span class="hint">Preencha cada um separadamente. Coloque 0 se não tiver o gasto, ou escreva "Moro com familiar sem custo" no primeiro campo. Se você tem financiamento imobiliário, não inclua a parcela aqui — ela entra no Bloco 3 (Dívidas e Crédito), junto com outros financiamentos.</span></div><input type="text" id="q5" placeholder="Aluguel: Ex: R$ 1.200 (deixe 0 se for financiado ou quitado)" style="margin-bottom:8px" value="'+D.moradia+'"><input type="text" id="q5_condominio" placeholder="Condomínio: Ex: R$ 350" style="margin-bottom:8px" value="'+D.condominio+'"><input type="text" id="q5_iptu" placeholder="IPTU (valor mensal ou dividido por 12): Ex: R$ 80" value="'+D.iptu+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>6.</span> Contas de consumo — água, luz, gás, internet, telefone <span class="hint">Some todas essas contas e coloque o total aproximado</span></div><input type="text" id="q6" placeholder="Ex: R$ 450" value="'+D.contas_consumo+'"></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>7.</span> Transporte — combustível, Uber, ônibus, manutenção <span class="hint">Não inclua parcela de financiamento do carro aqui — isso entra no Bloco 3 (Dívidas e Crédito)</span></div><input type="text" id="q7" placeholder="Ex: R$ 600" value="'+D.transporte+'" oninput="mostrarPagamento(\'transporte\',this.value)"><div id="pagamento-transporte-wrap" class="opcoes-grid" style="margin-top:10px;'+(valorPositivo(D.transporte)?'':'display:none')+'">' + gerarOpcoesPagamento('transporte') + '</div></div>' +
-      '<div class="pergunta"><div class="pergunta-label"><span>8.</span> Alimentação — mercado, feira, refeições no trabalho</div><input type="text" id="q8" placeholder="Ex: R$ 800" value="'+D.alimentacao+'" oninput="mostrarPagamento(\'alimentacao\',this.value)"><div id="pagamento-alimentacao-wrap" class="opcoes-grid" style="margin-top:10px;'+(valorPositivo(D.alimentacao)?'':'display:none')+'">' + gerarOpcoesPagamento('alimentacao') + '</div></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>7.</span> Transporte — combustível, Uber, ônibus, manutenção <span class="hint">Não inclua parcela de financiamento do carro aqui — isso entra no Bloco 3 (Dívidas e Crédito)</span></div><input type="text" id="q7" placeholder="Ex: R$ 600" value="'+D.transporte+'"></div>' +
+      '<div class="pergunta"><div class="pergunta-label"><span>8.</span> Alimentação — mercado, feira, refeições no trabalho</div><input type="text" id="q8" placeholder="Ex: R$ 800" value="'+D.alimentacao+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>9.</span> Saúde — plano de saúde, odontológico, consultas particulares</div><input type="text" id="q9" placeholder="Ex: R$ 350 (plano familiar)" value="'+D.saude+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>10.</span> Educação — escola, faculdade, cursos, material, van escolar <span class="hint">Coloque 0 se não tiver este gasto</span></div><input type="text" id="q10" placeholder="Ex: R$ 600" value="'+D.educacao+'"></div>' +
       '<div class="pergunta"><div class="pergunta-label"><span>11.</span> Quais desses gastos você tem todo mês? <span class="hint">Marque e informe o valor aproximado de cada um</span></div>'+htmlTags+'</div>' +
@@ -813,33 +812,6 @@ function parseValorNumerico(val) {
   return isNaN(n) ? 0 : n;
 }
 
-function valorPositivo(val) {
-  if (!val) return false;
-  var n = parseFloat(String(val).replace(/[^\d,.-]/g, '').replace(',', '.'));
-  return !isNaN(n) && n > 0;
-}
-
-function gerarOpcoesPagamento(campo) {
-  var opcoes = ['Cartão de crédito', 'Débito em conta', 'Boleto'];
-  return opcoes.map(function(op) {
-    var on = D[campo + '_pagamento'] === op ? ' on' : '';
-    return '<div class="opcao-btn' + on + '" style="font-size:13px;padding:10px 12px" onclick="selecionarPagamento(this,\'' + campo + '\',\'' + op + '\')">' + op + '</div>';
-  }).join('');
-}
-
-function mostrarPagamento(campo, val) {
-  var wrap = document.getElementById('pagamento-' + campo + '-wrap');
-  if (wrap) wrap.style.display = valorPositivo(val) ? 'grid' : 'none';
-}
-
-function selecionarPagamento(el, campo, valor) {
-  D[campo + '_pagamento'] = valor;
-  var parent = el.parentNode;
-  var btns = parent.querySelectorAll('.opcao-btn');
-  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('on');
-  el.classList.add('on');
-}
-
 function calcularResumoFinanceiro() {
   var g = D.gastos_ocultos_map || {};
   var valGasto = function(k) { return parseValorNumerico(g[k]); };
@@ -943,9 +915,7 @@ async function gerarAnalise() {
     iptu: D.iptu,
     contas_consumo: D.contas_consumo,
     transporte: D.transporte,
-    transporte_pagamento: D.transporte_pagamento,
     alimentacao: D.alimentacao,
-    alimentacao_pagamento: D.alimentacao_pagamento,
     saude: D.saude,
     educacao: D.educacao,
     gastos_ocultos: D.gastos_ocultos,
